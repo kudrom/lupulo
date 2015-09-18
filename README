@@ -1,0 +1,6 @@
+To install all the dependencies type pip2 install -r requirements.txt
+
+You need superuser permissions to execute the application.
+To run the application type twistd -ny app.tac
+To run the application in the background type twistd -y app.tac
+See the settings first before launching the server.
