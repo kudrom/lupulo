@@ -15,7 +15,7 @@ class SerialListener(Protocol):
 
 
 class SerialService(service.Service):
-    def __init__(self, sse_resource, device='/dev/ttyACM0'):
+    def __init__(self, sse_resource, device):
         self.device = device
         self.sse_resource = sse_resource
 
