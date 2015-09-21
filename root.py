@@ -2,9 +2,10 @@ import os.path
 
 from twisted.web import resource, server
 from twisted.web.template import Element, renderer, XMLFile, flatten
+from twisted.web.static import File
 from twisted.python.filepath import FilePath
-from settings import settings
 
+from settings import settings
 from sse_resource import SSE_Resource
 
 
@@ -25,8 +26,9 @@ class RootElement(Element):
 
 
 
-def get_website():
+def get_website(sse_resource):
     root = Root()
-    sse_resource = SSE_Resource()
+    static = File('static')
     root.putChild('subscribe', sse_resource)
+    root.putChild('static', static)
     return server.Site(root)
