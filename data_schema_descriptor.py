@@ -12,8 +12,10 @@ class DataSchemaDescriptor(object):
     def init_descriptors(self):
         self.descriptors = {}
         for key, value in self.desc.items():
-            module = import_module("m3dpi_ui.descriptors.%s" % key)
-            self.descriptors[key] = getattr(module, key.capitalize())
+            klass_name = value["type"]
+            module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
+            klass = getattr(module, klass_name.capitalize())
+            self.descriptors[key] = klass(**value)
 
     def validate(self, data):
         try:

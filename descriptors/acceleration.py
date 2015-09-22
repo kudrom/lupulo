@@ -1,2 +1,0 @@
-class Acceleration(object):
-    pass
