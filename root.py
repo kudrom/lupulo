@@ -45,6 +45,6 @@ def get_website(sse_resource):
     root = Root()
     root.putChild('subscribe', sse_resource)
     # Serve the static directory for css/js/image files
-    static = File('static')
+    static = File(os.path.join(settings["cwd"], 'static'))
     root.putChild('static', static)
     return server.Site(root)

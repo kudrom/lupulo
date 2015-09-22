@@ -1,0 +1,23 @@
+{
+    "distances": {
+        "type": "list",
+        "length": 8,
+        "item_type": "number",
+        "item_range": [0,4]
+    },
+    "leds": {
+        "type": "enum",
+        "item_values": ["on", "off"]
+    },
+    "battery": "percentage",
+    "date": "epoch",
+    "rotation": "number",
+    "direction": "number",
+    "acceleration": "number",
+    "motor": {
+        "type": "dict",
+        "keys": ["speed", "turn_radius"],
+        "speed_type": "number",
+        "turn_type": "number"
+    }
+}
