@@ -1,6 +1,7 @@
 import json
 from importlib import import_module
 
+from m3dpi_ui.exceptions import NotFoundDescriptor
 
 class DataSchemaDescriptor(object):
     def __init__(self, fp):
@@ -13,7 +14,10 @@ class DataSchemaDescriptor(object):
         self.descriptors = {}
         for key, value in self.desc.items():
             klass_name = value["type"]
-            module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
+            try:
+                module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
+            except ImportError as e:
+                raise NotFoundDescriptor(e.message.split(" ")[-1])
             klass = getattr(module, klass_name.capitalize())
             self.descriptors[key] = klass(**value)
 
@@ -35,4 +39,8 @@ class DataSchemaDescriptor(object):
         return True
 
     def generate(self):
-        pass
+        rt = ""
+        for _, descriptor in self.descriptors.items():
+            rt += descriptor.generate()
+
+        return rt
