@@ -6,14 +6,29 @@
         "item_range": [0,4]
     },
     "leds": {
-        "type": "enum",
+        "type": "list",
+        "length": 8,
+        "item_type": "enum",
         "item_values": ["on", "off"]
     },
-    "battery": "percentage",
-    "date": "epoch",
-    "rotation": "number",
-    "direction": "number",
-    "acceleration": "number",
+    "battery": {
+        "type": "percentage"
+    },
+    "date": {
+        "type": "epoch"
+    },
+    "rotation": {
+        "type": "number",
+        "range": [0, 360]
+    },
+    "direction": {
+        "type": "number",
+        "range": [0, 100]
+    },
+    "acceleration": {
+        "type": "number",
+        "range": [0, 10]
+    },
     "motor": {
         "type": "dict",
         "keys": ["speed", "turn_radius"],
