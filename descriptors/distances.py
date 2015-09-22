@@ -1,0 +1,2 @@
+class Distances(object):
+    pass

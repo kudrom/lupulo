@@ -1,0 +1,2 @@
+class Rotation(object):
+    pass

@@ -1,10 +1,10 @@
 from twisted.application import service, internet
 from twisted.web import server
 
-from serial_listener import SerialService
-from sse_resource import SSE_Resource
-from root import get_website
-from settings import settings
+from m3dpi_ui.serial_listener import SerialService
+from m3dpi_ui.sse_resource import SSE_Resource
+from m3dpi_ui.root import get_website
+from m3dpi_ui.settings import settings
 
 # Bind the application and create a multi service that will be the
 # father of all the services below

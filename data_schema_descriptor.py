@@ -1,15 +1,19 @@
 import json
+from importlib import import_module
 
 
 class DataSchemaDescriptor(object):
     def __init__(self, fp):
         self.fp = fp
-        data = json.load(self.fp)
-        self.events = set(data.keys())
-        self.descriptors = self.init_descriptors()
+        self.desc = json.load(self.fp)
+        self.events = set(self.desc.keys())
+        self.init_descriptors()
 
     def init_descriptors(self):
-        pass
+        self.descriptors = {}
+        for key, value in self.desc.items():
+            module = import_module("m3dpi_ui.descriptors.%s" % key)
+            self.descriptors[key] = getattr(module, key.capitalize())
 
     def validate(self, data):
         try:
@@ -30,4 +34,3 @@ class DataSchemaDescriptor(object):
 
     def generate(self):
         pass
-

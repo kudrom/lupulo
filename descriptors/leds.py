@@ -1,0 +1,2 @@
+class Leds(object):
+    pass

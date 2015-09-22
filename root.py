@@ -5,8 +5,8 @@ from twisted.web.template import Element, renderer, XMLFile, flatten
 from twisted.web.static import File
 from twisted.python.filepath import FilePath
 
-from settings import settings
-from sse_resource import SSE_Resource
+from m3dpi_ui.settings import settings
+from m3dpi_ui.sse_resource import SSE_Resource
 
 
 class Root(resource.Resource):
