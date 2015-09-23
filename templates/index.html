@@ -1,11 +1,22 @@
 <html>
     <head>
         <script>
-            eventSource = new EventSource("http://localhost:8080/subscribe");
-            eventSource.onmessage = function(event) {
-                element = document.getElementById("event-data");
-                element.innerHTML = event.data;
+            function print(name){
+                return function(event) {
+                    element = document.getElementById(name);
+                    element.innerHTML = name + ": " + event.data;
+                };
             };
+            eventSource = new EventSource("http://localhost:8080/subscribe");
+            eventSource.onmessage = print("event-data");
+            eventSource.addEventListener("distances", print("distances"));
+            eventSource.addEventListener("leds", print("leds"));
+            eventSource.addEventListener("battery", print("battery"));
+            eventSource.addEventListener("date", print("date"));
+            eventSource.addEventListener("rotation", print("rotation"));
+            eventSource.addEventListener("direction", print("direction"));
+            eventSource.addEventListener("acceleration", print("acceleration"));
+            eventSource.addEventListener("motor", print("motor"));
         </script>
         <link rel="stylesheet" type="text/css" href="static/main.css" />
     </head>
@@ -13,5 +24,13 @@
         <h1> m3dpi demo</h1>
         <h3> Event data: </h3>
         <p id="event-data"></p>
+        <p id="distances"></p>
+        <p id="leds"></p>
+        <p id="battery"></p>
+        <p id="date"></p>
+        <p id="rotation"></p>
+        <p id="direction"></p>
+        <p id="acceleration"></p>
+        <p id="motor"></p>
     </body>
 </html>

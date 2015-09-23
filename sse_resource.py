@@ -1,5 +1,9 @@
+import json
+
 from twisted.web import server, resource
 
+from m3dpi_ui.data_schema_manager import DataSchemaManager
+from m3dpi_ui.settings import settings
 
 class SSE_Resource(resource.Resource):
     """
@@ -13,6 +17,9 @@ class SSE_Resource(resource.Resource):
             when new information is published to the sse_resource.
         """
         self.subscribers = set()
+        # TODO: the serial mocker also has the same object
+        fp = open(settings["data_schema"], "r")
+        self.data_schema_manager = DataSchemaManager(fp)
 
     def render_GET(self, request):
         """
@@ -32,10 +39,14 @@ class SSE_Resource(resource.Resource):
             When data arrives it is written to every request which is in the
             subscribers set.
         """
-        for subscriber in self.subscribers:
-            for line in data:
-                subscriber.write("data: %s\r\n" % line)
-            subscriber.write("\r\n")
+        if self.data_schema_manager.validate(data):
+            jdata = json.loads(data)
+            for subscriber in self.subscribers:
+                msg = []
+                for event, data in jdata.items():
+                    msg.append("event: %s\n" % event.encode('ascii', 'ignore'))
+                    msg.append("data: %s\n\n" % data)
+                subscriber.write("".join(msg))
 
     def removeSubscriber(self, subscriber):
         """

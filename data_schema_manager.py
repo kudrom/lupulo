@@ -3,7 +3,11 @@ from importlib import import_module
 
 from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
 
-def find_data_type(klass_name):
+def find_descriptor(klass_name):
+    """
+        Return the class in the descriptors folder that has as its
+        name the argument klass_name
+    """
     try:
         module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
     except ImportError as e:
@@ -11,22 +15,39 @@ def find_data_type(klass_name):
     return getattr(module, klass_name.capitalize())
 
 class DataSchemaManager(object):
+    """
+        Validates and generates random data for a data schema.
+    """
     def __init__(self, fp):
+        """
+            @param fp is a file handler of the data schema
+            @member desc is the dictionary of the data schema
+            @events is a set with all of the events defined in the data schema
+        """
         self.fp = fp
         self.desc = json.load(self.fp)
         self.events = set(self.desc.keys())
         self.init_descriptors()
 
     def init_descriptors(self):
+        """
+            Initializes @member descriptors as a dictionary indexed by
+            each event in @events and its value a class loaded with
+            find_descriptor
+        """
         self.descriptors = {}
         for key, value in self.desc.items():
-            klass = find_data_type(value["type"])
+            klass = find_descriptor(value["type"])
             try:
                 self.descriptors[key] = klass(**value)
             except TypeError:
                 raise RequirementViolated("%s description is wrong" % key)
 
     def validate(self, data):
+        """
+            Validates the @param data against the data schema using
+            the @member descriptors dictionary.
+        """
         try:
             jdata = json.loads(data)
         except ValueError:
@@ -44,6 +65,10 @@ class DataSchemaManager(object):
         return True
 
     def generate(self, descriptors=[]):
+        """
+            Generates random data for the data schema using the
+            @member descriptors dictionary.
+        """
         if len(descriptors) == 0:
             descriptors = self.descriptors.keys()
 
