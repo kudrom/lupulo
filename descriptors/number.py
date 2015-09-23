@@ -1,9 +1,12 @@
+from random import uniform
+
 class Number(object):
-    def __init__(self, **kwargs):
-        pass
+    def __init__(self, range, **kwargs):
+        self.start = range[0]
+        self.end = range[1]
 
     def generate(self):
-        pass
+        return uniform(self.start, self.end)
 
-    def validate(self, data):
-        pass
+    def validate(self, value):
+        return value >= self.start and value <= self.end

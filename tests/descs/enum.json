@@ -1,0 +1,6 @@
+{
+    "interesting_name": {
+        "type": "enum",
+        "values": [1,2,3]
+    }
+}

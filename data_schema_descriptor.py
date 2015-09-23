@@ -1,7 +1,14 @@
 import json
 from importlib import import_module
 
-from m3dpi_ui.exceptions import NotFoundDescriptor
+from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
+
+def find_data_type(klass_name):
+    try:
+        module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
+    except ImportError as e:
+        raise NotFoundDescriptor(e.message.split(" ")[-1])
+    return getattr(module, klass_name.capitalize())
 
 class DataSchemaDescriptor(object):
     def __init__(self, fp):
@@ -13,13 +20,11 @@ class DataSchemaDescriptor(object):
     def init_descriptors(self):
         self.descriptors = {}
         for key, value in self.desc.items():
-            klass_name = value["type"]
+            klass = find_data_type(value["type"])
             try:
-                module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
-            except ImportError as e:
-                raise NotFoundDescriptor(e.message.split(" ")[-1])
-            klass = getattr(module, klass_name.capitalize())
-            self.descriptors[key] = klass(**value)
+                self.descriptors[key] = klass(**value)
+            except TypeError:
+                raise RequirementViolated("%s description is wrong" % key)
 
     def validate(self, data):
         try:
@@ -38,9 +43,14 @@ class DataSchemaDescriptor(object):
 
         return True
 
-    def generate(self):
-        rt = ""
-        for _, descriptor in self.descriptors.items():
-            rt += descriptor.generate()
+    def generate(self, descriptors=[]):
+        if len(descriptors) == 0:
+            descriptors = self.descriptors.keys()
 
-        return rt
+        rt = {}
+        for name in descriptors:
+            if name in self.descriptors:
+                descriptor = self.descriptors[name]
+                rt[name] = descriptor.generate()
+
+        return json.dumps(rt)

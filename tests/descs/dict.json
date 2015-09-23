@@ -1,0 +1,10 @@
+{
+    "motor": {
+        "type": "dict",
+        "keys": ["speed", "turn_radius"],
+        "speed_type": "number",
+        "speed_range": [0,5],
+        "turn_radius_type": "enum",
+        "turn_radius_values": [0,3]
+    }
+}

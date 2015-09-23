@@ -1,0 +1,8 @@
+{
+    "leds":{
+        "type": "list",
+        "length": 3,
+        "item_type": "enum",
+        "item_values": ["on", "off", "null"]
+    }
+}

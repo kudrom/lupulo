@@ -1,9 +1,11 @@
+from random import choice
+
 class Enum(object):
-    def __init__(self, **kwargs):
-        pass
+    def __init__(self, values, **kwargs):
+        self.values = values
 
     def generate(self):
-        pass
+        return choice(self.values)
 
     def validate(self, data):
-        pass
+        return data in self.values
