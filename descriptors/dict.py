@@ -1,5 +1,5 @@
 from m3dpi_ui.exceptions import RequirementViolated
-from m3dpi_ui.data_schema_descriptor import find_data_type
+from m3dpi_ui.data_schema_manager import find_data_type
 
 class Dict(object):
     def __init__(self, keys, **kwargs):

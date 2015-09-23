@@ -10,7 +10,7 @@ def find_data_type(klass_name):
         raise NotFoundDescriptor(e.message.split(" ")[-1])
     return getattr(module, klass_name.capitalize())
 
-class DataSchemaDescriptor(object):
+class DataSchemaManager(object):
     def __init__(self, fp):
         self.fp = fp
         self.desc = json.load(self.fp)

@@ -4,22 +4,22 @@ import json
 from twisted.trial import unittest
 from mock import patch, MagicMock
 
-from m3dpi_ui.data_schema_descriptor import DataSchemaDescriptor
+from m3dpi_ui.data_schema_manager import DataSchemaManager
 from m3dpi_ui.settings import settings
 from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
 
 
 class TestsSchemaDescriptor(unittest.TestCase):
     def setUp(self):
-        self.fp = open(os.path.join(settings["cwd"], "tests/descs/complete.json"), "r")
-        self.valid_schema_desc = DataSchemaDescriptor(self.fp)
+        self.fp = open(os.path.join(settings["cwd"], "tests/data_schemas/complete.json"), "r")
+        self.valid_schema_desc = DataSchemaManager(self.fp)
 
     def tearDown(self):
         self.fp.close()
 
     def test_invalid_file(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/invalid_syntax.json"), "r")
-        self.assertRaises(ValueError, DataSchemaDescriptor, ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/invalid_syntax.json"), "r")
+        self.assertRaises(ValueError, DataSchemaManager, ifp)
         ifp.close()
 
     def test_descriptors_complete(self):
@@ -31,19 +31,19 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     @patch('m3dpi_ui.descriptors.number.Number')
     def test_argument_constructors(self, typeMocked):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/argument_constructors.json"), "r")
-        dsd = DataSchemaDescriptor(ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/argument_constructors.json"), "r")
+        dsd = DataSchemaManager(ifp)
         self.assertEqual(typeMocked.called, True)
         typeMocked.assert_called_with(arg0=u'argument0', arg1=u'argument1', type=u'number')
 
     def test_invalid_descriptor(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/not_exists_descriptor.json"), "r")
-        self.assertRaises(NotFoundDescriptor, DataSchemaDescriptor, ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/not_exists_descriptor.json"), "r")
+        self.assertRaises(NotFoundDescriptor, DataSchemaManager, ifp)
         ifp.close()
 
     def test_requirement_violated(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/requirements.json"), "r")
-        self.assertRaises(RequirementViolated, DataSchemaDescriptor, ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/requirements.json"), "r")
+        self.assertRaises(RequirementViolated, DataSchemaManager, ifp)
 
     def test_validate_different_keys(self):
         data = '{"different_key": "whatever"}'
@@ -67,8 +67,8 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.assertEqual(self.valid_schema_desc.validate(data), False)
 
     def test_validation_enum(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/enum.json"), "r")
-        dsd = DataSchemaDescriptor(ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/enum.json"), "r")
+        dsd = DataSchemaManager(ifp)
         data = '{"interesting_name": 1}'
         self.assertEqual(dsd.validate(data), True)
         data = '{"interesting_name": 2}'
@@ -90,8 +90,8 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     @patch('m3dpi_ui.descriptors.enum.Enum')
     def test_validation_list_calls(self, EnumMock):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/list.json"), "r")
-        dsd = DataSchemaDescriptor(ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list.json"), "r")
+        dsd = DataSchemaManager(ifp)
         EnumMock.assert_called_once_with(values=["on", "off", "null"])
         data = '{"leds": ["on", "off", "null"]}'
         validate = MagicMock(return_value=True)
@@ -112,8 +112,8 @@ class TestsSchemaDescriptor(unittest.TestCase):
     @patch('m3dpi_ui.descriptors.enum.Enum')
     @patch('m3dpi_ui.descriptors.number.Number')
     def test_validation_dict_calls(self, NumberMock, EnumMock):
-        ifp = open(os.path.join(settings["cwd"], "tests/descs/dict.json"), "r")
-        dsd = DataSchemaDescriptor(ifp)
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/dict.json"), "r")
+        dsd = DataSchemaManager(ifp)
         EnumMock.assert_called_once_with(values=[0, 3], type="enum")
         NumberMock.assert_called_once_with(range=[0, 5], type="number")
         data = '{"motor": {"speed": 4, "turn_radius": 3}}'
