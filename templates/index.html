@@ -8,7 +8,6 @@
                 };
             };
             eventSource = new EventSource("http://localhost:8080/subscribe");
-            eventSource.onmessage = print("event-data");
             eventSource.addEventListener("distances", print("distances"));
             eventSource.addEventListener("leds", print("leds"));
             eventSource.addEventListener("battery", print("battery"));
@@ -23,7 +22,7 @@
     <body>
         <h1> m3dpi demo</h1>
         <h3> Event data: </h3>
-        <p id="event-data"></p>
+        <p id="global"></p>
         <p id="distances"></p>
         <p id="leds"></p>
         <p id="battery"></p>
