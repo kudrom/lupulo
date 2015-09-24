@@ -1,3 +1,5 @@
+import os.path
+
 from twisted.application import service, internet
 from twisted.web import server
 from twisted.python.log import ILogObserver, FileLogObserver

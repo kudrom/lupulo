@@ -1,6 +1,7 @@
 import json
 
 from twisted.web import server, resource
+from twisted.python import log
 
 from m3dpi_ui.data_schema_manager import DataSchemaManager
 from m3dpi_ui.settings import settings
@@ -26,6 +27,7 @@ class SSE_Resource(resource.Resource):
             Called when twisted wants to render the page, this method is asynchronous
             and therefore returns NOT_DONE_YET.
         """
+        log.msg("SSE connection made by %s" % request.getClientIP())
         request.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
         request.setResponseCode(200)
         self.subscribers.add(request)
