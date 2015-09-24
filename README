@@ -44,8 +44,7 @@ defined in a format derived from json and validate and generate random data
 that respects that data schema.
 
 2) INSTALL
-You need a system with python2 properly installed in order to run m3dpi_ui.
-To install all the dependencies type pip2 install -r requirements.txt
+Run ./install.sh
 
 3) USE
 In order to run the servers you can use several configurations:

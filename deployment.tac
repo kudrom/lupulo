@@ -1,5 +1,7 @@
 from twisted.application import service, internet
 from twisted.web import server
+from twisted.python.log import ILogObserver, FileLogObserver
+from twisted.python.logfile import DailyLogFile
 
 from m3dpi_ui.serial_listener import SerialService
 from m3dpi_ui.sse_resource import SSE_Resource
@@ -11,6 +13,10 @@ from m3dpi_ui.settings import settings
 application = service.Application("m3pdi_ui")
 multi = service.MultiService()
 multi.setServiceParent(application)
+
+# Setup logging
+logfile = DailyLogFile("mock_serial.log", os.path.join(settings["cwd"], "log"))
+application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 # Create the web server and attach it to multi
 sse_resource = SSE_Resource()
