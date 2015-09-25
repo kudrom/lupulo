@@ -1,5 +1,6 @@
 *.swp
 *.pyc
 *.log
+log/*
 _trial_temp
 *.swo
