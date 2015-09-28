@@ -1,5 +1,4 @@
 import os.path
-import json
 
 from twisted.trial import unittest
 from mock import patch, MagicMock
@@ -35,7 +34,6 @@ class TestsSchemaDescriptor(unittest.TestCase):
         dsd = DataSchemaManager(ifp)
         self.assertEqual(typeMocked.called, True)
         typeMocked.assert_called_with(arg0=u'argument0', arg1=u'argument1', type=u'number')
-
     def test_invalid_descriptor(self):
         ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/not_exists_descriptor.json"), "r")
         self.assertRaises(NotFoundDescriptor, DataSchemaManager, ifp)
@@ -58,102 +56,20 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.assertEqual(mocked.validate.called, True)
         mocked.validate.assert_called_with(["on", "off", "on"])
 
-    def test_validation_number(self):
-        data = '{"rotation": 180}'
-        self.assertEqual(self.valid_schema_desc.validate(data), True)
-        data = '{"rotation": 400}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-        data = '{"direction": 180}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-
-    def test_validation_enum(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/enum.json"), "r")
+    @patch('m3dpi_ui.descriptors.dict.Dict')
+    def test_construction_nested_list_dict(self, MockedDict):
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list_dict.json"), "r")
         dsd = DataSchemaManager(ifp)
-        data = '{"interesting_name": 1}'
-        self.assertEqual(dsd.validate(data), True)
-        data = '{"interesting_name": 2}'
-        self.assertEqual(dsd.validate(data), True)
-        data = '{"interesting_name": 3}'
-        self.assertEqual(dsd.validate(data), True)
-        data = '{"interesting_name": 4}'
-        self.assertEqual(dsd.validate(data), False)
+        MockedDict.assert_called_once_with(keys=["speed", "turn_radius"],
+                                           speed_type="number",
+                                           speed_range=[0,5],
+                                           turn_radius_type="number",
+                                           turn_radius_range=[0,3])
 
-    def test_validation_list(self):
-        data = '{"leds": ["on", "off", "null", "on", "null", "off", "null", "on"]}'
-        self.assertEqual(self.valid_schema_desc.validate(data), True)
-        data = '{"leds": ["on", "off", "null", "on", "null", "off", "null", "on", "off"]}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-        data = '{"leds": ["shit", "off", "null", "on", "null", "off", "null", "on"]}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-        data = '{"leds": ["off"]}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-
-    @patch('m3dpi_ui.descriptors.enum.Enum')
-    def test_validation_list_calls(self, EnumMock):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list.json"), "r")
+    def test_attributes_nested_list_dict(self):
+        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list_dict.json"), "r")
         dsd = DataSchemaManager(ifp)
-        EnumMock.assert_called_once_with(values=["on", "off", "null"])
-        data = '{"leds": ["on", "off", "null"]}'
-        validate = MagicMock(return_value=True)
-        dsd.descriptors["leds"].delegate.validate = validate
-        self.assertEqual(dsd.validate(data), True)
-        self.assertEqual(validate.call_count, 3)
-
-    def test_validation_dict(self):
-        data = '{"motor": {"speed": 1.45, "turn_radius": 2.32}}'
-        self.assertEqual(self.valid_schema_desc.validate(data), True)
-        data = '{"motor": {"turn_radius": 2.32}}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-        data = '{"motor": {"speed": 1.45, "turn_radius": 2.32, "something": 5.55}}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-        data = '{"motor": {"speed": 1000, "turn_radius": 2.32}}'
-        self.assertEqual(self.valid_schema_desc.validate(data), False)
-
-    @patch('m3dpi_ui.descriptors.enum.Enum')
-    @patch('m3dpi_ui.descriptors.number.Number')
-    def test_validation_dict_calls(self, NumberMock, EnumMock):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/dict.json"), "r")
-        dsd = DataSchemaManager(ifp)
-        EnumMock.assert_called_once_with(values=[0, 3], type="enum")
-        NumberMock.assert_called_once_with(range=[0, 5], type="number")
-        data = '{"motor": {"speed": 4, "turn_radius": 3}}'
-        validate_enum = MagicMock(return_value=True)
-        validate_number = MagicMock(return_value=True)
-        dsd.descriptors["motor"].delegates["speed"].validate = validate_number
-        dsd.descriptors["motor"].delegates["turn_radius"].validate = validate_enum
-        self.assertEqual(dsd.validate(data), True)
-        validate_enum.assert_called_once_with(3)
-        validate_number.assert_called_once_with(4)
-
-    def test_generate_complete(self):
-        data = self.valid_schema_desc.generate()
-        jdata = json.loads(data)
-        self.assertEqual(set(jdata.keys()), set(self.valid_schema_desc.descriptors.keys()))
-
-    def test_generate_partial(self):
-        data = self.valid_schema_desc.generate(["battery", "date"])
-        jdata = json.loads(data)
-        self.assertEqual(["battery", "date"], jdata.keys())
-
-    def test_generate_null(self):
-        data = self.valid_schema_desc.generate([])
-        jdata = json.loads(data)
-        self.assertEqual(set(jdata.keys()), set(self.valid_schema_desc.descriptors.keys()))
-        data = self.valid_schema_desc.generate(["nothing"])
-        jdata = json.loads(data)
-        self.assertEqual(len(jdata), 0)
-
-    def test_generate_list(self):
-        data = self.valid_schema_desc.generate(["distances"])
-        jdata = json.loads(data)
-        self.assertEqual(["distances"], jdata.keys())
-        self.assertEqual(len(jdata["distances"]), 8)
-
-    def test_generate_dict(self):
-        data = self.valid_schema_desc.generate(["motor"])
-        jdata = json.loads(data)
-        self.assertEqual(["motor"], jdata.keys())
-        self.assertEqual(type(jdata["motor"]), dict)
-        self.assertEqual(["turn_radius", "speed"], jdata["motor"].keys())
-        self.assertEqual(type(jdata["motor"]["speed"]), float)
-        self.assertEqual(type(jdata["motor"]["turn_radius"]), float)
+        self.assertEqual(dsd.descriptors["motor"].delegate.__class__.__name__, "Dict")
+        self.assertEqual(len(dsd.descriptors["motor"].delegate.delegates), 2)
+        self.assertEqual(set(dsd.descriptors["motor"].delegate.delegates.keys()), set(["speed", "turn_radius"]))
+        self.assertEqual(dsd.descriptors["motor"].delegate.delegates["speed"].__class__.__name__, "Number")
