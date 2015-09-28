@@ -54,17 +54,24 @@ class DataSchemaManager(object):
             return False
 
         keys = set(jdata.keys())
+
+        try:
+            keys.remove("id")
+        except KeyError:
+            return False
+
         if len(keys.difference(self.events)) != 0:
             return False
 
-        for key, value in jdata.items():
+        for key in keys:
+            value = jdata[key]
             desc = self.descriptors[key]
             if not desc.validate(value):
                 return False
 
         return True
 
-    def generate(self, descriptors=[]):
+    def generate(self, id, descriptors=[]):
         """
             Generates random data for the data schema using the
             @member descriptors dictionary.
@@ -77,5 +84,6 @@ class DataSchemaManager(object):
             if name in self.descriptors:
                 descriptor = self.descriptors[name]
                 rt[name] = descriptor.generate()
+        rt["id"] = id
 
         return json.dumps(rt)

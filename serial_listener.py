@@ -19,7 +19,7 @@ class SerialListener(LineReceiver):
         log.msg("Connection made to the serial port.")
 
     def lineReceived(self, line):
-        """ Once the data has arrived it publishes it through SSE"""
+        """ Once the data has arrived SerialListener publishes it through SSE"""
         self.sse_resource.publish(line)
 
 

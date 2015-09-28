@@ -17,44 +17,48 @@ class TestDataSchemaGenerations(unittest.TestCase):
         self.fp.close()
 
     def test_generate_complete(self):
-        data = self.valid_schema_desc.generate()
+        data = self.valid_schema_desc.generate(1)
         jdata = json.loads(data)
-        self.assertEqual(set(jdata.keys()), set(self.valid_schema_desc.descriptors.keys()))
+        valid_keys = set(self.valid_schema_desc.descriptors.keys())
+        valid_keys.add("id")
+        self.assertEqual(set(jdata.keys()), valid_keys)
 
     def test_generate_partial(self):
-        data = self.valid_schema_desc.generate(["battery", "date"])
+        data = self.valid_schema_desc.generate(1, ["battery", "date"])
         jdata = json.loads(data)
-        self.assertEqual(["battery", "date"], jdata.keys())
+        self.assertEqual(["battery", "date", "id"], jdata.keys())
 
     def test_generate_null(self):
         data = self.valid_schema_desc.generate([])
         jdata = json.loads(data)
-        self.assertEqual(set(jdata.keys()), set(self.valid_schema_desc.descriptors.keys()))
-        data = self.valid_schema_desc.generate(["nothing"])
+        valid_keys = set(self.valid_schema_desc.descriptors.keys())
+        valid_keys.add("id")
+        self.assertEqual(set(jdata.keys()), valid_keys)
+        data = self.valid_schema_desc.generate(1, ["nothing"])
         jdata = json.loads(data)
-        self.assertEqual(len(jdata), 0)
+        self.assertEqual(jdata.keys(), ["id"])
 
     def test_generate_list(self):
-        data = self.valid_schema_desc.generate(["distances"])
+        data = self.valid_schema_desc.generate(1, ["distances"])
         jdata = json.loads(data)
-        self.assertEqual(["distances"], jdata.keys())
+        self.assertEqual(set(["distances", "id"]), set(jdata.keys()))
         self.assertEqual(len(jdata["distances"]), 8)
 
     def test_generate_dict(self):
-        data = self.valid_schema_desc.generate(["motor"])
+        data = self.valid_schema_desc.generate(1, ["motor"])
         jdata = json.loads(data)
-        self.assertEqual(["motor"], jdata.keys())
+        self.assertEqual(set(["motor", "id"]), set(jdata.keys()))
         self.assertEqual(type(jdata["motor"]), dict)
-        self.assertEqual(["turn_radius", "speed"], jdata["motor"].keys())
+        self.assertEqual(set(["turn_radius", "speed"]), set(jdata["motor"].keys()))
         self.assertEqual(type(jdata["motor"]["speed"]), float)
         self.assertEqual(type(jdata["motor"]["turn_radius"]), float)
 
     def test_generate_nested_list_dict(self):
         ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list_dict.json"), "r")
         dsd = DataSchemaManager(ifp)
-        data = dsd.generate()
+        data = dsd.generate(1)
         jdata = json.loads(data)
-        self.assertEqual(set(jdata.keys()), set(["motor"]))
+        self.assertEqual(set(jdata.keys()), set(["motor", "id"]))
         self.assertEqual(len(jdata["motor"]), 2)
         self.assertEqual(set(jdata["motor"][0].keys()), set(["speed", "turn_radius"]))
         self.assertEqual(set(jdata["motor"][1].keys()), set(["speed", "turn_radius"]))

@@ -18,7 +18,6 @@ class SSE_Resource(resource.Resource):
             when new information is published to the sse_resource.
         """
         self.subscribers = set()
-        # TODO: the serial mocker also has the same object
         fp = open(settings["data_schema"], "r")
         self.data_schema_manager = DataSchemaManager(fp)
 
@@ -43,10 +42,18 @@ class SSE_Resource(resource.Resource):
         """
         if self.data_schema_manager.validate(data):
             jdata = json.loads(data)
+            try:
+                iid = jdata["id"]
+            except KeyError:
+                log.msg("No id in message %s." % data)
+                return
+
             for subscriber in self.subscribers:
                 msg = []
                 for event, data in jdata.items():
-                    msg.append("event: %s\n" % event.encode('ascii', 'ignore'))
+                    if event == "id":
+                        continue
+                    msg.append("event: id%d-%s\n" % (iid, event.encode('ascii', 'ignore')))
                     msg.append("data: %s\n\n" % data)
                 subscriber.write("".join(msg))
 

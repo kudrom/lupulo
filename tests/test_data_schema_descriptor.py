@@ -44,14 +44,18 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.assertRaises(RequirementViolated, DataSchemaManager, ifp)
 
     def test_validate_different_keys(self):
-        data = '{"different_key": "whatever"}'
+        data = '{"different_key": "whatever", "id": 1}'
+        self.assertEqual(self.valid_schema_desc.validate(data), False)
+
+    def test_validate_no_id(self):
+        data = '{"battery": 62}'
         self.assertEqual(self.valid_schema_desc.validate(data), False)
 
     def test_validate_called(self):
         mocked = MagicMock()
         mocked.validate = MagicMock(return_value=True)
         self.valid_schema_desc.descriptors = {'leds': mocked}
-        data = '{"leds": ["on", "off", "on"]}'
+        data = '{"leds": ["on", "off", "on"], "id": 1}'
         self.assertEqual(self.valid_schema_desc.validate(data), True)
         self.assertEqual(mocked.validate.called, True)
         mocked.validate.assert_called_with(["on", "off", "on"])
