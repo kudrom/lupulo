@@ -3,20 +3,52 @@
     <head>
         <title>m3dpi demo</title>
         <meta charset="utf-8" />
+
+        <!-- Allow zooming in mobile phones -->
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <!-- Load dependencies -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" />
+
+        <!-- Load resources -->
         <link rel="stylesheet" type="text/css" href="static/css/main.css" />
         <script src="static/js/pololu.js" />
     </head>
     <body>
-        <h1> m3dpi demo</h1>
-        <p id="distances"></p>
-        <p id="leds"></p>
-        <p id="battery"></p>
-        <p id="date"></p>
-        <p id="rotation"></p>
-        <p id="direction"></p>
-        <p id="acceleration"></p>
-        <p id="motor"></p>
-        <p id="floor"></p>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-10 information">
+                    <h2>Information</h2>
+                    <p id="distances"></p>
+                    <p id="leds"></p>
+                    <p id="battery"></p>
+                    <p id="date"></p>
+                    <p id="rotation"></p>
+                    <p id="direction"></p>
+                    <p id="acceleration"></p>
+                    <p id="motor"></p>
+                    <p id="floor"></p>
+                </div>
+
+                <div class="col-xs-2 command">
+                    <h2>C&amp;C</h2>
+
+                    <form class="form-inline">
+                        <label for="robot">Id of the robot:</label>
+                        <select id="robot" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                        </select>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Only controller has resources over the other js files -->
         <script src="static/js/controller.js" />
     </body>
 </html>

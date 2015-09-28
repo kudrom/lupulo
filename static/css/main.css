@@ -1,0 +1,9 @@
+.command{
+    position: fixed;
+    top: 0;
+    right: 0;
+}
+
+#robot{
+    margin-left: 10px;
+}
