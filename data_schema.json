@@ -33,7 +33,7 @@
         "type": "list",
         "length": 3,
         "item_type": "number",
-        "range": [0, 10]
+        "item_range": [0, 10]
     },
     "motor": {
         "type": "list",
