@@ -1,6 +1,7 @@
 import json
 
 from twisted.web import server, resource
+from twisted.internet import reactor
 from twisted.python import log
 
 from m3dpi_ui.data_schema_manager import DataSchemaManager
@@ -18,8 +19,13 @@ class SSE_Resource(resource.Resource):
             when new information is published to the sse_resource.
         """
         self.subscribers = set()
-        fp = open(settings["data_schema"], "r")
-        self.data_schema_manager = DataSchemaManager(fp)
+        self.fp = open(settings["data_schema"], "r")
+        self.data_schema_manager = DataSchemaManager(self.fp)
+        reactor.addSystemEventTrigger('after', 'shutdown', self.clean_up)
+
+    def clean_up(self):
+        log.msg("SSE_Resource cleanup.")
+        self.fp.close()
 
     def render_GET(self, request):
         """
