@@ -33,7 +33,7 @@ MultipleLine = function(){
 
     svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + y(0) + ")")
+        .attr("transform", "translate(0," + height + ")")
         .call(d3.svg.axis().scale(x).orient("bottom"));
 
     svg.append("g")
@@ -50,7 +50,7 @@ MultipleLine = function(){
     function tick(that) {
 
       // push a new data point onto the back
-      that.data.push(that.random());
+      that.data.unshift(that.random());
 
       // redraw the line, and slide it to the left
       that.path
@@ -59,11 +59,11 @@ MultipleLine = function(){
         .transition()
           .duration(500)
           .ease("linear")
-          .attr("transform", "translate(" + that.x(-1) + ",0)")
+          .attr("transform", "translate(" + that.x(1) + ",0)")
           .each("end", function(){that.tick(that)});
 
       // pop the old data point off the front
-      that.data.shift();
+      that.data.pop();
     }
 
     this.random = random;
