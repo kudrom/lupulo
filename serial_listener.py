@@ -20,6 +20,7 @@ class SerialListener(LineReceiver):
 
     def lineReceived(self, line):
         """ Once the data has arrived SerialListener publishes it through SSE"""
+        print "serial" + line
         self.sse_resource.publish(line)
 
 

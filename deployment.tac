@@ -17,7 +17,7 @@ multi = service.MultiService()
 multi.setServiceParent(application)
 
 # Setup logging
-logfile = DailyLogFile("mock_serial.log", os.path.join(settings["cwd"], "log"))
+logfile = DailyLogFile("deployment.log", os.path.join(settings["cwd"], "log"))
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 # Create the web server and attach it to multi

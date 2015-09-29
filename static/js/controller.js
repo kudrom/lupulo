@@ -17,5 +17,6 @@
     eventSource.addEventListener("id1-floor", print("floor"));
 
     var ml = new MultipleLine();
+    eventSource.addEventListener("id1-battery", ml.wrapper())
     ml.tick(ml);
 })();

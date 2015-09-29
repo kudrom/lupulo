@@ -46,7 +46,9 @@ class SSE_Resource(resource.Resource):
             When data arrives it is written to every request which is in the
             subscribers set.
         """
+        print "antes" + data
         if self.data_schema_manager.validate(data):
+            print "despues" + jdata
             jdata = json.loads(data)
             try:
                 iid = jdata["id"]
