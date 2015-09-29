@@ -15,5 +15,7 @@
     eventSource.addEventListener("id1-acceleration", print("acceleration"));
     eventSource.addEventListener("id1-motor", print("motor"));
     eventSource.addEventListener("id1-floor", print("floor"));
-    pololu = new Pololu();
+
+    var ml = new MultipleLine();
+    ml.tick(ml);
 })();
