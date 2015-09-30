@@ -19,6 +19,11 @@
     var battery = new MultipleLine([0, 100], 100, ["battery"]);
     eventSource.addEventListener("id1-battery", battery.async_callback());
 
-    var distances = new MultipleLine([0, 3], 100, ["a","b","c","d","e","f","g","h"]);
+    /*
+    var distances = new MultipleLine([0, 4], 100, ["a","b","c","d","e","f","g","h"]);
     eventSource.addEventListener("id1-distances", distances.async_callback());
+    */
+
+    var rotations = new MultipleLine([0, 360], 275, ["a","b","c"]);
+    eventSource.addEventListener("id1-rotation", rotations.async_callback());
 })();

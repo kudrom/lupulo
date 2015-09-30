@@ -7,6 +7,7 @@ Line = function(name){
     this.data = [];
     // SVG path
     this.path;
+    this.line;
 }
 
 MultipleLine = function(range, seconds, lines){
@@ -31,9 +32,14 @@ MultipleLine = function(range, seconds, lines){
         .range([height, 0]);
     this.y = y;
 
-    this.line = d3.svg.line()
-        .x(function(d, i) { return x(i); })
-        .y(function(d, i) { return y(d); });
+    var color = d3.scale.category10()
+        .domain(lines);
+
+    for(i = 0; i < lines.length; i++){
+        this.lines[i].line = d3.svg.line()
+            .x(function(d, ii) { return x(ii); })
+            .y(function(d, ii) { return y(d); });
+    }
 
     var svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -62,7 +68,8 @@ MultipleLine = function(range, seconds, lines){
           .append("path")
             .datum(this.lines[i].data)
             .attr("class", "line")
-            .attr("d", this.line);
+            .attr("stroke", function(d){return color(lines[i])})
+            .attr("d", this.lines[i].line);
     }
 
     this.tick = function(that) {
@@ -76,7 +83,7 @@ MultipleLine = function(range, seconds, lines){
             // redraw the line, and slide it to the right
 
             that.lines[i].path
-              .attr("d", that.line)
+              .attr("d", that.lines[i].line)
               .attr("transform", null)
             .transition()
               .duration(1000)
