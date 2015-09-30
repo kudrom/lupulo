@@ -16,7 +16,9 @@
     eventSource.addEventListener("id1-motor", print("motor"));
     eventSource.addEventListener("id1-floor", print("floor"));
 
-    var ml = new MultipleLine();
-    eventSource.addEventListener("id1-battery", ml.wrapper())
-    ml.tick(ml);
+    var battery = new MultipleLine([0, 100], 100, ["battery"]);
+    eventSource.addEventListener("id1-battery", battery.async_callback());
+
+    var distances = new MultipleLine([0, 3], 100, ["a","b","c","d","e","f","g","h"]);
+    eventSource.addEventListener("id1-distances", distances.async_callback());
 })();
