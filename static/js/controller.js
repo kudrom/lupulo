@@ -1,10 +1,7 @@
-(function (){
-    var ev;
-    var data_pipe = new EventSource("http://localhost:8080/subscribe");
-
+function debug(data_pipe){
     function print(name){
         return function(event) {
-            element = document.getElementById(name);
+            var element = document.getElementById(name);
             element.innerHTML = name + ": " + event.data;
         };
     };
@@ -17,17 +14,37 @@
     data_pipe.addEventListener("id1-acceleration", print("acceleration"));
     data_pipe.addEventListener("id1-motor", print("motor"));
     data_pipe.addEventListener("id1-floor", print("floor"));
-    data_pipe.addEventListener("housekeeping", print("housekeeping"));
+}
 
+(function (){
+    function housekeeping(event){
+        var obj = JSON.parse(event.data);
+        if("added_robots" in obj){
+            var selector = document.getElementById("robot");
+            for(var i = 0; i < obj["added_robots"].length; i++){
+                var item = document.createElement("option");
+                item.text = obj["added_robots"][i];
+                selector.add(item);
+            }
+        }
+    };
+
+    var widgets = [];
+    var data_pipe = new EventSource("http://localhost:8080/subscribe");
+    data_pipe.addEventListener("housekeeping", housekeeping);
+
+    //debug(data_pipe);
+
+    var listener;
     var rotations1 = new MultipleLine([0, 360], 100, ["a"], "Rotation");
-    ev = data_pipe.addEventListener("id1-rotation", rotations1.async_callback());
-    rotations1.eventListener = ev;
+    listener = data_pipe.addEventListener("id1-rotation", rotations1.async_callback());
+    rotations1.eventListener = listener;
 
     var rotations2 = new MultipleLine([0, 360], 100, ["aiasdfasdf", "b"], "Rotation");
-    ev = data_pipe.addEventListener("id1-rotation", rotations2.async_callback());
-    rotations2.eventListener = ev;
+    listener = data_pipe.addEventListener("id1-rotation", rotations2.async_callback());
+    rotations2.eventListener = listener;
 
     var rotations3 = new MultipleLine([0, 360], 100, ["aaaaaaaaaaaaaaaaab","b","c"], "Rotation");
-    ev = data_pipe.addEventListener("id1-rotation", rotations3.async_callback());
-    rotations3.eventListener = ev;
+    listener = data_pipe.addEventListener("id1-rotation", rotations3.async_callback());
+    rotations3.eventListener = listener;
 })();
