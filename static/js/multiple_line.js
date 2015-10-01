@@ -7,8 +7,6 @@ Line = function(name){
 }
 
 MultipleLine = function(range, seconds, name_lines, y_name){
-    // The eventListener is binded through the controller
-    this.eventListener;
     // Width of the time scale
     this.seconds = seconds;
     // The Lines present in this graph
@@ -52,6 +50,10 @@ MultipleLine = function(range, seconds, name_lines, y_name){
         .attr("width", width)
         .attr("height", height);
 
+    // The lines have the smallest z-index
+    this.container = svg.append("g")
+        .attr("class", "container");
+
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
@@ -66,9 +68,6 @@ MultipleLine = function(range, seconds, name_lines, y_name){
       .attr("dy", "1em")
       .style("text-anchor", "end")
       .text(y_name);
-
-    this.container = svg.append("g")
-        .attr("class", "container");
 
     var width_rect = 15;
     var width_margin = 5;
@@ -108,6 +107,7 @@ MultipleLine = function(range, seconds, name_lines, y_name){
         for(var i = 0; i < that.lines.length; i++){
             // push a new data point onto the front
             that.lines[i].framebuffer.unshift(that.lines[i].last);
+            console.log(that.lines[i].framebuffer);
 
             // redraw the line, and slide it to the right
             that.lines[i].path
@@ -132,7 +132,7 @@ MultipleLine = function(range, seconds, name_lines, y_name){
 
     }
 
-    this.async_callback = function() {
+    this.async_callback_ctor = function() {
         var that = this;
         this.tick(this);
         return function(event){
@@ -144,6 +144,14 @@ MultipleLine = function(range, seconds, name_lines, y_name){
             for(var i = 0; i < that.lines.length; i++){
                 that.lines[i].last = jdata[i];
             }
+        }
+    }
+    this.async_callback = this.async_callback_ctor();
+
+    this.clear_framebuffers = function(){
+        for(var i = 0; i < this.lines.length; i++){
+            this.lines[i].framebuffer.splice(0, this.lines[i].framebuffer.length);
+            this.lines[i].last = 0;
         }
     }
 };

@@ -32,19 +32,28 @@ function debug(data_pipe){
     var widgets = [];
     var data_pipe = new EventSource("http://localhost:8080/subscribe");
     data_pipe.addEventListener("housekeeping", housekeeping);
+    var robot_selector = document.getElementById("robot");
+    robot_selector.addEventListener("change", function(){
+        for(var i = 0; i < widgets.length; i++){
+            var widget = widgets[i];
+            widget.clear_framebuffers();
+            data_pipe.removeEventListener(widget.event_name, widget.async_callback);
+        }
+        console.log(this.value);
+    });
 
     //debug(data_pipe);
 
-    var listener;
     var rotations1 = new MultipleLine([0, 360], 100, ["a"], "Rotation");
-    listener = data_pipe.addEventListener("id1-rotation", rotations1.async_callback());
-    rotations1.eventListener = listener;
+    data_pipe.addEventListener("id1-rotation", rotations1.async_callback);
+    rotations1.event_name = "id1-rotation";
+    widgets.push(rotations1);
 
+    /*
     var rotations2 = new MultipleLine([0, 360], 100, ["aiasdfasdf", "b"], "Rotation");
-    listener = data_pipe.addEventListener("id1-rotation", rotations2.async_callback());
-    rotations2.eventListener = listener;
+    data_pipe.addEventListener("id1-rotation", rotations2.async_callback);
 
     var rotations3 = new MultipleLine([0, 360], 100, ["aaaaaaaaaaaaaaaaab","b","c"], "Rotation");
-    listener = data_pipe.addEventListener("id1-rotation", rotations3.async_callback());
-    rotations3.eventListener = listener;
+    data_pipe.addEventListener("id1-rotation", rotations3.async_callback);
+    */
 })();
