@@ -37,7 +37,7 @@ MultipleLine = function(range, seconds, lines){
 
     for(i = 0; i < lines.length; i++){
         this.lines[i].line = d3.svg.line()
-            .x(function(d, ii) { return x(ii); })
+            .x(function(d, ii) { return x(ii - 1); })
             .y(function(d, ii) { return y(d); });
     }
 
@@ -62,8 +62,11 @@ MultipleLine = function(range, seconds, lines){
         .attr("class", "y axis")
         .call(d3.svg.axis().scale(y).orient("left"));
 
+    this.container = svg.append("g")
+        .attr("class", "container");
+
     for(i = 0; i < lines.length; i++){
-        this.lines[i].path = svg.append("g")
+        this.lines[i].path = this.container.append("g")
             .attr("clip-path", "url(#clip)")
           .append("path")
             .datum(this.lines[i].data)
@@ -85,13 +88,17 @@ MultipleLine = function(range, seconds, lines){
               .duration(1000)
               .ease("linear")
               .attr("transform", "translate(" + that.x(1) + ",0)")
-              .each("end", function(){that.tick(that)});
 
             // pop the old data point off the back
             if(that.lines[i].data.length == that.seconds + 1){
               that.lines[i].data.pop();
             }
         }
+
+        that.container.transition()
+          .duration(1000)
+          .each("end", function(){that.tick(that)});
+
     }
 
     this.async_callback = function() {

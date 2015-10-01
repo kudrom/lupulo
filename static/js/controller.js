@@ -23,7 +23,12 @@
     var distances = new MultipleLine([0, 4], 100, ["a","b","c","d","e","f","g","h"]);
     eventSource.addEventListener("id1-distances", distances.async_callback());
     */
+    var rotations1 = new MultipleLine([0, 360], 100, ["a"]);
+    eventSource.addEventListener("id1-rotation", rotations1.async_callback());
 
-    var rotations = new MultipleLine([0, 360], 275, ["a","b","c"]);
-    eventSource.addEventListener("id1-rotation", rotations.async_callback());
+    var rotations2 = new MultipleLine([0, 360], 100, ["a", "b"]);
+    eventSource.addEventListener("id1-rotation", rotations2.async_callback());
+
+    var rotations3 = new MultipleLine([0, 360], 100, ["a","b","c"]);
+    eventSource.addEventListener("id1-rotation", rotations3.async_callback());
 })();
