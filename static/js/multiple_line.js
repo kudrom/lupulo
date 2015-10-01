@@ -1,10 +1,9 @@
 Line = function(name){
     this.name = name;
-    // Variables for the async callback
+    // Last value read by the async callback
     this.last = 0;
-    this.buffer = [];
     // Array for the data displayed
-    this.data = [];
+    this.framebuffer = [];
     // SVG path
     this.path;
     this.line;
@@ -69,7 +68,7 @@ MultipleLine = function(range, seconds, lines){
         this.lines[i].path = this.container.append("g")
             .attr("clip-path", "url(#clip)")
           .append("path")
-            .datum(this.lines[i].data)
+            .datum(this.lines[i].framebuffer)
             .attr("class", "line")
             .attr("stroke", function(d){return color(lines[i])})
             .attr("d", this.lines[i].line);
@@ -78,7 +77,7 @@ MultipleLine = function(range, seconds, lines){
     this.tick = function(that) {
         for(var i = 0; i < that.lines.length; i++){
             // push a new data point onto the front
-            that.lines[i].data.unshift(that.lines[i].last);
+            that.lines[i].framebuffer.unshift(that.lines[i].last);
 
             // redraw the line, and slide it to the right
             that.lines[i].path
@@ -87,14 +86,16 @@ MultipleLine = function(range, seconds, lines){
             .transition()
               .duration(1000)
               .ease("linear")
-              .attr("transform", "translate(" + that.x(1) + ",0)")
+              .attr("transform", "translate(" + x(1) + ",0)");
 
             // pop the old data point off the back
-            if(that.lines[i].data.length == that.seconds + 1){
-              that.lines[i].data.pop();
+            if(that.lines[i].framebuffer.length == that.seconds + 1){
+              that.lines[i].framebuffer.pop();
             }
         }
 
+        // BUG #2079, registers the callback through d3js to avoid
+        // funky slide movements
         that.container.transition()
           .duration(1000)
           .each("end", function(){that.tick(that)});
@@ -110,8 +111,6 @@ MultipleLine = function(range, seconds, lines){
                 jdata = [jdata];
             }
 
-            // Only the last data point will be displayed, otherwise
-            // the bug #2077 appears
             for(var i = 0; i < that.lines.length; i++){
                 that.lines[i].last = jdata[i];
             }
