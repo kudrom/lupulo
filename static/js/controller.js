@@ -17,6 +17,7 @@
     data_pipe.addEventListener("id1-acceleration", print("acceleration"));
     data_pipe.addEventListener("id1-motor", print("motor"));
     data_pipe.addEventListener("id1-floor", print("floor"));
+    data_pipe.addEventListener("housekeeping", print("housekeeping"));
 
     var rotations1 = new MultipleLine([0, 360], 100, ["a"], "Rotation");
     ev = data_pipe.addEventListener("id1-rotation", rotations1.async_callback());

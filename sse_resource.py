@@ -22,6 +22,8 @@ class SSE_Resource(resource.Resource):
         self.fp = open(settings["data_schema"], "r")
         self.data_schema_manager = DataSchemaManager(self.fp)
         reactor.addSystemEventTrigger('after', 'shutdown', self.clean_up)
+        # The robot ids who have sent a message through this sse resource
+        self.ids = []
 
     def clean_up(self):
         log.msg("SSE_Resource cleanup.")
@@ -38,7 +40,10 @@ class SSE_Resource(resource.Resource):
         self.subscribers.add(request)
         d = request.notifyFinish()
         d.addBoth(self.removeSubscriber)
-        request.write("")
+        msg = []
+        msg.append('event: housekeeping\n')
+        msg.append('data: {"added_robots": [%s]}\n\n' % ",".join(map(str, self.ids)))
+        request.write("".join(msg))
         return server.NOT_DONE_YET
 
     def publish(self, data):
@@ -50,13 +55,19 @@ class SSE_Resource(resource.Resource):
             jdata = json.loads(data)
             iid = jdata["id"]
 
+            msg = []
+            if not iid in self.ids:
+                log.msg("New connection from robot %d" % iid)
+                self.ids.append(iid)
+                msg.append('event: housekeeping\n')
+                msg.append('data: {"added_robots": [%d]}\n\n' % iid)
+            for event, data in jdata.items():
+                if event in ["id"]:
+                    continue
+                msg.append("event: id%d-%s\n" % (iid, event.encode('ascii', 'ignore')))
+                msg.append("data: %s\n\n" % json.dumps(data))
+
             for subscriber in self.subscribers:
-                msg = []
-                for event, data in jdata.items():
-                    if event == "id":
-                        continue
-                    msg.append("event: id%d-%s\n" % (iid, event.encode('ascii', 'ignore')))
-                    msg.append("data: %s\n\n" % json.dumps(data))
                 subscriber.write("".join(msg))
 
     def removeSubscriber(self, subscriber):

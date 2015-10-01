@@ -30,5 +30,5 @@ tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
 # Create the serial listener and attach it to multi
-mock_serial_listener = MockSerialListener(1, sse_resource)
+mock_serial_listener = MockSerialListener(2, sse_resource)
 mock_serial_listener.setServiceParent(multi)

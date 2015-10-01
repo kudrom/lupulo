@@ -60,10 +60,6 @@ class DataSchemaManager(object):
         except KeyError:
             return False
 
-        # By-pass validation for housekeeping data
-        if("housekeeping" in keys):
-            keys.remove("housekeeping")
-
         if len(keys.difference(self.events)) != 0:
             return False
 
