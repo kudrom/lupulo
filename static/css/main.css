@@ -23,3 +23,7 @@ svg {
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+.legend text{
+    font-size: 12px;
+}

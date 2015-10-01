@@ -6,15 +6,15 @@ Line = function(name){
     this.framebuffer = [];
     // SVG path
     this.path;
-    this.line;
 }
 
-MultipleLine = function(range, seconds, lines){
+MultipleLine = function(range, seconds, name_lines, y_name){
     // Width of the time scale
     this.seconds = seconds;
+    // The Lines present in this graph
     this.lines = [];
-    for(var i = 0; i < lines.length; i++){
-        this.lines.push(new Line(lines[i]));
+    for(var i = 0; i < name_lines.length; i++){
+        this.lines.push(new Line(name_lines[i]));
     }
 
     var margin = {top: 20, right: 20, bottom: 20, left: 40},
@@ -32,13 +32,11 @@ MultipleLine = function(range, seconds, lines){
     this.y = y;
 
     var color = d3.scale.category10()
-        .domain(lines);
+        .domain(name_lines);
 
-    for(i = 0; i < lines.length; i++){
-        this.lines[i].line = d3.svg.line()
-            .x(function(d, ii) { return x(ii - 1); })
-            .y(function(d, ii) { return y(d); });
-    }
+    this.line = d3.svg.line()
+        .x(function(d, ii) { return x(ii - 1); })
+        .y(function(d, ii) { return y(d); });
 
     var svg = d3.select("body").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -46,6 +44,8 @@ MultipleLine = function(range, seconds, lines){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // Use clip to avoid rendering of the left control point when
+    // it's being moved by the transition
     svg.append("defs").append("clipPath")
         .attr("id", "clip")
       .append("rect")
@@ -59,19 +59,49 @@ MultipleLine = function(range, seconds, lines){
 
     svg.append("g")
         .attr("class", "y axis")
-        .call(d3.svg.axis().scale(y).orient("left"));
+        .call(d3.svg.axis().scale(y).orient("left"))
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", "1em")
+      .style("text-anchor", "end")
+      .text(y_name);
+
+    var width_rect = 15;
+    var width_margin = 5;
+    var width_legend = d3.max(name_lines, function(d){return 7 * d.length}) + width_rect + width_margin;
+    var legend = svg.selectAll('.legend')
+        .data(color.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', function(d, ii){
+            return 'translate(' + (width - width_legend) + ','
+                    + ((width_rect + width_margin) * ii) + ')';
+        });
+
+    legend.append('rect')
+        .attr('width', width_rect)
+        .attr('height', width_rect)
+        .style('fill', color)
+        .style('stroke', color);
+
+    legend.append('text')
+        .attr('x', width_rect + width_margin)
+        .attr('y', function(d, ii){return (width_rect - width_margin)})
+        .text(function(d){return d;});
 
     this.container = svg.append("g")
         .attr("class", "container");
 
-    for(i = 0; i < lines.length; i++){
+    for(i = 0; i < name_lines.length; i++){
         this.lines[i].path = this.container.append("g")
             .attr("clip-path", "url(#clip)")
           .append("path")
             .datum(this.lines[i].framebuffer)
             .attr("class", "line")
-            .attr("stroke", function(d){return color(lines[i])})
-            .attr("d", this.lines[i].line);
+            .attr("stroke", function(d){return color(name_lines[i])})
+            .attr("d", this.line);
     }
 
     this.tick = function(that) {
@@ -81,7 +111,7 @@ MultipleLine = function(range, seconds, lines){
 
             // redraw the line, and slide it to the right
             that.lines[i].path
-              .attr("d", that.lines[i].line)
+              .attr("d", that.line)
               .attr("transform", null)
             .transition()
               .duration(1000)
