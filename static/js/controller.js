@@ -1,22 +1,22 @@
-function debug(data_pipe){
-    function print(name){
-        return function(event) {
-            var element = document.getElementById(name);
-            element.innerHTML = name + ": " + event.data;
-        };
-    };
-    data_pipe.addEventListener("id1-distances", print("distances"));
-    data_pipe.addEventListener("id1-leds", print("leds"));
-    data_pipe.addEventListener("id1-battery", print("battery"));
-    data_pipe.addEventListener("id1-date", print("date"));
-    data_pipe.addEventListener("id1-rotation", print("rotation"));
-    data_pipe.addEventListener("id1-direction", print("direction"));
-    data_pipe.addEventListener("id1-acceleration", print("acceleration"));
-    data_pipe.addEventListener("id1-motor", print("motor"));
-    data_pipe.addEventListener("id1-floor", print("floor"));
-}
-
 (function (){
+    function debug(data_pipe){
+        function print(name){
+            return function(event) {
+                var element = document.getElementById(name);
+                element.innerHTML = name + ": " + event.data;
+            };
+        };
+        data_pipe.addEventListener("id1-distances", print("distances"));
+        data_pipe.addEventListener("id1-leds", print("leds"));
+        data_pipe.addEventListener("id1-battery", print("battery"));
+        data_pipe.addEventListener("id1-date", print("date"));
+        data_pipe.addEventListener("id1-rotation", print("rotation"));
+        data_pipe.addEventListener("id1-direction", print("direction"));
+        data_pipe.addEventListener("id1-acceleration", print("acceleration"));
+        data_pipe.addEventListener("id1-motor", print("motor"));
+        data_pipe.addEventListener("id1-floor", print("floor"));
+    }
+
     function housekeeping(event){
         var obj = JSON.parse(event.data);
         if("added_robots" in obj){
@@ -29,30 +29,40 @@ function debug(data_pipe){
         }
     };
 
-    var widgets = [];
+
+
+    var widgets = {};
     var data_pipe = new EventSource("http://localhost:8080/subscribe");
     data_pipe.addEventListener("housekeeping", housekeeping);
     var robot_selector = document.getElementById("robot");
     robot_selector.addEventListener("change", function(){
-        for(var i = 0; i < widgets.length; i++){
-            var widget = widgets[i];
-            widget.clear_framebuffers();
-            data_pipe.removeEventListener(widget.event_name, widget.async_callback);
+        for(var event_name in widgets){
+            for(var i = 0; i < widgets[event_name].length; i++){
+                var widget = widgets[event_name][i];
+                widget.clear_framebuffers();
+                data_pipe.removeEventListener(event_name, widget.async_callback);
+                // Remove element from widgets
+                widgets[event_name].splice(i, 1);
+                var source_event = event_name.split("-")[1];
+                var new_event_name = "id" + this.value + "-" + source_event;
+                data_pipe.addEventListener(new_event_name, widget.async_callback);
+                // TODO: this should be different
+                widgets[new_event_name] = [widget];
+            }
         }
-        console.log(this.value);
     });
 
     //debug(data_pipe);
 
     var rotations1 = new MultipleLine([0, 360], 100, ["a"], "Rotation");
     data_pipe.addEventListener("id1-rotation", rotations1.async_callback);
-    rotations1.event_name = "id1-rotation";
-    widgets.push(rotations1);
+    // TODO: this should be different
+    widgets["id1-rotation"] = [rotations1];
+
+    var rotations2 = new MultipleLine([0, 360], 100, ["aiasdfasdf", "b"], "Rotation");
+    data_pipe.addEventListener("id2-rotation", rotations2.async_callback);
 
     /*
-    var rotations2 = new MultipleLine([0, 360], 100, ["aiasdfasdf", "b"], "Rotation");
-    data_pipe.addEventListener("id1-rotation", rotations2.async_callback);
-
     var rotations3 = new MultipleLine([0, 360], 100, ["aaaaaaaaaaaaaaaaab","b","c"], "Rotation");
     data_pipe.addEventListener("id1-rotation", rotations3.async_callback);
     */

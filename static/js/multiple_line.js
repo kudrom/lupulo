@@ -107,7 +107,6 @@ MultipleLine = function(range, seconds, name_lines, y_name){
         for(var i = 0; i < that.lines.length; i++){
             // push a new data point onto the front
             that.lines[i].framebuffer.unshift(that.lines[i].last);
-            console.log(that.lines[i].framebuffer);
 
             // redraw the line, and slide it to the right
             that.lines[i].path
