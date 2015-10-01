@@ -75,13 +75,9 @@ MultipleLine = function(range, seconds, lines){
     this.tick = function(that) {
         for(var i = 0; i < that.lines.length; i++){
             // push a new data point onto the front
-            if (that.lines[i].buffer.length != 0){
-              that.lines[i].last = that.lines[i].buffer.pop();
-            }
             that.lines[i].data.unshift(that.lines[i].last);
 
             // redraw the line, and slide it to the right
-
             that.lines[i].path
               .attr("d", that.lines[i].line)
               .attr("transform", null)
@@ -103,13 +99,14 @@ MultipleLine = function(range, seconds, lines){
         this.tick(this);
         return function(event){
             var jdata = JSON.parse(event.data);
-
             if(!(jdata instanceof Array)){
                 jdata = [jdata];
             }
 
+            // Only the last data point will be displayed, otherwise
+            // the bug #2077 appears
             for(var i = 0; i < that.lines.length; i++){
-                that.lines[i].buffer.push(jdata[i]);
+                that.lines[i].last = jdata[i];
             }
         }
     }
