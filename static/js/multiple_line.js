@@ -67,6 +67,9 @@ MultipleLine = function(range, seconds, name_lines, y_name){
       .style("text-anchor", "end")
       .text(y_name);
 
+    this.container = svg.append("g")
+        .attr("class", "container");
+
     var width_rect = 15;
     var width_margin = 5;
     var width_legend = d3.max(name_lines, function(d){return 7 * d.length}) + width_rect + width_margin;
@@ -90,9 +93,6 @@ MultipleLine = function(range, seconds, name_lines, y_name){
         .attr('x', width_rect + width_margin)
         .attr('y', function(d, ii){return (width_rect - width_margin)})
         .text(function(d){return d;});
-
-    this.container = svg.append("g")
-        .attr("class", "container");
 
     for(i = 0; i < name_lines.length; i++){
         this.lines[i].path = this.container.append("g")
