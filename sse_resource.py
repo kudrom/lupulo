@@ -48,11 +48,7 @@ class SSE_Resource(resource.Resource):
         """
         if self.data_schema_manager.validate(data):
             jdata = json.loads(data)
-            try:
-                iid = jdata["id"]
-            except KeyError:
-                log.msg("No id in message %s." % data)
-                return
+            iid = jdata["id"]
 
             for subscriber in self.subscribers:
                 msg = []
@@ -60,7 +56,7 @@ class SSE_Resource(resource.Resource):
                     if event == "id":
                         continue
                     msg.append("event: id%d-%s\n" % (iid, event.encode('ascii', 'ignore')))
-                    msg.append("data: %s\n\n" % data)
+                    msg.append("data: %s\n\n" % json.dumps(data))
                 subscriber.write("".join(msg))
 
     def removeSubscriber(self, subscriber):

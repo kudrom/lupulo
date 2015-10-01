@@ -1,6 +1,4 @@
 Line = function(name){
-    this.name = name;
-    // Last value read by the async callback
     this.last = 0;
     // Array for the data displayed
     this.framebuffer = [];
@@ -9,12 +7,14 @@ Line = function(name){
 }
 
 MultipleLine = function(range, seconds, name_lines, y_name){
+    // The eventListener is binded through the controller
+    this.eventListener;
     // Width of the time scale
     this.seconds = seconds;
     // The Lines present in this graph
     this.lines = [];
     for(var i = 0; i < name_lines.length; i++){
-        this.lines.push(new Line(name_lines[i]));
+        this.lines.push(new Line());
     }
 
     var margin = {top: 20, right: 20, bottom: 20, left: 40},
