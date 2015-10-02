@@ -68,7 +68,13 @@ MultipleLine = function(layout){
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
-        .call(d3.svg.axis().scale(x).orient("bottom"));
+        .call(d3.svg.axis().scale(x).orient("bottom"))
+    .append("text")
+        .attr("y", -16)
+        .attr("x", width - 15)
+        .attr("dy", "1em")
+        .attr("text-anchor", "end")
+        .text("Time (s)")
 
     // Render the y axis
     svg.append("g")
