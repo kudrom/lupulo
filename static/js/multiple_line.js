@@ -1,9 +1,14 @@
-Line = function(name){
+Line = function(accessor){
+    // The variable used to store the last data retrieved from the
+    // backend from the async callback
     this.last = 0;
     // Array for the data displayed
     this.framebuffer = [];
-    // SVG path
+    // SVG path of this line
     this.path;
+    // The accessor function to return a value associated with a
+    // complex jdata object of an event source connection
+    this.accessor = accessor;
 }
 
 MultipleLine = function(layout){
@@ -12,27 +17,31 @@ MultipleLine = function(layout){
     // The Lines present in this graph
     this.lines = [];
     for(var i = 0; i < layout.name_lines.length; i++){
-        this.lines.push(new Line());
+        this.lines.push(new Line(layout.accessors[i]));
     }
-    this.accessors = layout.accessors;
 
+    // Sizes of the canvas
     var margin = {top: 20, right: 20, bottom: 20, left: 40},
         width = layout.size.width - margin.left - margin.right,
         height = layout.size.height - margin.top - margin.bottom;
 
+    // X axis
     var x = d3.scale.linear()
         .domain([0, this.seconds - 1])
         .range([0, width]);
     this.x = x;
 
+    // Y axis
     var y = d3.scale.linear()
         .domain(layout.range)
         .range([height, 0]);
     this.y = y;
 
+    // Color scale
     var color = d3.scale.category10()
         .domain(layout.name_lines);
 
+    // Line who renders the control points of the svg path
     this.line = d3.svg.line()
         .x(function(d, ii) { return x(ii - 1); })
         .y(function(d, ii) { return y(d); });
@@ -43,7 +52,7 @@ MultipleLine = function(layout){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    // Use clip to avoid rendering of the left control point when
+    // The clip is used to avoid rendering of the left control point when
     // it's being moved by the transition
     svg.append("defs").append("clipPath")
         .attr("id", "clip")
@@ -55,11 +64,13 @@ MultipleLine = function(layout){
     this.container = svg.append("g")
         .attr("class", "container");
 
+    // Render the x axis
     svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.svg.axis().scale(x).orient("bottom"));
 
+    // Render the y axis
     svg.append("g")
         .attr("class", "y axis")
         .call(d3.svg.axis().scale(y).orient("left"))
@@ -70,6 +81,7 @@ MultipleLine = function(layout){
       .style("text-anchor", "end")
       .text(layout.y_name);
 
+    // Render the legends
     var width_rect = 15;
     var width_margin = 5;
     var width_legend = d3.max(layout.name_lines, function(d){return 7 * d.length}) + width_rect + width_margin;
@@ -82,18 +94,17 @@ MultipleLine = function(layout){
             return 'translate(' + (width - width_legend) + ','
                     + ((width_rect + width_margin) * ii) + ')';
         });
-
     legend.append('rect')
         .attr('width', width_rect)
         .attr('height', width_rect)
         .style('fill', color)
         .style('stroke', color);
-
     legend.append('text')
         .attr('x', width_rect + width_margin)
         .attr('y', function(d, ii){return (width_rect - width_margin)})
         .text(function(d){return d;});
 
+    // Bind the svg path to every line displayed in the graph
     for(i = 0; i < layout.name_lines.length; i++){
         this.lines[i].path = this.container.append("g")
             .attr("clip-path", "url(#clip)")
@@ -104,6 +115,8 @@ MultipleLine = function(layout){
             .attr("d", this.line);
     }
 
+    // This function is called back every 1s to render the animation of every line
+    // in the graph
     this.tick = function(that) {
         for(var i = 0; i < that.lines.length; i++){
             // push a new data point onto the front
@@ -132,6 +145,8 @@ MultipleLine = function(layout){
 
     }
 
+    // Constructor of the async callback used to provide this/that to
+    // the async callback
     this.async_callback_ctor = function() {
         var that = this;
         this.tick(this);
@@ -142,12 +157,14 @@ MultipleLine = function(layout){
             }
 
             for(var i = 0; i < that.lines.length; i++){
-                that.lines[i].last = that.accessors[i](jdata);
+                that.lines[i].last = that.lines[i].accessor(jdata);
             }
         }
     }
+    // The async callback is needed in order to remove its event listener
     this.async_callback = this.async_callback_ctor();
 
+    // Clear all the framebuffers of the lines associated with the graph
     this.clear_framebuffers = function(){
         for(var i = 0; i < this.lines.length; i++){
             this.lines[i].framebuffer.splice(0, this.lines[i].framebuffer.length);
