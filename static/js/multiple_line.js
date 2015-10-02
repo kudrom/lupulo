@@ -6,18 +6,19 @@ Line = function(name){
     this.path;
 }
 
-MultipleLine = function(range, seconds, name_lines, y_name){
+MultipleLine = function(layout){
     // Width of the time scale
-    this.seconds = seconds;
+    this.seconds = layout.seconds;
     // The Lines present in this graph
     this.lines = [];
-    for(var i = 0; i < name_lines.length; i++){
+    for(var i = 0; i < layout.name_lines.length; i++){
         this.lines.push(new Line());
     }
+    this.accessors = layout.accessors;
 
     var margin = {top: 20, right: 20, bottom: 20, left: 40},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = layout.size.width - margin.left - margin.right,
+        height = layout.size.height - margin.top - margin.bottom;
 
     var x = d3.scale.linear()
         .domain([0, this.seconds - 1])
@@ -25,12 +26,12 @@ MultipleLine = function(range, seconds, name_lines, y_name){
     this.x = x;
 
     var y = d3.scale.linear()
-        .domain(range)
+        .domain(layout.range)
         .range([height, 0]);
     this.y = y;
 
     var color = d3.scale.category10()
-        .domain(name_lines);
+        .domain(layout.name_lines);
 
     this.line = d3.svg.line()
         .x(function(d, ii) { return x(ii - 1); })
@@ -67,11 +68,11 @@ MultipleLine = function(range, seconds, name_lines, y_name){
       .attr("y", 6)
       .attr("dy", "1em")
       .style("text-anchor", "end")
-      .text(y_name);
+      .text(layout.y_name);
 
     var width_rect = 15;
     var width_margin = 5;
-    var width_legend = d3.max(name_lines, function(d){return 7 * d.length}) + width_rect + width_margin;
+    var width_legend = d3.max(layout.name_lines, function(d){return 7 * d.length}) + width_rect + width_margin;
     var legend = svg.selectAll('.legend')
         .data(color.domain())
         .enter()
@@ -93,13 +94,13 @@ MultipleLine = function(range, seconds, name_lines, y_name){
         .attr('y', function(d, ii){return (width_rect - width_margin)})
         .text(function(d){return d;});
 
-    for(i = 0; i < name_lines.length; i++){
+    for(i = 0; i < layout.name_lines.length; i++){
         this.lines[i].path = this.container.append("g")
             .attr("clip-path", "url(#clip)")
           .append("path")
             .datum(this.lines[i].framebuffer)
             .attr("class", "line")
-            .attr("stroke", function(d){return color(name_lines[i])})
+            .attr("stroke", function(d){return color(layout.name_lines[i])})
             .attr("d", this.line);
     }
 
@@ -141,7 +142,7 @@ MultipleLine = function(range, seconds, name_lines, y_name){
             }
 
             for(var i = 0; i < that.lines.length; i++){
-                that.lines[i].last = jdata[i];
+                that.lines[i].last = that.accessors[i](jdata);
             }
         }
     }
