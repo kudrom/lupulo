@@ -64,8 +64,10 @@
     var robot_selector = document.getElementById("robot");
     robot_selector.addEventListener("change", function(){
         for(var event_name in widgets){
-            for(var i = 0; i < widgets[event_name].length; i++){
-                var widget = widgets[event_name][i];
+            var len = widgets[event_name].length;
+            for(var i = 0; i < len; i++){
+                var last_index = widgets[event_name].length -1;
+                var widget = widgets[event_name][last_index];
                 widget.clear_framebuffers();
                 remove_widget(widget, event_name);
                 // Bind the widget to the new robot id
