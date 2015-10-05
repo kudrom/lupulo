@@ -6,11 +6,15 @@ Serial pc(USBTX, USBRX);
 int main()
 {
     pc.baud(115200);
-    char msg[] = {'A','B'};
+    int msg[] = {50,75};
     int cnt = 0;
+    
+    LocalFileSystem local("local");
+    FILE *fp = fopen("/local/out.txt", "w");
+    fclose(fp);
 
     while(1){
-        pc.putc(msg[cnt%2]);
+        pc.printf("{\"id\": 1, \"battery\": %d}\r\n", msg[cnt%2]);
         wait(1);
         cnt++;
     }

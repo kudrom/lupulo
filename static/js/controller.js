@@ -91,6 +91,13 @@
         seconds: 100
     };
 
+    layout.range = [0, 100];
+    layout.name_lines = ["Battery"];
+    layout.y_name = "Battery";
+    layout.accessors = [index(0)];
+    var battery = new MultipleLine(layout);
+    add_widget(battery, "battery");
+
     layout.range = [0, 4];
 
     layout.name_lines = ["Front-left", "Front-center", "Front-right"];
