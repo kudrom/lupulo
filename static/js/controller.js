@@ -33,13 +33,15 @@
 
     // Add widget to the widgets dictionary and bind it to the data_pipe EventSource
     function add_widget(widget, source_event){
-        var iid = robot_selector.value === "" ? 1 : robot_selector.value;
-        var complete_event_name = "id" + iid + "-" + source_event;
-        if(!(complete_event_name in widgets)){
-            widgets[complete_event_name] = [];
+        var iid = robot_selector.value === "" ? "----" : robot_selector.value;
+        if(iid[0] !== "-" ){
+            var complete_event_name = "id" + iid + "-" + source_event;
+            if(!(complete_event_name in widgets)){
+                widgets[complete_event_name] = [];
+            }
+            widgets[complete_event_name].push(widget);
+            data_pipe.addEventListener(complete_event_name, widget.async_callback);
         }
-        widgets[complete_event_name].push(widget);
-        data_pipe.addEventListener(complete_event_name, widget.async_callback);
     }
 
     // Remove widget to the widgets dictionary and unbind it to the data_pipe EventSource
