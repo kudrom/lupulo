@@ -36,22 +36,27 @@
         var iid = robot_selector.value === "" ? "----" : robot_selector.value;
         if(iid[0] !== "-" ){
             var complete_event_name = "id" + iid + "-" + source_event;
-            if(!(complete_event_name in widgets)){
-                widgets[complete_event_name] = [];
-            }
-            widgets[complete_event_name].push(widget);
             data_pipe.addEventListener(complete_event_name, widget.async_callback);
+        }else{
+            var complete_event_name = "noid-" + source_event;
         }
+        if(!(complete_event_name in widgets)){
+            widgets[complete_event_name] = [];
+        }
+        widgets[complete_event_name].push(widget);
     }
 
     // Remove widget to the widgets dictionary and unbind it to the data_pipe EventSource
     function remove_widget(widget, event_name){
         var i = widgets[event_name].indexOf(widget);
         widgets[event_name].splice(i, 1);
-        if(widgets[event_name].length == 0){
+        if(widgets[event_name].length === 0){
             delete widgets[event_name];
         }
-        data_pipe.removeEventListener(event_name, widget.async_callback);
+        // If the widget was binded to any real event source (not the noid- virtual event source)
+        if(event_name[0] !== "n"){
+            data_pipe.removeEventListener(event_name, widget.async_callback);
+        }
     }
 
     // Dictionary which stores all the widgets in the page indexed by the name of the 
