@@ -46,7 +46,7 @@ MultipleLine = function(layout){
         .x(function(d, ii) { return x(ii - 1); })
         .y(function(d, ii) { return y(d); });
 
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select(layout.father).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")

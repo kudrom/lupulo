@@ -3,6 +3,7 @@ import sys
 
 from twisted.application import service, internet
 from twisted.web import server
+from twisted.python import log
 from twisted.python.log import ILogObserver, FileLogObserver
 from twisted.python.logfile import DailyLogFile
 
@@ -20,7 +21,8 @@ multi.setServiceParent(application)
 # Setup logging
 logfile = DailyLogFile("mock_serial.log", os.path.join(settings["cwd"], "log"))
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
-from twisted.python import log
+
+# Log to stdout too
 log.FileLogObserver(sys.stdout).start()
 
 # Create the web server and attach it to multi

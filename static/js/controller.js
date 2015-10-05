@@ -1,22 +1,4 @@
 (function (){
-    function debug(data_pipe){
-        function print(name){
-            return function(event) {
-                var element = document.getElementById(name);
-                element.innerHTML = name + ": " + event.data;
-            };
-        };
-        data_pipe.addEventListener("id1-distances", print("distances"));
-        data_pipe.addEventListener("id1-leds", print("leds"));
-        data_pipe.addEventListener("id1-battery", print("battery"));
-        data_pipe.addEventListener("id1-date", print("date"));
-        data_pipe.addEventListener("id1-rotation", print("rotation"));
-        data_pipe.addEventListener("id1-direction", print("direction"));
-        data_pipe.addEventListener("id1-acceleration", print("acceleration"));
-        data_pipe.addEventListener("id1-motor", print("motor"));
-        data_pipe.addEventListener("id1-floor", print("floor"));
-    }
-
     // Callback for the housekeeping data event source
     function housekeeping(event){
         var obj = JSON.parse(event.data);
@@ -94,10 +76,11 @@
 
     // Creation of widgets
     var layout = {
-        size: {width: 960, height: 500},
+        size: {width: 760, height: 500},
         seconds: 100
     };
 
+    layout.father = "#battery";
     layout.range = [0, 100];
     layout.name_lines = ["Battery"];
     layout.y_name = "Battery";
@@ -105,6 +88,8 @@
     var battery = new MultipleLine(layout);
     add_widget(battery, "battery");
 
+
+    layout.father = "#distances";
     layout.range = [0, 4];
 
     layout.name_lines = ["Front-left", "Front-center", "Front-right"];
@@ -126,6 +111,7 @@
     add_widget(distances3, "distances");
 
 
+    layout.father = "#rotation";
     layout.name_lines = ["x", "y", "z"];
     layout.y_name = "Rotation";
     layout.accessors = [index(0), index(1), index(2)];
@@ -134,6 +120,7 @@
     add_widget(rotations, "rotation");
 
 
+    layout.father = "#acceleration";
     layout.name_lines = ["x", "y", "z"];
     layout.y_name = "Acceleration";
     layout.accessors = [index(0), index(1), index(2)];
@@ -142,6 +129,7 @@
     add_widget(acceleration, "acceleration");
 
 
+    layout.father = "#floor"
     layout.name_lines = ["floor1", "floor2", "floor3", "floor4"];
     layout.y_name = "Floor";
     layout.accessors = [index(0), index(1), index(2), index(3)];
@@ -156,6 +144,7 @@
         }
     }
 
+    layout.father = "#motors"
     layout.name_lines = ["speed-left", "speed-right"];
     layout.y_name = "Speed";
     layout.accessors = [speed_accessor(0), speed_accessor(1)];
