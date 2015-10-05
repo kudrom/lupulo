@@ -10,6 +10,9 @@ fi
 command -v pacman > /dev/null
 if [ $? -eq 0 ]
 then
+    mkdir log 2> /dev/null
+    chmod 777 log
+
     pacman --noconfirm -S base-devel
 
     pacman --noconfirm -S mongodb
