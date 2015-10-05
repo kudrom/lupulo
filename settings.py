@@ -5,7 +5,10 @@ settings = {
         "serial_device": "/dev/ttyACM0",
         "web_server_port": 8080,
         "serial_mock_timeout": 1,
-        "data_schemas": {}
+        "data_schemas": {},
+        "activate_mongo": False,
+        "mongo_host": "localhost",
+        "mongo_db": "robots",
 }
 
 settings["templates_dir"] = os.path.join(settings["cwd"], "templates")

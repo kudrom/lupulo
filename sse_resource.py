@@ -1,4 +1,7 @@
 import json
+from datetime import datetime
+
+from pymongo import MongoClient
 
 from twisted.web import server, resource
 from twisted.internet import reactor
@@ -24,6 +27,8 @@ class SSE_Resource(resource.Resource):
         reactor.addSystemEventTrigger('after', 'shutdown', self.clean_up)
         # The robot ids who have sent a message through this sse resource
         self.ids = []
+        self.mongo_client = MongoClient(settings['mongo_host'])
+        self.db = self.mongo_client[settings['mongo_db']]
 
     def clean_up(self):
         log.msg("SSE_Resource cleanup.")
@@ -46,6 +51,15 @@ class SSE_Resource(resource.Resource):
         request.write("".join(msg))
         return server.NOT_DONE_YET
 
+    def store(self, data):
+        """
+            Store the data in mongodb.
+            A string is passed as attribute to avoid pollution of the argument.
+        """
+        jdata = json.loads(data)
+        jdata['timestamp'] = datetime.utcnow()
+        self.db.data.insert(jdata)
+
     def publish(self, data):
         """
             When data arrives it is written to every request which is in the
@@ -54,6 +68,9 @@ class SSE_Resource(resource.Resource):
         if self.data_schema_manager.validate(data):
             jdata = json.loads(data)
             iid = jdata["id"]
+
+            if settings["activate_mongo"]:
+                self.store(data)
 
             msg = []
             if not iid in self.ids:
