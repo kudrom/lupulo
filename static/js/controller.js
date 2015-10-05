@@ -57,7 +57,7 @@
     var widgets = {};
 
     // Client SSE to access the information from the backend 
-    var data_pipe = new EventSource("http://localhost:8080/subscribe");
+    var data_pipe = new EventSource("/subscribe");
     data_pipe.addEventListener("housekeeping", housekeeping);
 
     // When the #robot changes, all widgets should be refreshed with the new robot id
