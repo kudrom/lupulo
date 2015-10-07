@@ -46,14 +46,15 @@ class SSEResource(resource.Resource):
         d = request.notifyFinish()
         d.addBoth(self.removeSubscriber)
         msg = []
-        msg.append('event: housekeeping\n')
-        msg.append('data: {"added_robots": [%s]}\n\n' % ",".join(map(str, self.ids)))
-        request.write("".join(msg))
+        if len(self.ids) > 0:
+            msg.append('event: housekeeping\n')
+            msg.append('data: {"added_robots": [%s]}\n\n' % ",".join(map(str, self.ids)))
+            request.write("".join(msg))
         return server.NOT_DONE_YET
 
     def store(self, data):
         """
-            Store the data in mongodb.
+            Store the data in the data collection.
             A string is passed as attribute to avoid pollution of the argument.
         """
         jdata = json.loads(data)
@@ -89,8 +90,8 @@ class SSEResource(resource.Resource):
 
     def removeSubscriber(self, subscriber):
         """
-            When the request is finished for some reason, the
-            request is finished and the subscriber is removed from the set.
+            When the request is finished for some reason, the request is
+            finished and the subscriber is removed from the set.
         """
         if subscriber in self.subscribers:
             subscriber.finish()

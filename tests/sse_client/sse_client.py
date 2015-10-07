@@ -12,11 +12,12 @@ class SSEClientProtocol(LineReceiver):
     """
     def __init__(self):
         self.callbacks = {}
+        # The finished deferred must be set from the outside
         self.finished = None
+        self.delimiter = '\n'
         # Initialize the event and data buffers
         self.event = 'message'
         self.data = ''
-        self.delimiter = '\n'
 
     def addCallback(self, event, func):
         """
@@ -33,11 +34,12 @@ class SSEClientProtocol(LineReceiver):
             except ValueError:
                 return
             if field == 'data':
-                self.data += value
+                self.data += value[1:]
             elif field == 'event':
                 self.event = value[1:]
 
     def connectionLost(self, reason):
+        print reason
         if self.finished:
             self.finished.callback(None)
 
@@ -50,7 +52,8 @@ class SSEClientProtocol(LineReceiver):
 
 class SSEClient(object):
     """
-    The client who connects to the SSE server
+    The client who connects to the SSE server and delegates the
+    parsing of the data received to SSEClientProtocol
     """
     def __init__(self, url):
         self.url = url
@@ -61,7 +64,7 @@ class SSEClient(object):
         Connect to the event source URL
         """
         agent = Agent(reactor)
-        d = agent.request(
+        self.d = agent.request(
             'GET',
             self.url,
             Headers({
@@ -70,17 +73,27 @@ class SSEClient(object):
                 'Accept': ['text/event-stream; charset=utf-8'],
             }),
             None)
-        d.addErrback(self.connectError)
-        d.addCallback(self.cbRequest)
+        self.d.addErrback(self.connectError)
+        self.d.addCallback(self.cbRequest)
+        return self.d
 
     def cbRequest(self, response):
-        finished = Deferred()
-        self.protocol.finished = finished
-        response.deliverBody(self.protocol)
-        return finished
+        """
+            Callback for self.d
+        """
+        print response
+        if response is not None:
+            finished = Deferred()
+            self.protocol.finished = finished
+            response.deliverBody(self.protocol)
+            return finished
 
     def connectError(self, ignored):
-        print "The sse_client couldn't connect to the sse_server"
+        """
+            Errback for self.d
+        """
+        # This class should be used in testing, so no logging is configured
+        print ignored.getErrorMessage()
 
     def addEventListener(self, event, callback):
         self.protocol.addCallback(event, callback)
