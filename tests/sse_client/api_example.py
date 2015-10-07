@@ -2,7 +2,7 @@ import time
 
 from eventsource import EventSource
 
-EVENTSOURCE_URL = 'http://localhost:12000/subscribe'
+EVENTSOURCE_URL = 'http://localhost:8080/subscribe'
 
 def onmessage(data):
     print 'Got payload with data %s' % data

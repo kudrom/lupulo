@@ -14,7 +14,7 @@ int main()
     fclose(fp);
 
     while(1){
-        pc.printf("{\"id\": 1, \"battery\": %d}\r\n", msg[cnt%2]);
+        pc.printf("{\"id\": 1, \"battery\": %d}\n", msg[cnt%2]);
         wait(1);
         cnt++;
     }

@@ -8,6 +8,7 @@ class EventSourceProtocol(LineReceiver):
         # Initialize the event and data buffers
         self.event = 'message'
         self.data = ''
+        self.delimiter = '\n'
 
     def setFinishedDeferred(self, d):
         self.finished = d

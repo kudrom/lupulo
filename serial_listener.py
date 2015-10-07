@@ -14,13 +14,13 @@ class SerialListener(LineReceiver):
             @prop sse_resource used to publish the data once it arrives
         """
         self.sse_resource = sse_resource
+        self.delimiter = '\n'
 
     def connectionMade(self):
         log.msg("Connection made to the serial port.")
 
     def lineReceived(self, line):
         """ Once the data has arrived SerialListener publishes it through SSE"""
-        print "serial" + line
         self.sse_resource.publish(line)
 
 

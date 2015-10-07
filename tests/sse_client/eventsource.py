@@ -1,9 +1,12 @@
+from crochet import setup, run_in_reactor
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 
 from sse_client import EventSourceProtocol
+
+setup()
 
 
 class EventSource(object):
