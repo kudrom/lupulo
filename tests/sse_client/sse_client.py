@@ -1,7 +1,15 @@
+from twisted.internet import reactor
+from twisted.internet.defer import Deferred
+from twisted.web.client import Agent
+from twisted.web.http_headers import Headers
 from twisted.protocols.basic import LineReceiver
 
 
-class EventSourceProtocol(LineReceiver):
+class SSEClientProtocol(LineReceiver):
+    """
+        The protocol who calls back when a data stream
+        is received for a particular event.
+    """
     def __init__(self):
         self.callbacks = {}
         self.finished = None
@@ -10,54 +18,69 @@ class EventSourceProtocol(LineReceiver):
         self.data = ''
         self.delimiter = '\n'
 
-    def setFinishedDeferred(self, d):
-        self.finished = d
-
     def addCallback(self, event, func):
+        """
+            Only one callback per event is allowed.
+        """
         self.callbacks[event] = func
 
     def lineReceived(self, line):
         if line == '':
-            # Dispatch event
             self.dispatchEvent()
         else:
             try:
                 field, value = line.split(':', 1)
-                # If value starts with a space, strip it.
-                value = lstrip(value)
             except ValueError:
-                # We got a line with no colon, treat it as a field(ignore)
                 return
-
-            if field == '':
-                # This is a comment; ignore
-                pass
-            elif field == 'data':
-                self.data += value + '\n'
+            if field == 'data':
+                self.data += value
             elif field == 'event':
-                self.event = value
-            elif field == 'id':
-                # Not implemented
-                pass
-            elif field == 'retry':
-                # Not implemented
-                pass
+                self.event = value[1:]
 
     def connectionLost(self, reason):
         if self.finished:
             self.finished.callback(None)
 
     def dispatchEvent(self):
-        """
-        Dispatch the event
-        """
-        # If last character is LF, strip it.
-        if self.data.endswith('\n'):
-            self.data = self.data[:-1]
         if self.event in self.callbacks:
             self.callbacks[self.event](self.data)
         self.data = ''
         self.event = 'message'
 
-def lstrip(value):
-    return value[1:] if value.startswith(' ') else value
+
+class SSEClient(object):
+    """
+    The client who connects to the SSE server
+    """
+    def __init__(self, url):
+        self.url = url
+        self.protocol = SSEClientProtocol()
+
+    def connect(self):
+        """
+        Connect to the event source URL
+        """
+        agent = Agent(reactor)
+        d = agent.request(
+            'GET',
+            self.url,
+            Headers({
+                'User-Agent': ['Twisted SSE Client'],
+                'Cache-Control': ['no-cache'],
+                'Accept': ['text/event-stream; charset=utf-8'],
+            }),
+            None)
+        d.addErrback(self.connectError)
+        d.addCallback(self.cbRequest)
+
+    def cbRequest(self, response):
+        finished = Deferred()
+        self.protocol.finished = finished
+        response.deliverBody(self.protocol)
+        return finished
+
+    def connectError(self, ignored):
+        print "The sse_client couldn't connect to the sse_server"
+
+    def addEventListener(self, event, callback):
+        self.protocol.addCallback(event, callback)

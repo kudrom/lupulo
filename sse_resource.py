@@ -10,7 +10,7 @@ from twisted.python import log
 from m3dpi_ui.data_schema_manager import DataSchemaManager
 from m3dpi_ui.settings import settings
 
-class SSE_Resource(resource.Resource):
+class SSEResource(resource.Resource):
     """
         Twisted web resource that will work as the SSE server.
     """
@@ -31,7 +31,7 @@ class SSE_Resource(resource.Resource):
         self.db = self.mongo_client[settings['mongo_db']]
 
     def clean_up(self):
-        log.msg("SSE_Resource cleanup.")
+        log.msg("SSEResource cleanup.")
         self.fp.close()
 
     def render_GET(self, request):

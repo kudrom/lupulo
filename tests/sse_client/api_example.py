@@ -1,13 +1,18 @@
-import time
+from twisted.internet import reactor
 
-from eventsource import EventSource
+from m3dpi_ui.tests.sse_client.sse_client import SSEClient
+from m3dpi_ui.settings import settings
 
-EVENTSOURCE_URL = 'http://localhost:8080/subscribe'
+URL = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
 
 def onmessage(data):
     print 'Got payload with data %s' % data
 
 if __name__ == '__main__':
-    eventSource = EventSource(EVENTSOURCE_URL)
-    eventSource.onmessage(onmessage, callInThread=True)
-    time.sleep(20)
+    """
+        Launches the reactor for infinite time
+    """
+    client = SSEClient(URL)
+    client.addEventListener("id1-battery", onmessage)
+    client.connect()
+    reactor.run()

@@ -6,7 +6,6 @@ from twisted.web.static import File
 from twisted.python.filepath import FilePath
 
 from m3dpi_ui.settings import settings
-from m3dpi_ui.sse_resource import SSE_Resource
 
 
 class Root(resource.Resource):
