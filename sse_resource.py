@@ -22,13 +22,17 @@ class SSEResource(resource.Resource):
             when new information is published to the sse_resource.
         """
         self.subscribers = set()
-        self.fp = open(settings["data_schema"], "r")
-        self.data_schema_manager = DataSchemaManager(self.fp)
-        reactor.addSystemEventTrigger('after', 'shutdown', self.clean_up)
         # The robot ids who have sent a message through this sse resource
         self.ids = []
+
+
+        self.fp = open(settings["data_schema"], "r")
+        self.data_schema_manager = DataSchemaManager(self.fp)
+
         self.mongo_client = MongoClient(settings['mongo_host'])
         self.db = self.mongo_client[settings['mongo_db']]
+
+        reactor.addSystemEventTrigger('after', 'shutdown', self.clean_up)
 
     def clean_up(self):
         log.msg("SSEResource cleanup.")
@@ -39,12 +43,19 @@ class SSEResource(resource.Resource):
             Called when twisted wants to render the page, this method is asynchronous
             and therefore returns NOT_DONE_YET.
         """
+        def wrap(x):
+            return '"' + str(x) + '"'
         log.msg("SSE connection made by %s" % request.getClientIP())
         request.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
         request.setResponseCode(200)
         self.subscribers.add(request)
         d = request.notifyFinish()
         d.addBoth(self.removeSubscriber)
+        msg = []
+        widgets = self.data_schema_manager.get_all_sources()
+        msg.append('event: new_widgets\n')
+        msg.append('data: [%s]\n\n' % ",".join(map(wrap, widgets)))
+        request.write("".join(msg))
         msg = []
         if len(self.ids) > 0:
             msg.append('event: new_robots\n')

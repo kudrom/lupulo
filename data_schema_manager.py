@@ -87,3 +87,6 @@ class DataSchemaManager(object):
         rt["id"] = id
 
         return json.dumps(rt)
+
+    def get_all_sources(self):
+        return self.descriptors.keys()

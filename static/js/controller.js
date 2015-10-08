@@ -10,6 +10,11 @@
             select_element.add(option);
         }
     };
+    // Callback for the new_widgets data event source
+    function new_widgets(event){
+        var list = JSON.parse(event.data);
+        console.log(list);
+    };
 
     // Add widget to the widgets dictionary and bind it to the data_pipe EventSource
     function add_widget(widget, source_event){
@@ -45,6 +50,7 @@
 
     // Client SSE to access the information from the backend 
     var data_pipe = new EventSource("/subscribe");
+    data_pipe.addEventListener("new_widgets", new_widgets);
     data_pipe.addEventListener("new_robots", new_robots);
 
     // When the #robot changes, all widgets should be refreshed with the new robot id
