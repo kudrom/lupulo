@@ -35,6 +35,33 @@ class RootElement(Element):
     loader = XMLFile(FilePath(os.path.join(settings["templates_dir"], "index.html")))
 
 
+class Debug(resource.Resource):
+    """
+        Root resource of the web server.
+    """
+    def getChild(self, name, request):
+        """
+            Called by twisted to resolve a url.
+        """
+        if name == '':
+            return self
+        return resource.Resource.getChild(self, name, request)
+
+    def render_GET(self, request):
+        """
+            Called by twisted to render a GET http request.
+        """
+        d = flatten(request, DebugElement(), request.write)
+        d.addCallback(lambda _, x: x.finish(), request)
+        return server.NOT_DONE_YET
+
+class DebugElement(Element):
+    """
+        Called by Root to render the template.
+    """
+    loader = XMLFile(FilePath(os.path.join(settings["templates_dir"], "test.html")))
+
+
 
 
 def get_website(sse_resource):
@@ -43,6 +70,7 @@ def get_website(sse_resource):
     """
     root = Root()
     root.putChild('subscribe', sse_resource)
+    root.putChild('debug', Debug())
     # Serve the static directory for css/js/image files
     static = File(os.path.join(settings["cwd"], 'static'))
     root.putChild('static', static)
