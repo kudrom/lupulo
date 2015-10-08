@@ -8,10 +8,15 @@ from twisted.python.filepath import FilePath
 from m3dpi_ui.settings import settings
 
 
-class Root(resource.Resource):
+class AbstractResource(resource.Resource):
     """
-        Root resource of the web server.
+        Abstract twisted resource which is inherited by every path
+        served by the web server.
     """
+    def __init__(self):
+        resource.Resource.__init__(self)
+        self.element_delegate = AbstractElement("")
+
     def getChild(self, name, request):
         """
             Called by twisted to resolve a url.
@@ -24,42 +29,50 @@ class Root(resource.Resource):
         """
             Called by twisted to render a GET http request.
         """
-        d = flatten(request, RootElement(), request.write)
+        d = flatten(request, self.element_delegate, request.write)
         d.addCallback(lambda _, x: x.finish(), request)
         return server.NOT_DONE_YET
 
-class RootElement(Element):
+class AbstractElement(Element):
     """
-        Called by Root to render the template.
+        Abstract twisted resource which is inherited to render all
+        the webpages of the web server.
     """
-    loader = XMLFile(FilePath(os.path.join(settings["templates_dir"], "index.html")))
+    def __init__(self, page=""):
+        Element.__init__(self)
+        self.loader = XMLFile(FilePath(os.path.join(settings["templates_dir"], page)))
 
 
-class Debug(resource.Resource):
+class Root(AbstractResource):
     """
         Root resource of the web server.
     """
-    def getChild(self, name, request):
-        """
-            Called by twisted to resolve a url.
-        """
-        if name == '':
-            return self
-        return resource.Resource.getChild(self, name, request)
+    def __init__(self):
+        AbstractResource.__init__(self)
+        self.element_delegate = RootElement()
 
-    def render_GET(self, request):
-        """
-            Called by twisted to render a GET http request.
-        """
-        d = flatten(request, DebugElement(), request.write)
-        d.addCallback(lambda _, x: x.finish(), request)
-        return server.NOT_DONE_YET
 
-class DebugElement(Element):
+class RootElement(AbstractElement):
     """
         Called by Root to render the template.
     """
-    loader = XMLFile(FilePath(os.path.join(settings["templates_dir"], "test.html")))
+    def __init__(self):
+        AbstractElement.__init__(self, "index.html")
+
+class Debug(AbstractResource):
+    """
+        Debug resource of the web server.
+    """
+    def __init__(self):
+        AbstractResource.__init__(self)
+        self.element_delegate = DebugElement()
+
+class DebugElement(AbstractElement):
+    """
+        Called by Debug to render the template.
+    """
+    def __init__(self):
+        AbstractElement.__init__(self, "debug.html")
 
 
 
