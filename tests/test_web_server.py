@@ -1,7 +1,11 @@
+import time
 from mock import MagicMock
 
 from twisted.internet import reactor
+from twisted.internet.defer import Deferred
 from twisted.trial import unittest
+from twisted.web.client import Agent
+from twisted.web.http_headers import Headers
 
 from m3dpi_ui.sse_resource import SSEResource
 from m3dpi_ui.root import get_website
@@ -15,32 +19,75 @@ class TestFunctional(unittest.TestCase):
         site = get_website(self.sse_resource)
         self.server = reactor.listenTCP(settings["web_server_port"], site)
         self.url = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
+        self.client = SSEClient(self.url)
 
     def tearDown(self):
         self.server.stopListening()
 
-    def test_connection(self):
-        def after_publishing():
-            self.assertEqual(client.cbRequest.called, True)
-            self.sse_resouce.remove_subscriber(self.sse_resource.subscribers[0])
+    def cleanup_connections(self):
+        for sub in list(self.sse_resource.subscribers):
+            self.sse_resource.removeSubscriber(sub)
 
-        client = SSEClient(self.url)
-        client.cbRequest = MagicMock()
-        d = client.connect()
-        self.assertEqual(len(self.sse_resouce.subscribers), 1)
-        #reactor.callLater(1, self.sse_resource.publish, '{"id" :1, "battery": 87.156412351}')
-        #reactor.callLater(4, after_publishing)
+    def http_request(self, url):
+        def cbRequest(response):
+            self.assertEqual(response.code, 200)
+
+        agent = Agent(reactor)
+        d = agent.request(
+            'GET',
+            url,
+            Headers({
+                'User-Agent': ['Twisted SSE Client'],
+                'Cache-Control': ['no-cache'],
+                'Accept': ['text/event-stream; charset=utf-8'],
+            }),
+            None)
+        d.addCallback(cbRequest)
         return d
 
-    def test_web_server(self):
-        raise unittest.SkipTest("Could crash")
-        callback = MagicMock()
-        def assert_is_called_with_correct_value():
+    def test_connection(self):
+        def after_publishing(_):
+            self.assertEqual(self.client.cbRequest.called, True)
+            self.assertEqual(len(self.sse_resource.subscribers), 1)
+            self.cleanup_connections()
+
+        self.client.cbRequest = MagicMock()
+        self.assertEqual(len(self.sse_resource.subscribers), 0)
+        self.assertEqual(self.client.cbRequest.called, False)
+        d = self.client.connect()
+        d.addCallback(after_publishing)
+        reactor.callLater(1, self.sse_resource.publish, '{"id" : 1, "battery": 87.156412351}')
+        return d
+
+    def test_dispatchEvent(self):
+        def after_publishing():
+            callback = self.client.protocol.dispatchEvent
             self.assertEqual(callback.called, True)
-            callback.assert_called_with(87.156412351)
-            client.finished.callback()
+            self.assertEqual(callback.call_count, 2)
+            self.cleanup_connections()
+
+        self.client.protocol.dispatchEvent = MagicMock()
+        d = self.client.connect()
+        reactor.callLater(1, self.sse_resource.publish, '{"id" : 1, "battery": 87.156412351}')
+        reactor.callLater(2, after_publishing)
+        return d
+
+    def test_request_received(self):
         def callback(data):
-            pass
-        reactor.callLater(3, self.sse_resource.publish, '{"id" :1, "battery": 87.156412351}')
-        reactor.callLater(5, assert_is_called_with_correct_value)
-        return client.d
+            contradiction.cancel()
+            self.assertEqual(data, 87.1564123)
+            self.cleanup_connections()
+
+        self.client.addEventListener("id1-battery", callback)
+        d = self.client.connect()
+        reactor.callLater(1, self.sse_resource.publish, '{"id" : 1, "battery": 87.156412351}')
+        contradiction = reactor.callLater(3, self.assertEqual, True, False)
+        return d
+
+    def test_static_files(self):
+        url = 'http://localhost:' + str(settings['web_server_port']) + '/static/'
+        return self.http_request(url)
+
+    def test_root(self):
+        url = 'http://localhost:' + str(settings['web_server_port'])
+        return self.http_request(url)

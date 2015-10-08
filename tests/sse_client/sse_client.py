@@ -39,7 +39,6 @@ class SSEClientProtocol(LineReceiver):
                 self.event = value[1:]
 
     def connectionLost(self, reason):
-        print reason
         if self.finished:
             self.finished.callback(None)
 
@@ -81,7 +80,6 @@ class SSEClient(object):
         """
             Callback for self.d
         """
-        print response
         if response is not None:
             finished = Deferred()
             self.protocol.finished = finished

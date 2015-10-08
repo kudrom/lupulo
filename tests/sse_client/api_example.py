@@ -10,7 +10,8 @@ def onmessage(data):
 
 if __name__ == '__main__':
     """
-        Launches the reactor for infinite time
+        Launches the reactor for infinite time, this should be launched in the
+        project's main directory with PYTHONPATH='.:$PYTHONPATH'
     """
     client = SSEClient(URL)
     client.addEventListener("id1-battery", onmessage)
