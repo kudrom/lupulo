@@ -47,8 +47,8 @@ class SSEResource(resource.Resource):
         d.addBoth(self.removeSubscriber)
         msg = []
         if len(self.ids) > 0:
-            msg.append('event: housekeeping\n')
-            msg.append('data: {"added_robots": [%s]}\n\n' % ",".join(map(str, self.ids)))
+            msg.append('event: new_robots\n')
+            msg.append('data: [%s]\n\n' % ",".join(map(str, self.ids)))
             request.write("".join(msg))
         return server.NOT_DONE_YET
 
@@ -77,8 +77,8 @@ class SSEResource(resource.Resource):
             if not iid in self.ids:
                 log.msg("New connection from robot %d" % iid)
                 self.ids.append(iid)
-                msg.append('event: housekeeping\n')
-                msg.append('data: {"added_robots": [%d]}\n\n' % iid)
+                msg.append('event: new_robots\n')
+                msg.append('data: [%d]\n\n' % iid)
             for event, data in jdata.items():
                 if event in ["id"]:
                     continue

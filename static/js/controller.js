@@ -1,15 +1,13 @@
 (function (){
-    // Callback for the housekeeping data event source
-    function housekeeping(event){
-        var obj = JSON.parse(event.data);
+    // Callback for the new_robots data event source
+    function new_robots(event){
+        var list = JSON.parse(event.data);
         // If a new robot is tracked, show it in the select form
-        if("added_robots" in obj){
-            var select_element = document.getElementById("robot");
-            for(var i = 0; i < obj["added_robots"].length; i++){
-                var option = document.createElement("option");
-                option.text = obj["added_robots"][i];
-                select_element.add(option);
-            }
+        var select_element = document.getElementById("robot");
+        for(var i = 0; i < list.length; i++){
+            var option = document.createElement("option");
+            option.text = list[i];
+            select_element.add(option);
         }
     };
 
@@ -47,7 +45,7 @@
 
     // Client SSE to access the information from the backend 
     var data_pipe = new EventSource("/subscribe");
-    data_pipe.addEventListener("housekeeping", housekeeping);
+    data_pipe.addEventListener("new_robots", new_robots);
 
     // When the #robot changes, all widgets should be refreshed with the new robot id
     var robot_selector = document.getElementById("robot");
