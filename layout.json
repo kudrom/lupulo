@@ -1,17 +1,47 @@
-[
-    {
-        "type": "multiple_line",
-        "event_name": "battery",
+{
+    "global": {
+        "abstract": true,
         "size": {
             "width": 760,
             "height": 500
         },
-        "seconds": 100,
+        "seconds": 100
+    },
+
+    "battery": {
+        "parent": "global",
+        "type": "multiple_line",
+        "event_name": "battery",
         "father": "#battery",
         "name_lines": ["Battery"],
         "y_name": "Battery",
         "accessors": [["index", 0]],
 
         "range": [0, 100]
+    },
+
+    "distances": {
+        "abstract": true,
+        "parent": "global",
+        "father": "#distances",
+        "range": [0, 4]
+    },
+    "distances-center": {
+        "parent": "distances",
+        "name_lines": ["Front-left", "Front-center", "Front-right"],
+        "y_name": "Distances front",
+        "accessors": [["index", 0], ["index", 1], ["index", 2]]
+    },
+    "distances-middle": {
+        "parent": "distances",
+        "name_lines": ["Middle-left", "Middle-right"],
+        "y_name": "Distances middle",
+        "accessors": [["index", 3], ["index", 4]]
+    },
+    "distances-back": {
+        "parent": "distances",
+        "name_lines": ["Back-left", "Back-center", "Back-right"],
+        "y_name": "Distances back",
+        "accessors": [["index", 5], ["index", 6], ["index", 7]]
     }
-]
+}

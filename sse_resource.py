@@ -31,6 +31,7 @@ class SSEResource(resource.Resource):
 
         self.widgets_fp = open(settings["layout"], "r")
         self.layout_manager = LayoutManager(self.widgets_fp, self.data_schema_manager)
+        self.layout_manager.compile()
 
         self.mongo_client = MongoClient(settings['mongo_host'])
         self.db = self.mongo_client[settings['mongo_db']]
