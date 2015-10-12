@@ -10,10 +10,18 @@
             select_element.add(option);
         }
     };
+
     // Callback for the new_widgets data event source
     function new_widgets(event){
-        var list = JSON.parse(event.data);
-        console.log(list);
+        var layouts = JSON.parse(event.data),
+            layout,
+            widget;
+        for(var i = 0; i < layouts.length; i++){
+            layout = layouts[i];
+            widget = new widget_ctor[layout.type](layout);
+            add_widget(widget, layout.event_name);
+        }
+        console.log(layouts);
     };
 
     // Add widget to the widgets dictionary and bind it to the data_pipe EventSource
@@ -47,6 +55,9 @@
     // Dictionary which stores all the widgets in the page indexed by the name of the 
     // tracked event
     var widgets = {};
+    var widget_ctor = {
+        "multiple_line": MultipleLine
+    }
 
     // Client SSE to access the information from the backend 
     var data_pipe = new EventSource("/subscribe");
@@ -69,105 +80,4 @@
             }
         }
     });
-
-
-    // Accessor function for the layouts of the widgets
-    function index(i){
-        return function(list){
-            return list[i];
-        }
-    }
-
-    // Creation of widgets
-    var layout = {
-        size: {width: 760, height: 500},
-        seconds: 100
-    };
-
-    layout.father = "#battery";
-    layout.range = [0, 100];
-    layout.name_lines = ["Battery"];
-    layout.y_name = "Battery";
-    layout.accessors = [index(0)];
-    var battery = new MultipleLine(layout);
-    add_widget(battery, "battery");
-
-
-    layout.father = "#distances";
-    layout.range = [0, 4];
-
-    layout.name_lines = ["Front-left", "Front-center", "Front-right"];
-    layout.y_name = "Distances front";
-    layout.accessors = [index(0), index(1), index(2)];
-    var distances1 = new MultipleLine(layout);
-    add_widget(distances1, "distances");
-
-    layout.name_lines = ["Middle-left", "Middle-right"];
-    layout.y_name = "Distances middle";
-    layout.accessors = [index(3), index(4)];
-    var distances2 = new MultipleLine(layout);
-    add_widget(distances2, "distances");
-
-    layout.name_lines = ["Back-left", "Back-center", "Back-right"];
-    layout.y_name = "Distances back";
-    layout.accessors = [index(5), index(6), index(7)];
-    var distances3 = new MultipleLine(layout);
-    add_widget(distances3, "distances");
-
-
-    layout.father = "#rotation";
-    layout.name_lines = ["x", "y", "z"];
-    layout.y_name = "Rotation";
-    layout.accessors = [index(0), index(1), index(2)];
-    layout.range = [0, 360];
-    var rotations = new MultipleLine(layout);
-    add_widget(rotations, "rotation");
-
-
-    layout.father = "#acceleration";
-    layout.name_lines = ["x", "y", "z"];
-    layout.y_name = "Acceleration";
-    layout.accessors = [index(0), index(1), index(2)];
-    layout.range = [0, 10];
-    var acceleration = new MultipleLine(layout);
-    add_widget(acceleration, "acceleration");
-
-
-    layout.father = "#floor"
-    layout.name_lines = ["floor1", "floor2", "floor3", "floor4"];
-    layout.y_name = "Floor";
-    layout.accessors = [index(0), index(1), index(2), index(3)];
-    layout.range = [0, 5];
-    var floor = new MultipleLine(layout);
-    add_widget(floor, "floor");
-
-
-    function speed_accessor(n){
-        return function(l){
-            return l[n].speed;
-        }
-    }
-
-    layout.father = "#motors"
-    layout.name_lines = ["speed-left", "speed-right"];
-    layout.y_name = "Speed";
-    layout.accessors = [speed_accessor(0), speed_accessor(1)];
-    layout.range = [0, 5];
-    var speed = new MultipleLine(layout);
-    add_widget(speed, "motor");
-
-
-    function turn_radius_accessor(n){
-        return function(l){
-            return l[n].turn_radius;
-        }
-    }
-
-    layout.name_lines = ["turn-radius-left", "turn-radius-right"];
-    layout.y_name = "Turn radius";
-    layout.accessors = [turn_radius_accessor(0), turn_radius_accessor(1)];
-    layout.range = [0, 3];
-    var turn_radius = new MultipleLine(layout);
-    add_widget(turn_radius, "motor");
-
 })();

@@ -13,3 +13,4 @@ settings = {
 
 settings["templates_dir"] = os.path.join(settings["cwd"], "templates")
 settings["data_schema"] = os.path.join(settings["cwd"], "data_schema.json")
+settings["layout"] = os.path.join(settings["cwd"], "layout.json")

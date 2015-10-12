@@ -3,6 +3,7 @@ from importlib import import_module
 
 from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
 
+
 def find_descriptor(klass_name):
     """
         Return the class in the descriptors folder that has as its
@@ -88,5 +89,5 @@ class DataSchemaManager(object):
 
         return json.dumps(rt)
 
-    def get_all_sources(self):
+    def get_events(self):
         return self.descriptors.keys()

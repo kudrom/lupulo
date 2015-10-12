@@ -1,0 +1,17 @@
+[
+    {
+        "type": "multiple_line",
+        "event_name": "battery",
+        "size": {
+            "width": 760,
+            "height": 500
+        },
+        "seconds": 100,
+        "father": "#battery",
+        "name_lines": ["Battery"],
+        "y_name": "Battery",
+        "accessors": [["index", 0]],
+
+        "range": [0, 100]
+    }
+]

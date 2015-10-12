@@ -8,6 +8,7 @@ from twisted.internet import reactor
 from twisted.python import log
 
 from m3dpi_ui.data_schema_manager import DataSchemaManager
+from m3dpi_ui.layout_manager import LayoutManager
 from m3dpi_ui.settings import settings
 
 class SSEResource(resource.Resource):
@@ -25,9 +26,11 @@ class SSEResource(resource.Resource):
         # The robot ids who have sent a message through this sse resource
         self.ids = []
 
+        self.schema_fp = open(settings["data_schema"], "r")
+        self.data_schema_manager = DataSchemaManager(self.schema_fp)
 
-        self.fp = open(settings["data_schema"], "r")
-        self.data_schema_manager = DataSchemaManager(self.fp)
+        self.widgets_fp = open(settings["layout"], "r")
+        self.layout_manager = LayoutManager(self.widgets_fp, self.data_schema_manager)
 
         self.mongo_client = MongoClient(settings['mongo_host'])
         self.db = self.mongo_client[settings['mongo_db']]
@@ -36,7 +39,8 @@ class SSEResource(resource.Resource):
 
     def clean_up(self):
         log.msg("SSEResource cleanup.")
-        self.fp.close()
+        self.schema_fp.close()
+        self.widgets_fp.close()
 
     def render_GET(self, request):
         """
@@ -52,9 +56,9 @@ class SSEResource(resource.Resource):
         d = request.notifyFinish()
         d.addBoth(self.removeSubscriber)
         msg = []
-        widgets = self.data_schema_manager.get_all_sources()
+        widgets = self.layout_manager.get_widgets()
         msg.append('event: new_widgets\n')
-        msg.append('data: [%s]\n\n' % ",".join(map(wrap, widgets)))
+        msg.append('data: %s\n\n' % widgets)
         request.write("".join(msg))
         msg = []
         if len(self.ids) > 0:

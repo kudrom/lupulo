@@ -16,8 +16,10 @@ MultipleLine = function(layout){
     this.seconds = layout.seconds;
     // The Lines present in this graph
     this.lines = [];
+    var accessor;
     for(var i = 0; i < layout.name_lines.length; i++){
-        this.lines.push(new Line(layout.accessors[i]));
+        accessor = get_accessor(layout.accessors[i]);
+        this.lines.push(new Line(accessor));
     }
 
     // Sizes of the canvas
