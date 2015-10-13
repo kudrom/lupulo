@@ -1,18 +1,18 @@
 {
     "global": {
         "abstract": true,
+        "type": "multiple_line",
         "size": {
             "width": 760,
             "height": 500
         },
-        "seconds": 100,
-        "type": "multiple_line"
+        "seconds": 100
     },
 
     "battery": {
         "parent": "global",
         "event_name": "battery",
-        "father": "#battery",
+        "anchor": "#battery",
         "name_lines": ["Battery"],
         "y_name": "Battery",
         "accessors": [{
@@ -28,7 +28,7 @@
         "abstract": true,
         "parent": "global",
         "event_name": "distances",
-        "father": "#distances",
+        "anchor": "#distances",
         "range": [0, 4]
     },
     "distances-center": {
@@ -76,7 +76,7 @@
     "rotation": {
         "parent": "geometrical",
         "event_name": "rotation",
-        "father": "#rotation",
+        "anchor": "#rotation",
         "y_name": "Rotation",
 
         "range": [0, 360]
@@ -85,7 +85,7 @@
     "acceleration": {
         "parent": "geometrical",
         "event_name": "acceleration",
-        "father": "#acceleration",
+        "anchor": "#acceleration",
         "y_name": "Acceleration",
 
         "range": [0, 10]
@@ -94,7 +94,7 @@
     "floor": {
         "parent": "global",
         "event_name": "floor",
-        "father": "#floor",
+        "anchor": "#floor",
         "name_lines": ["Floor1", "Floor2", "Floor3", "Floor4"],
         "y_name": "Floor",
         "accessors": [{
@@ -110,7 +110,7 @@
         "abstract": true,
         "parent": "global",
         "event_name": "motor",
-        "father": "#motors"
+        "anchor": "#motors"
     },
 
     "speed": {

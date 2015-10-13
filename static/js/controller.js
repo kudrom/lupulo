@@ -15,13 +15,23 @@
     function new_widgets(event){
         var layouts = JSON.parse(event.data),
             layout,
-            widget;
+            widget,
+            anchor;
         for(var i = 0; i < layouts.length; i++){
             layout = layouts[i];
-            widget = new widget_ctor[layout.type](layout);
+            anchor = $(layout.anchor);
+            if(anchor.length == 0){
+                console.log("[!] " + layout.anchor + " anchor doesn't exist in the document.");
+                continue;
+            }
+            if(!(layout.type in widget_factories)){
+                console.log("[!] " + layout.type + " type doesn't exist as a factory of widgets.");
+                continue;
+            }
+            // Construct the widget
+            widget = new widget_factories[layout.type](layout);
             add_widget(widget, layout.event_name);
         }
-        console.log(layouts);
     };
 
     // Add widget to the widgets dictionary and bind it to the data_pipe EventSource
@@ -52,12 +62,20 @@
         }
     }
 
+    // Private object that stores the way of constructing widgets
+    var widget_factories = {};
+    // Registering in the global scope a function that manages widget_factories
+    register_factory_widgets = function(type, factory){
+        if(type in widget_factories){
+            console.log("[!] " + type + " was already registered as a widget factory.")
+        }else{
+            widget_factories[type] = factory;
+        }
+    };
+
     // Dictionary which stores all the widgets in the page indexed by the name of the 
     // tracked event
     var widgets = {};
-    var widget_ctor = {
-        "multiple_line": MultipleLine
-    }
 
     // Client SSE to access the information from the backend 
     var data_pipe = new EventSource("/subscribe");

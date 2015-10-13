@@ -3,6 +3,8 @@ import os.path
 settings = {
         "cwd": "/home/kudrom/src/m3dpi_ui",
         "serial_device": "/dev/ttyACM0",
+        # Avoid the testing port 8081 if you are goint to run the tests with
+        # an instance of the webpage open in a browser
         "web_server_port": 8080,
         "serial_mock_timeout": 1,
         "data_schemas": {},
