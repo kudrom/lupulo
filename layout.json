@@ -5,12 +5,12 @@
             "width": 760,
             "height": 500
         },
-        "seconds": 100
+        "seconds": 100,
+        "type": "multiple_line"
     },
 
     "battery": {
         "parent": "global",
-        "type": "multiple_line",
         "event_name": "battery",
         "father": "#battery",
         "name_lines": ["Battery"],
@@ -23,6 +23,7 @@
     "distances": {
         "abstract": true,
         "parent": "global",
+        "event_name": "distances",
         "father": "#distances",
         "range": [0, 4]
     },

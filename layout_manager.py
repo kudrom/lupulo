@@ -1,5 +1,4 @@
 import json
-import pprint
 
 from twisted.python import log
 
@@ -33,17 +32,6 @@ class LayoutManager(object):
             else:
                 raw_layouts[name] = obj
 
-        # Delete a layout if it doesn't have the required attributes or if
-        # its event is unknown
-        for name, obj in raw_layouts.items():
-            broken_attrs = required_attributes.difference(set(raw_layouts[name].keys()))
-            if len(broken_attrs) > 0:
-                del raw_layouts[name]
-                log.msg("%s couldn't be compiled because it lacks required arguments %s.", name, ",".join(broken_attrs))
-            elif obj["event_name"] not in self.events:
-                del raw_layouts[name]
-                log.msg("%s couldn't be compiled because its event is not in the schema_manager events: %s.", name, ",".join(self.events))
-
         # Bind the layouts
         for name, obj in raw_layouts.items():
             if "parent" in obj:
@@ -56,6 +44,18 @@ class LayoutManager(object):
             else:
                 # Without inheritance
                 self.layouts[name] = obj
+
+        # Delete a layout if it doesn't have the required attributes or if
+        # its event is unknown
+        for name, obj in raw_layouts.items():
+            broken_attrs = required_attributes.difference(set(raw_layouts[name].keys()))
+            if len(broken_attrs) > 0:
+                del self.layouts[name]
+                log.msg("%s couldn't be compiled because it lacks required arguments %s.", name, ",".join(broken_attrs))
+            elif obj["event_name"] not in self.events:
+                del self.layouts[name]
+                log.msg("%s couldn't be compiled because its event is not in the schema_manager events: %s.", name, ",".join(self.events))
+
 
     def inherit(self, obj):
         """
@@ -74,4 +74,4 @@ class LayoutManager(object):
         """
             Return a string of the compiled layout
         """
-        return json.dumps(self.layouts)
+        return json.dumps(self.layouts.values())
