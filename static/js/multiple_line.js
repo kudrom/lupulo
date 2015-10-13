@@ -16,9 +16,9 @@ MultipleLine = function(layout){
     this.seconds = layout.seconds;
     // The Lines present in this graph
     this.lines = [];
-    var accessor;
-    for(var i = 0; i < layout.name_lines.length; i++){
-        accessor = get_accessor(layout.accessors[i]);
+    var accessors = get_accessors(layout.accessors);
+    for(var i = 0; i < accessors.length; i++){
+        accessor = accessors[i];
         this.lines.push(new Line(accessor));
     }
 

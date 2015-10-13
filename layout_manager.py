@@ -40,7 +40,7 @@ class LayoutManager(object):
                     self.layouts[name] = self.inherit(obj)
                     del self.layouts[name]["parent"]
                 else:
-                    log.msg("%s couldn't be compiled because there was a problem inheriting from %s.", name, obj["parent"])
+                    log.msg("%s couldn't be compiled because there was a problem inheriting from %s." % (name, obj["parent"]))
             else:
                 # Without inheritance
                 self.layouts[name] = obj
@@ -51,10 +51,10 @@ class LayoutManager(object):
             broken_attrs = required_attributes.difference(set(raw_layouts[name].keys()))
             if len(broken_attrs) > 0:
                 del self.layouts[name]
-                log.msg("%s couldn't be compiled because it lacks required arguments %s.", name, ",".join(broken_attrs))
+                log.msg("%s couldn't be compiled because it lacks required arguments %s." % (name, ",".join(broken_attrs)))
             elif obj["event_name"] not in self.events:
                 del self.layouts[name]
-                log.msg("%s couldn't be compiled because its event is not in the schema_manager events: %s.", name, ",".join(self.events))
+                log.msg("%s couldn't be compiled because its event is not in the schema_manager events: %s." % (name, ",".join(self.events)))
 
 
     def inherit(self, obj):

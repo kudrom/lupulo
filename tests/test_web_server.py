@@ -9,7 +9,6 @@ from twisted.web.http_headers import Headers
 
 from m3dpi_ui.sse_resource import SSEResource
 from m3dpi_ui.root import get_website
-from m3dpi_ui.settings import settings
 from m3dpi_ui.tests.sse_client.sse_client import SSEClient
 
 
@@ -17,8 +16,8 @@ class TestFunctional(unittest.TestCase):
     def setUp(self):
         self.sse_resource = SSEResource()
         site = get_website(self.sse_resource)
-        self.server = reactor.listenTCP(settings["web_server_port"], site)
-        self.url = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
+        self.server = reactor.listenTCP(8081, site)
+        self.url = 'http://localhost:' + "8081" + '/subscribe'
         self.client = SSEClient(self.url)
 
     def tearDown(self):
@@ -62,10 +61,9 @@ class TestFunctional(unittest.TestCase):
         def after_publishing():
             callback = self.client.protocol.dispatchEvent
             self.assertEqual(callback.called, True)
-            self.assertEqual(callback.call_count, 2)
+            self.assertEqual(callback.call_count, 3)
             self.cleanup_connections()
 
-        raise unittest.SkipTest("For some reason this is blocked.")
         self.client.protocol.dispatchEvent = MagicMock()
         d = self.client.connect()
         reactor.callLater(1, self.sse_resource.publish, '{"id" : 1, "battery": 87.156412351}')
@@ -85,9 +83,9 @@ class TestFunctional(unittest.TestCase):
         return d
 
     def test_static_files(self):
-        url = 'http://localhost:' + str(settings['web_server_port']) + '/static/'
+        url = 'http://localhost:' + "8081" + '/static/'
         return self.http_request(url)
 
     def test_root(self):
-        url = 'http://localhost:' + str(settings['web_server_port'])
+        url = 'http://localhost:' + "8081"
         return self.http_request(url)
