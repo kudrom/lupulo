@@ -41,9 +41,11 @@ class LayoutManager(object):
                     log.msg("%s couldn't be compiled because "
                             "there was a problem inheriting from %s." %
                             (name, obj["parent"]))
+                    continue
             else:
                 # Without inheritance
                 self.layouts[name] = obj
+            self.layouts[name]["name"] = name
 
         # Delete a layout if it doesn't have the required attributes or if
         # its event is unknown

@@ -12,12 +12,28 @@ Line = function(accessor){
 }
 
 MultipleLine = function(layout){
+    (function(requirements){
+        var broken = false;
+        for(var i = 0; i < requirements.length; i++){
+            if(!(requirements[i] in layout)){
+                console.log(requirements[i] + " not in layout " + layout.name);
+                broken = true;
+            }
+        }
+        if(broken){
+            throw "Broken preconditions for " + layout.name;
+        }
+    })(['y_name', 'seconds', 'size', 'name_lines', 'accessors']);
+
     // Width of the time scale
     this.seconds = layout.seconds;
     // The Lines present in this graph
     this.lines = [];
-    var accessors = get_accessors(layout.accessors);
-    for(var i = 0; i < accessors.length; i++){
+    var accessors = [];
+    accessors = get_accessors(layout);
+    // We use the length of name_lines to not create too much Lines if there are
+    // more accessors that name_lines
+    for(var i = 0; i < layout.name_lines.length; i++){
         accessor = accessors[i];
         this.lines.push(new Line(accessor));
     }

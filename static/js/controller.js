@@ -19,6 +19,8 @@
             anchor;
         for(var i = 0; i < layouts.length; i++){
             layout = layouts[i];
+
+            // Check requirements
             anchor = $(layout.anchor);
             if(anchor.length == 0){
                 console.log("[!] " + layout.anchor + " anchor doesn't exist in the document.");
@@ -28,8 +30,16 @@
                 console.log("[!] " + layout.type + " type doesn't exist as a factory of widgets.");
                 continue;
             }
+
             // Construct the widget
-            widget = new widget_factories[layout.type](layout);
+            try{
+                widget = new widget_factories[layout.type](layout);
+            }catch(err){
+                console.log(err + "\nStopping creation of widget " + layout.name);
+                continue;
+            }
+
+            // Add it to the page
             add_widget(widget, layout.event_name);
         }
     };
