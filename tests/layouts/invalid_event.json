@@ -1,0 +1,6 @@
+{
+    "invalid-event": {
+        "type": "something",
+        "event_name": "crap"
+    }
+}

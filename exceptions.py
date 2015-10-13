@@ -11,3 +11,10 @@ class RequirementViolated(Exception):
 
     def __str__(self):
         return self.message
+
+class RequiredAttributes(Exception):
+    def __init__(self, name):
+        self.name = name
+
+    def __str__(self):
+        return "The layout %s lacks of required attributes."

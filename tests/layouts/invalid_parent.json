@@ -1,0 +1,24 @@
+{
+    "parent": {
+        "abstract": true,
+        "something": "interesting"
+    },
+
+    "bad-child": {
+        "type": "something",
+        "event_name": "something",
+        "parent": "bad-parent",
+        "another_thing": "awesome"
+    },
+
+    "bad-parent": {
+        "something": "not-interesting"
+    },
+
+    "child": {
+        "type": "something",
+        "event_name": "something",
+        "parent": "bad-parent",
+        "another_thing": "awesome"
+    }
+}

@@ -1,1 +1,31 @@
-{}
+{
+    "simple": {
+        "type": 1,
+        "event_name": "something_else"
+    },
+
+    "global": {
+        "abstract": true,
+        "seconds": 100
+    },
+
+    "distances": {
+        "abstract": true,
+        "parent": "global",
+        "range": [0, 4],
+        "overwritten": false
+    },
+
+    "distances-center": {
+        "parent": "distances",
+        "event_name": "distances",
+        "type": "multiple_line"
+    },
+
+    "overwritten": {
+        "overwritten": true,
+        "parent": "distances",
+        "event_name": "something_else",
+        "type": "multiple_line"
+    }
+}

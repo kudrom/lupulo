@@ -1,0 +1,9 @@
+{
+    "missing":{
+        "type": "something"
+    },
+
+    "missing2":{
+        "event_name": "something"
+    }
+}
