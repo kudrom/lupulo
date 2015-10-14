@@ -1,11 +1,13 @@
 {
     "simple": {
         "type": 1,
-        "event_name": "something_else"
+        "event_name": "something_else",
+        "anchor": 0
     },
 
     "global": {
         "abstract": true,
+        "anchor": 0,
         "seconds": 100
     },
 

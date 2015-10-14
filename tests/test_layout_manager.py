@@ -36,21 +36,21 @@ class TestsSchemaDescriptor(unittest.TestCase):
         layout = self.layout_manager.raw["distances"]
         self.layout_manager.contexts["global"] = self.layout_manager.raw["global"]
         obj = self.layout_manager.inherit(layout)
-        self.assertEqual(set(obj.keys()), set(["overwritten", "abstract", "parent", "range", "seconds"]))
+        self.assertEqual(set(obj.keys()), set(["anchor", "overwritten", "abstract", "parent", "range", "seconds"]))
 
     def test_two_levels_inheritance(self):
         layout = self.layout_manager.raw["distances-center"]
         self.layout_manager.contexts["global"] = self.layout_manager.raw["global"]
         self.layout_manager.contexts["distances"] = self.layout_manager.raw["distances"]
         obj = self.layout_manager.inherit(layout)
-        self.assertEqual(set(obj.keys()), set(["overwritten", "parent", "range", "seconds", "event_name", "type"]))
+        self.assertEqual(set(obj.keys()), set(["anchor", "overwritten", "parent", "range", "seconds", "event_name", "type"]))
 
     def test_overwritten(self):
         layout = self.layout_manager.raw["overwritten"]
         self.layout_manager.contexts["global"] = self.layout_manager.raw["global"]
         self.layout_manager.contexts["distances"] = self.layout_manager.raw["distances"]
         obj = self.layout_manager.inherit(layout)
-        self.assertEqual(set(obj.keys()), set(["overwritten", "parent", "range", "seconds", "event_name" , "type"]))
+        self.assertEqual(set(obj.keys()), set(["anchor", "overwritten", "parent", "range", "seconds", "event_name" , "type"]))
         self.assertEqual(obj["overwritten"], True)
 
     def test_invalid_parent(self):
@@ -60,13 +60,10 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.layout_manager.compile()
         layouts = self.layout_manager.layouts
         self.assertEqual(set(layouts.keys()), set(["simple", "distances-center", "overwritten"]))
-        self.assertEqual(len(layouts["simple"]), 2)
-        self.assertEqual(set(layouts["simple"].keys()), set(["type", "event_name"]))
+        self.assertEqual(set(layouts["simple"].keys()), set(["name", "type", "event_name", "anchor"]))
         self.assertEqual(layouts["simple"]["type"], 1)
         self.assertEqual(layouts["simple"]["event_name"], "something_else")
-        self.assertEqual(len(layouts["distances-center"]), 5)
-        self.assertEqual(set(layouts["distances-center"].keys()), set(["type", "event_name", "range", "overwritten", "seconds"]))
+        self.assertEqual(set(layouts["distances-center"].keys()), set(["anchor", "name", "type", "event_name", "range", "overwritten", "seconds"]))
         self.assertEqual(layouts["distances-center"]["overwritten"], False)
-        self.assertEqual(len(layouts["overwritten"]), 5)
-        self.assertEqual(set(layouts["overwritten"].keys()), set(["type", "event_name", "range", "overwritten", "seconds"]))
+        self.assertEqual(set(layouts["overwritten"].keys()), set(["anchor", "name", "type", "event_name", "range", "overwritten", "seconds"]))
         self.assertEqual(layouts["overwritten"]["overwritten"], True)
