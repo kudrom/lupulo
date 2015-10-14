@@ -1,5 +1,5 @@
-Introduction
-============
+Overview
+========
 
 m3dpi_ui is a framework built in python and javascript to build visualizations
 of data sent by devices that measure its surroundings, typically robots or IoT
@@ -29,7 +29,7 @@ m3dpi_ui has been built to run in a RaspberryPi, but another hardware
 configurations are possible as long as GNU/Linux is used to run the backend.
 
 How it works
-============
+------------
 
 m3dpi_ui is composed of two main components:
 
@@ -65,7 +65,7 @@ different data formats and also different widgets to display information in the
 web page in different ways.
 
 Installation
-============
+------------
 
 Currently there is a script in bash that install all the dependencies and
 configures the environment but it only works on distributions of GNU/Linux that
@@ -76,7 +76,7 @@ To install m3dpi_ui just type with superuser permissions::
     ./install.sh
 
 Use
-===
+---
 
 The backend is built using twisted and therefore defined in a tac file.
 Therefore you can use all the fine tunning that twistd provides to run a

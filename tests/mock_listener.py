@@ -6,7 +6,7 @@ from twisted.internet.task import LoopingCall
 from m3dpi_ui.settings import settings
 from m3dpi_ui.data_schema_manager import DataSchemaManager
 
-class MockSerialListener(service.Service):
+class MockListener(service.Service):
     def __init__(self, number, sse_resource):
         self.number = number
         self.sse_resource = sse_resource

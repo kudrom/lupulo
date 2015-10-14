@@ -10,7 +10,7 @@ from twisted.python.logfile import DailyLogFile
 from m3dpi_ui.sse_resource import SSEResource
 from m3dpi_ui.root import get_website
 from m3dpi_ui.settings import settings
-from m3dpi_ui.tests.mock_serial_listener import MockSerialListener
+from m3dpi_ui.tests.mock_listener import MockListener
 
 # Bind the application and create a multi service that will be the
 # father of all the services below
@@ -19,7 +19,7 @@ multi = service.MultiService()
 multi.setServiceParent(application)
 
 # Setup logging
-logfile = DailyLogFile("mock_serial.log", os.path.join(settings["cwd"], "log"))
+logfile = DailyLogFile("mock.log", os.path.join(settings["cwd"], "log"))
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 # Log to stdout too
@@ -32,5 +32,5 @@ tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
 # Create the serial listener and attach it to multi
-mock_serial_listener = MockSerialListener(2, sse_resource)
-mock_serial_listener.setServiceParent(multi)
+mock_listener = MockListener(2, sse_resource)
+mock_listener.setServiceParent(multi)

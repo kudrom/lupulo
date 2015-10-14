@@ -9,9 +9,11 @@ Welcome to m3dpi_ui's documentation!
 Contents:
 
 .. toctree::
+   :numbered:
    :maxdepth: 2
 
-
+   overview.rst
+   architecture.rst
 
 Indices and tables
 ==================

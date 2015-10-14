@@ -4,6 +4,6 @@
 log/*
 _trial_temp
 *.swo
-doc/_template/
-doc/_static/
-doc/_build/
+docs/_template/
+docs/_static/
+docs/_build/
