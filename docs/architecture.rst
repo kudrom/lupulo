@@ -1,7 +1,8 @@
 Architecture
 ============
 
-As explained in the introduction, the
+As explained in the :ref:`overview` the project is made of two main components,
+the 
 Asynchronous output interface: used to push information harvested 
      in the environment by the pololu as soon as it's gathered.
 C&C interface: used to command the pololu.
