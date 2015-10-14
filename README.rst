@@ -71,9 +71,9 @@ Currently there is a script in bash that install all the dependencies and
 configures the environment but it only works on distributions of GNU/Linux that
 derive from **Arch Linux**.
 
-To install m3dpi_ui just type with superuser permissions:
+To install m3dpi_ui just type with superuser permissions::
 
-./install.sh
+    ./install.sh
 
 Use
 ===
@@ -97,11 +97,11 @@ the directory of the project**.
 **See the settings first before launching the server.**
 
 If you are not familiar with twistd, to run any of the tac files in the
-foreground you need to type:
+foreground you need to type::
 
     twistd -ny <tac_file>
 
-to run the application in the background type:
+to run the application in the background type::
 
     twistd -y <tac_file>
 
