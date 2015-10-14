@@ -32,6 +32,7 @@ How it works
 ============
 
 m3dpi_ui is composed of two main components:
+
 * **The backend** which makes the connection with the device, receives the data
   sent by the device, records it and sends it back in real time to the frontend.
 * **The frontend** which renders the information received by the backend in real
@@ -71,6 +72,7 @@ configures the environment but it only works on distributions of GNU/Linux that
 derive from **Arch Linux**.
 
 To install m3dpi_ui just type with superuser permissions:
+
 ./install.sh
 
 Use
@@ -81,6 +83,7 @@ Therefore you can use all the fine tunning that twistd provides to run a
 server.
 
 For the moment there are two main tac files:
+
 #. **deployment.tac**: uses a serial port specified in the settings file to
    communicate with the device.
 #. **mock.tac**: is a software virtual device defined by the data schema file
@@ -91,12 +94,15 @@ For the moment, you need superuser permissions to execute the deployment tac
 file. You need to launch the twistd proccess from the **folder which contains
 the directory of the project**.
 
-*See the settings first before launching the server.*
+**See the settings first before launching the server.**
 
 If you are not familiar with twistd, to run any of the tac files in the
 foreground you need to type:
+
     twistd -ny <tac_file>
+
 to run the application in the background type:
+
     twistd -y <tac_file>
 
 
