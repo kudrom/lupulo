@@ -14,6 +14,7 @@ Contents:
 
    overview.rst
    architecture.rst
+   data_schema_language.rst
 
 Indices and tables
 ==================
