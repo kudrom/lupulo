@@ -15,16 +15,9 @@ through a dynamic data link connection chosen by the user. This way m3dpi_ui
 provides an abstraction layer that doesn't fix the way the backend communicates
 with the device.
 
-To properly build this software, a special attention has been put on testing the
-entire software stack at different levels of complexity, ranging from unit tests
-to functional tests.
+.. figure:: images/general_deployment.png
 
-Therefore, both the backend and frontend are designed and implemented in a way
-that allows the mocking of all the interfaces that we have introduced in the
-above paragraphs. This design decision allows the user of the framework to test
-its webpage without the necessity of having a physical prototype attached to the
-backend, furthermore, the user doesn't need neither a real data link connection
-to test how the webpage will behave.
+    UML deployment diagram for the general configuration
 
 Backend
 -------
@@ -67,6 +60,10 @@ is only done once per layout and afterwards is sent to the frontend.
 The C&C listening end will be provided by some http resources associated to a
 url schema that respects the RESTful core goals.
 
+.. figure:: images/backend.png
+
+    UML components diagram for the backend
+
 Frontend
 --------
 
@@ -84,22 +81,6 @@ for the event sources that the widget is listening on. Once data arrives for a
 widget, the frontend will call it to render itself into the page with the new
 data.
 
-Testing
--------
+.. figure:: images/frontend.png
 
-In order to properly test the software, the project provides some utilities that
-can be useful when you are debugging the web page.
-
-
-Mock of pololu: an mbed program located in tests/serial_mock_mbed that sends
-    a json file through the serial port at different intervals of time.
-Mock of the serial listener: a high level software mock written in python that
-    publishes information to the web server whenever it's available.
-
-The general idea is to test the serial connection between the pololu and m3dpi_ui
-with the mock of the mbed software and to test the logic of the entire project
-with the mock of the serial listener.
-
-To run the tests, place the interpreter in the directory containing the
-project and type trial m3dpi_ui.tests
-
+    UML components diagram for the frontend

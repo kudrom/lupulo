@@ -1,7 +1,7 @@
 .. _overview:
 
 Overview
---------
+========
 
 To develop a device which interacts with its environment, it's usually needed a
 visualization of the sensory data in order to understand the behaviour of the
@@ -13,7 +13,7 @@ deployment.
 
 m3dpi_ui is a framework that allows you to build several web-based user
 interfaces that will allow you to understand much better the device you are
-building looking at visualization of the sensory information and also to build
+building with some visualization of the sensory information and also to build
 rich user interfaces to command it with all the relevant information at sight.
 
 You just need to understand how the data is going to be sent from your device
@@ -21,7 +21,7 @@ and how you want to visualize it at a web page. For the rest, m3dpi_ui will take
 care.
 
 Description
-===========
+-----------
 
 m3dpi_ui is a framework built in python and javascript to build visualizations
 of data sent by devices that measure its surroundings, typically robots or IoT
@@ -132,5 +132,23 @@ to run the application in the background type::
 
     twistd -y <tac_file>
 
+Debugging
+---------
+
+m3dpi_ui also provides some utilities to debug the web page.
+
+The first one is a sse client that will allow you to listen to the information
+that the backend is sending to your web page. The sse client will create a sse
+connection towards the backend and will print to the standard output all the
+information that it receives. You can use this sse client typing::
+
+    m3dpi_ui/tests/sse_client/standalone.py
+
+The second one is a listener mock that will create a fake data link connection
+in the backend and will send random data that respects the data schema of your
+device. That way you can test how the web page looks without the need of a real
+robot sending information. You can use this mock typing::
+
+    twistd -ny m3dpi_ui/mock.py
 
 Enjoy!
