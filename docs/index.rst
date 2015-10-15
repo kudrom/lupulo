@@ -15,11 +15,12 @@ Contents:
    overview.rst
    architecture.rst
    data_schema_language.rst
+   layout_language.rst
 
-Indices and tables
-==================
+.. Indices and tables
+.. ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
 
