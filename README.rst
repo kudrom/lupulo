@@ -1,7 +1,27 @@
 .. _overview:
 
 Overview
-========
+--------
+
+To develop a device which interacts with its environment, it's usually needed a
+visualization of the sensory data in order to understand the behaviour of the
+device in the development stages.
+
+Once a prototype of the device has been built, it's usually also needed a rich 
+user interface to command it and also to track its progress in a more realistic
+deployment.
+
+m3dpi_ui is a framework that allows you to build several web-based user
+interfaces that will allow you to understand much better the device you are
+building looking at visualization of the sensory information and also to build
+rich user interfaces to command it with all the relevant information at sight.
+
+You just need to understand how the data is going to be sent from your device
+and how you want to visualize it at a web page. For the rest, m3dpi_ui will take
+care.
+
+Description
+===========
 
 m3dpi_ui is a framework built in python and javascript to build visualizations
 of data sent by devices that measure its surroundings, typically robots or IoT
@@ -14,9 +34,8 @@ command the device once it's deployed in the production environment.
 
 Different user interfaces serving different needs for the same device can be
 built very quickly. That way if the data schema or the visualization needs of
-the information the device is sending change during development, it's quite
-straightforward to replace the current visualization with one that answers to
-the new changes.
+the information change during development, it's quite straightforward to replace
+the current visualization with one that answers to the new changes.
 
 Several devices can be monitored by the same user interface at the same time as
 long as all of them follow the same data schema for the information they are
@@ -25,7 +44,13 @@ sending.
 With the base installation there are a bunch of *widgets* which can be used from
 the beginning to build your web page. Of course, you can also write your own
 *widgets* if you need to visualize information in a specific way and plug them
-in into the framework very easily.
+into the framework very easily.
+
+You can also build new data connections to connect your device with the outside
+world and plug them into m3dpi_ui. This way, you can use the default
+configurations of the framework and use it as a quick user interface to
+understand better your device or you can personalize it to build a rich user
+interface.
 
 m3dpi_ui has been built to run in a RaspberryPi, but another hardware
 configurations are possible as long as GNU/Linux is used to run the backend.
