@@ -144,4 +144,7 @@ provide in order to be constructed and added to the web page.
 
 The widgets distributed currently in m3dpi_ui are:
 
-* :ref:`multiline`.
+.. toctree::
+    :maxdepth: 1
+
+    multiline.rst
