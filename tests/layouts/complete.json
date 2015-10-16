@@ -2,13 +2,21 @@
     "simple": {
         "type": 1,
         "event_name": "something_else",
-        "anchor": 0
+        "anchor": 0,
+        "size": {
+            "width": 800,
+            "height": 600
+        }
     },
 
     "global": {
         "abstract": true,
         "anchor": 0,
-        "seconds": 100
+        "seconds": 100,
+        "size": {
+            "width": 800,
+            "height": 600
+        }
     },
 
     "distances": {

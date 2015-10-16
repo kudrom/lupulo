@@ -43,14 +43,14 @@ class TestsSchemaDescriptor(unittest.TestCase):
         layout = self.raw["distances"]
         obj = self.layout_manager.inherit(layout)
         attributes = ["anchor", "overwritten", "abstract",
-                      "parent", "range", "seconds"]
+                      "parent", "range", "seconds", "size"]
         self.assertEqual(set(obj.keys()), set(attributes))
 
     def test_two_levels_inheritance(self):
         layout = self.raw["distances-center"]
         obj = self.layout_manager.inherit(layout)
         attributes = ["anchor", "overwritten", "parent", "range",
-                      "seconds", "event_name", "type"]
+                      "seconds", "event_name", "type", "size"]
         self.assertEqual(set(obj.keys()), set(attributes))
 
     def test_overwritten(self):
@@ -67,11 +67,11 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.assertEqual(set(layouts.keys()),
                          set(["simple", "distances-center", "overwritten"]))
         self.assertEqual(set(layouts["simple"].keys()),
-                         set(["name", "type", "event_name", "anchor"]))
+                         set(["name", "type", "event_name", "anchor", "size"]))
         self.assertEqual(layouts["simple"]["type"], 1)
         self.assertEqual(layouts["simple"]["event_name"], "something_else")
         attributes = ["anchor", "name", "type", "event_name",
-                      "range", "overwritten", "seconds"]
+                      "range", "overwritten", "seconds", "size"]
         self.assertEqual(set(layouts["distances-center"].keys()),
                          set(attributes))
         self.assertEqual(layouts["distances-center"]["overwritten"], False)

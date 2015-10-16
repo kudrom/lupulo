@@ -49,7 +49,7 @@ class LayoutManager(object):
 
         # Delete a layout if it doesn't have the required attributes or if
         # its event is unknown
-        required_attributes = set(["event_name", "type", "anchor"])
+        required_attributes = set(["event_name", "type", "anchor", "size"])
         for name, obj in raw_layouts.items():
             keys = raw_layouts[name].keys()
             broken_attrs = required_attributes.difference(set(keys))
@@ -63,6 +63,14 @@ class LayoutManager(object):
                 log.msg("%s couldn't be compiled because"
                         "its event is not in the schema_manager events: %s." %
                         (name, ",".join(self.events)))
+            elif 'height' not in obj["size"].keys():
+                del self.layouts[name]
+                log.msg("%s doesn't have a height in its size attribute." %
+                        name)
+            elif 'width' not in obj["size"].keys():
+                del self.layouts[name]
+                log.msg("%s doesn't have a width in its size attribute." %
+                        name)
 
     def inherit(self, obj):
         """

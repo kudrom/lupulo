@@ -23,7 +23,7 @@ MultipleLine = function(layout){
         if(broken){
             throw "Broken preconditions for " + layout.name;
         }
-    })(['y_name', 'seconds', 'size', 'name_lines', 'accessors']);
+    })(['y_name', 'seconds', 'name_lines', 'accessors']);
 
     // Width of the time scale
     this.seconds = layout.seconds;
@@ -106,9 +106,10 @@ MultipleLine = function(layout){
       .text(layout.y_name);
 
     // Render the legends
+    var max_name_line = d3.max(layout.name_lines, function(d){return 7 * d.length});
     var width_rect = 15;
     var width_margin = 5;
-    var width_legend = d3.max(layout.name_lines, function(d){return 7 * d.length}) + width_rect + width_margin;
+    var width_legend =  max_name_line + width_rect + width_margin;
     var legend = svg.selectAll('.legend')
         .data(color.domain())
         .enter()

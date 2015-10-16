@@ -9,7 +9,11 @@
         "event_name": "something",
         "anchor": 0,
         "parent": "no-parent",
-        "another_thing": "awesome"
+        "another_thing": "awesome",
+        "size": {
+            "width": 800,
+            "height": 600
+        }
     },
 
     "bad-parent": {
@@ -21,6 +25,10 @@
         "event_name": "something",
         "anchor": 0,
         "parent": "bad-parent",
-        "another_thing": "awesome"
+        "another_thing": "awesome",
+        "size": {
+            "width": 800,
+            "height": 600
+        }
     }
 }
