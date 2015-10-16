@@ -51,11 +51,13 @@ class LayoutManager(object):
         # its event is unknown
         required_attributes = set(["event_name", "type", "anchor"])
         for name, obj in raw_layouts.items():
-            broken_attrs = required_attributes.difference(set(raw_layouts[name].keys()))
+            keys = raw_layouts[name].keys()
+            broken_attrs = required_attributes.difference(set(keys))
             if len(broken_attrs) > 0:
                 del self.layouts[name]
                 log.msg("%s couldn't be compiled because "
-                        "it lacks required arguments %s." % (name, ",".join(broken_attrs)))
+                        "it lacks required arguments %s." %
+                        (name, ",".join(broken_attrs)))
             elif obj["event_name"] not in self.events:
                 del self.layouts[name]
                 log.msg("%s couldn't be compiled because"

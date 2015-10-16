@@ -1,5 +1,5 @@
-from m3dpi_ui.exceptions import RequirementViolated
 from m3dpi_ui.data_schema_manager import find_descriptor
+
 
 class Dict(object):
     """

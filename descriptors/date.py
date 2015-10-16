@@ -1,6 +1,7 @@
 import datetime
 import random
 
+
 class Date(object):
     """
         Descriptor for a date datum

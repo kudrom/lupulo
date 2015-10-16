@@ -1,7 +1,7 @@
 import os.path
 
 from twisted.web import resource, server
-from twisted.web.template import Element, renderer, XMLFile, flatten
+from twisted.web.template import Element, XMLFile, flatten
 from twisted.web.static import File
 from twisted.python.filepath import FilePath
 
@@ -33,6 +33,7 @@ class AbstractResource(resource.Resource):
         d.addCallback(lambda _, x: x.finish(), request)
         return server.NOT_DONE_YET
 
+
 class AbstractElement(Element):
     """
         Abstract twisted resource which is inherited to render all
@@ -40,7 +41,8 @@ class AbstractElement(Element):
     """
     def __init__(self, page=""):
         Element.__init__(self)
-        self.loader = XMLFile(FilePath(os.path.join(settings["templates_dir"], page)))
+        filepath = os.path.join(settings["templates_dir"], page)
+        self.loader = XMLFile(FilePath(filepath))
 
 
 class Root(AbstractResource):
@@ -59,6 +61,7 @@ class RootElement(AbstractElement):
     def __init__(self):
         AbstractElement.__init__(self, "index.html")
 
+
 class Debug(AbstractResource):
     """
         Debug resource of the web server.
@@ -67,14 +70,13 @@ class Debug(AbstractResource):
         AbstractResource.__init__(self)
         self.element_delegate = DebugElement()
 
+
 class DebugElement(AbstractElement):
     """
         Called by Debug to render the template.
     """
     def __init__(self):
         AbstractElement.__init__(self, "debug.html")
-
-
 
 
 def get_website(sse_resource):

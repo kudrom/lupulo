@@ -1,6 +1,5 @@
 from mock import MagicMock
 
-from twisted.internet import reactor
 from twisted.trial import unittest
 
 from m3dpi_ui.settings import settings
@@ -55,6 +54,6 @@ class TestWebServer(unittest.TestCase):
         callback.assert_called_once_with("random_data")
 
     def test_no_web_server_without_hanging(self):
-        url = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
-        client = SSEClient(url)
+        base_url = 'http://localhost:' + str(settings['web_server_port'])
+        client = SSEClient(base_url + '/subscribe')
         return client.connect()

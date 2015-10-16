@@ -4,14 +4,15 @@ from twisted.application import service
 from twisted.internet.task import LoopingCall
 
 from m3dpi_ui.settings import settings
-from m3dpi_ui.data_schema_manager import DataSchemaManager
+
 
 class MockListener(service.Service):
-    def __init__(self, number, sse_resource):
-        self.number = number
+    def __init__(self, ids, sse_resource):
+        self.ids = ids
         self.sse_resource = sse_resource
+        self.data_schema_manager = self.sse_resource.data_schema_manager
         self.loop = LoopingCall(self.timer_callback)
-        self.events = set(self.sse_resource.data_schema_manager.descriptors.keys())
+        self.events = set(self.data_schema_manager.descriptors.keys())
 
     def startService(self):
         self.loop.start(settings["serial_mock_timeout"])
@@ -20,7 +21,9 @@ class MockListener(service.Service):
         num = randint(0, len(self.events))
         current_events = set()
         for i in range(num):
-            current_events.add(choice(list(self.events.difference(current_events))))
+            events_left = list(self.events.difference(current_events))
+            current_events.add(choice(events_left))
 
-        message = self.sse_resource.data_schema_manager.generate(randint(1, self.number), current_events)
+        random_id = randint(1, self.ids)
+        message = self.data_schema_manager.generate(random_id, current_events)
         self.sse_resource.publish(message)

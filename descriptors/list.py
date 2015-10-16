@@ -15,7 +15,7 @@ class List(object):
                     arguments start with "item_"
         """
         if len(item_type) == 0:
-            raise RequirementViolated("Requirement of item_type violated for list")
+            raise RequirementViolated("Requirement of item_type violated.")
         self.length = length
         klass = find_descriptor(item_type)
         kwargs_delegate = dict((item[5:], kwargs[item])

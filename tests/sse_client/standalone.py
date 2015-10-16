@@ -5,6 +5,7 @@ from m3dpi_ui.settings import settings
 
 URL = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
 
+
 def onmessage(data):
     print 'Got payload with data %s' % data
 

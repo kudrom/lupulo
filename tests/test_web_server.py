@@ -1,8 +1,6 @@
-import time
 from mock import MagicMock
 
 from twisted.internet import reactor
-from twisted.internet.defer import Deferred
 from twisted.trial import unittest
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
@@ -66,7 +64,8 @@ class TestFunctional(unittest.TestCase):
 
         self.client.protocol.dispatchEvent = MagicMock()
         d = self.client.connect()
-        reactor.callLater(1, self.sse_resource.publish, '{"id" : 1, "battery": 87.156412351}')
+        data = '{"id" : 1, "battery": 87.156412351}'
+        reactor.callLater(1, self.sse_resource.publish, data)
         reactor.callLater(2, after_publishing)
         return d
 
@@ -78,7 +77,8 @@ class TestFunctional(unittest.TestCase):
 
         self.client.addEventListener("id1-battery", callback)
         d = self.client.connect()
-        reactor.callLater(1, self.sse_resource.publish, '{"id" : 1, "battery": 87.156412351}')
+        data = '{"id" : 1, "battery": 87.156412351}'
+        reactor.callLater(1, self.sse_resource.publish, data)
         contradiction = reactor.callLater(3, self.assertEqual, True, False)
         return d
 

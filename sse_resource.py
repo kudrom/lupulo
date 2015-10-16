@@ -11,6 +11,7 @@ from m3dpi_ui.data_schema_manager import DataSchemaManager
 from m3dpi_ui.layout_manager import LayoutManager
 from m3dpi_ui.settings import settings
 
+
 class SSEResource(resource.Resource):
     """
         Twisted web resource that will work as the SSE server.
@@ -30,7 +31,8 @@ class SSEResource(resource.Resource):
         self.data_schema_manager = DataSchemaManager(self.schema_fp)
 
         self.widgets_fp = open(settings["layout"], "r")
-        self.layout_manager = LayoutManager(self.widgets_fp, self.data_schema_manager)
+        self.layout_manager = LayoutManager(self.widgets_fp,
+                                            self.data_schema_manager)
         self.layout_manager.compile()
 
         self.mongo_client = MongoClient(settings['mongo_host'])
@@ -45,8 +47,8 @@ class SSEResource(resource.Resource):
 
     def render_GET(self, request):
         """
-            Called when twisted wants to render the page, this method is asynchronous
-            and therefore returns NOT_DONE_YET.
+            Called when twisted wants to render the page, this method is
+            asynchronous and therefore returns NOT_DONE_YET.
         """
         def wrap(x):
             return '"' + str(x) + '"'
@@ -90,7 +92,7 @@ class SSEResource(resource.Resource):
                 self.store(data)
 
             msg = []
-            if not iid in self.ids:
+            if iid not in self.ids:
                 log.msg("New connection from robot %d" % iid)
                 self.ids.append(iid)
                 msg.append('event: new_robots\n')
@@ -98,7 +100,8 @@ class SSEResource(resource.Resource):
             for event, data in jdata.items():
                 if event in ["id"]:
                     continue
-                msg.append("event: id%d-%s\n" % (iid, event.encode('ascii', 'ignore')))
+                event_name = event.encode('ascii', 'ignore')
+                msg.append("event: id%d-%s\n" % (iid, event_name))
                 msg.append("data: %s\n\n" % json.dumps(data))
 
             for subscriber in self.subscribers:

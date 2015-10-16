@@ -1,5 +1,6 @@
 from random import uniform
 
+
 class Number(object):
     """
         Descriptor for a number datum

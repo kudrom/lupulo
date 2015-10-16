@@ -10,14 +10,17 @@ from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
 
 class TestsSchemaDescriptor(unittest.TestCase):
     def setUp(self):
-        self.fp = open(os.path.join(settings["cwd"], "tests/data_schemas/complete.json"), "r")
+        self.fp = open(os.path.join(settings["cwd"],
+                                    "tests/data_schemas/complete.json"),
+                       "r")
         self.valid_schema_desc = DataSchemaManager(self.fp)
 
     def tearDown(self):
         self.fp.close()
 
     def test_invalid_file(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/invalid_syntax.json"), "r")
+        test = "tests/data_schemas/invalid_syntax.json"
+        ifp = open(os.path.join(settings["cwd"], test), "r")
         self.assertRaises(ValueError, DataSchemaManager, ifp)
         ifp.close()
 
@@ -30,17 +33,23 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     @patch('m3dpi_ui.descriptors.number.Number')
     def test_argument_constructors(self, typeMocked):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/argument_constructors.json"), "r")
-        dsd = DataSchemaManager(ifp)
+        test = "tests/data_schemas/argument_constructors.json"
+        ifp = open(os.path.join(settings["cwd"], test), "r")
+        DataSchemaManager(ifp)
         self.assertEqual(typeMocked.called, True)
-        typeMocked.assert_called_with(arg0=u'argument0', arg1=u'argument1', type=u'number')
+        typeMocked.assert_called_with(arg0=u'argument0',
+                                      arg1=u'argument1',
+                                      type=u'number')
+
     def test_invalid_descriptor(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/not_exists_descriptor.json"), "r")
+        test = "tests/data_schemas/not_exists_descriptor.json"
+        ifp = open(os.path.join(settings["cwd"], test), "r")
         self.assertRaises(NotFoundDescriptor, DataSchemaManager, ifp)
         ifp.close()
 
     def test_requirement_violated(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/requirements.json"), "r")
+        test = "tests/data_schemas/requirements.json"
+        ifp = open(os.path.join(settings["cwd"], test), "r")
         self.assertRaises(RequirementViolated, DataSchemaManager, ifp)
 
     def test_validate_different_keys(self):
@@ -62,18 +71,23 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     @patch('m3dpi_ui.descriptors.dict.Dict')
     def test_construction_nested_list_dict(self, MockedDict):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list_dict.json"), "r")
-        dsd = DataSchemaManager(ifp)
+        test = "tests/data_schemas/list_dict.json"
+        ifp = open(os.path.join(settings["cwd"], test), "r")
+        DataSchemaManager(ifp)
         MockedDict.assert_called_once_with(keys=["speed", "turn_radius"],
                                            speed_type="number",
-                                           speed_range=[0,5],
+                                           speed_range=[0, 5],
                                            turn_radius_type="number",
-                                           turn_radius_range=[0,3])
+                                           turn_radius_range=[0, 3])
 
     def test_attributes_nested_list_dict(self):
-        ifp = open(os.path.join(settings["cwd"], "tests/data_schemas/list_dict.json"), "r")
+        test = "tests/data_schemas/list_dict.json"
+        ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
-        self.assertEqual(dsd.descriptors["motor"].delegate.__class__.__name__, "Dict")
-        self.assertEqual(len(dsd.descriptors["motor"].delegate.delegates), 2)
-        self.assertEqual(set(dsd.descriptors["motor"].delegate.delegates.keys()), set(["speed", "turn_radius"]))
-        self.assertEqual(dsd.descriptors["motor"].delegate.delegates["speed"].__class__.__name__, "Number")
+        motor = dsd.descriptors["motor"]
+        self.assertEqual(motor.delegate.__class__.__name__, "Dict")
+        self.assertEqual(len(motor.delegate.delegates), 2)
+        self.assertEqual(set(motor.delegate.delegates.keys()),
+                         set(["speed", "turn_radius"]))
+        self.assertEqual(motor.delegate.delegates["speed"].__class__.__name__,
+                         "Number")

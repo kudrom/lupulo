@@ -1,5 +1,6 @@
 from random import choice
 
+
 class Enum(object):
     """
         Descriptor for a enum datum

@@ -4,6 +4,7 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
 from twisted.python import log
 
+
 class SerialListener(LineReceiver):
     """
         The protocol used to receive the data over the serial
@@ -20,7 +21,9 @@ class SerialListener(LineReceiver):
         log.msg("Connection made to the serial port.")
 
     def lineReceived(self, line):
-        """ Once the data has arrived SerialListener publishes it through SSE"""
+        """
+            Once the data has arrived SerialListener publishes it through SSE
+        """
         self.sse_resource.publish(line)
 
 
@@ -42,5 +45,8 @@ class SerialService(service.Service):
             Setup the SerialPort to listen in the proper device.
         """
         self.serial_listener = SerialListener(self.sse_resource)
-        self.serial = SerialPort(self.serial_listener, self.device, reactor, baudrate='115200')
+        self.serial = SerialPort(self.serial_listener,
+                                 self.device,
+                                 reactor,
+                                 baudrate='115200')
         log.msg("Service started for the serial listener.")

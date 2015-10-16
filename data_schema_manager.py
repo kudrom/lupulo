@@ -15,6 +15,7 @@ def find_descriptor(klass_name):
         raise NotFoundDescriptor(e.message.split(" ")[-1])
     return getattr(module, klass_name.capitalize())
 
+
 class DataSchemaManager(object):
     """
         Validates and generates random data for a data schema.
