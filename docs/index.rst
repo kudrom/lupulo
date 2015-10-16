@@ -10,12 +10,13 @@ Contents:
 
 .. toctree::
    :numbered:
-   :maxdepth: 2
+   :maxdepth: 3
 
    overview.rst
    architecture.rst
    data_schema_language.rst
    layout_language.rst
+   accessors.rst
 
 .. Indices and tables
 .. ==================

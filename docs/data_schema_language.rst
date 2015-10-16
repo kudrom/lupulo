@@ -1,8 +1,12 @@
+.. _data-schema-language:
+
 Data schema language
 ====================
 
 As said in the :ref:`overview`, the data schema language is a JSON file that
-describes the schema that the data sent by the device follows.
+describes the schema that the data sent by the device follows. This file must
+have a global object that will be interpreted as the data schema. This global
+object has several sections which define the data sources of the data schema.
 
 The data schema basically serves two main goals:
 
