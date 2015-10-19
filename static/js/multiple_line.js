@@ -1,16 +1,3 @@
-Line = function(accessor){
-    // The variable used to store the last data retrieved from the
-    // backend from the async callback
-    this.last = 0;
-    // Array for the data displayed
-    this.framebuffer = [];
-    // SVG path of this line
-    this.path;
-    // The accessor function to return a value associated with a
-    // complex jdata object of an event source connection
-    this.accessor = accessor;
-}
-
 MultipleLine = function(layout){
     (function(requirements){
         var broken = false;
@@ -25,12 +12,24 @@ MultipleLine = function(layout){
         }
     })(['y_name', 'seconds', 'name_lines', 'accessors']);
 
+    var Line = function(accessor){
+        // The variable used to store the last data retrieved from the
+        // backend from the async callback
+        this.last = 0;
+        // Array for the data displayed
+        this.framebuffer = [];
+        // SVG path of this line
+        this.path;
+        // The accessor function to return a value associated with a
+        // complex jdata object of an event source connection
+        this.accessor = accessor;
+    }
+
     // Width of the time scale
     this.seconds = layout.seconds;
     // The Lines present in this graph
     this.lines = [];
-    var accessors = [];
-    accessors = get_accessors(layout);
+    var accessors = get_accessors(layout);
     // We use the length of name_lines to not create too much Lines if there are
     // more accessors that name_lines
     for(var i = 0; i < layout.name_lines.length; i++){
@@ -64,7 +63,7 @@ MultipleLine = function(layout){
         .x(function(d, ii) { return x(ii - 1); })
         .y(function(d, ii) { return y(d); });
 
-    var svg = d3.select(layout.anchor).append("svg")
+    this.svg = d3.select(layout.anchor).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -72,18 +71,15 @@ MultipleLine = function(layout){
 
     // The clip is used to avoid rendering of the left control point when
     // it's being moved by the transition
-    svg.append("defs").append("clipPath")
+    // The lines have the smallest z-index
+    this.svg.append("defs").append("clipPath")
         .attr("id", "clip")
       .append("rect")
         .attr("width", width)
         .attr("height", height);
 
-    // The lines have the smallest z-index
-    this.container = svg.append("g")
-        .attr("class", "container");
-
     // Render the x axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(d3.svg.axis().scale(x).orient("bottom"))
@@ -95,7 +91,7 @@ MultipleLine = function(layout){
         .text("Time (s)")
 
     // Render the y axis
-    svg.append("g")
+    this.svg.append("g")
         .attr("class", "y axis")
         .call(d3.svg.axis().scale(y).orient("left"))
     .append("text")
@@ -110,7 +106,7 @@ MultipleLine = function(layout){
     var width_rect = 15;
     var width_margin = 5;
     var width_legend =  max_name_line + width_rect + width_margin;
-    var legend = svg.selectAll('.legend')
+    var legend = this.svg.selectAll('.legend')
         .data(color.domain())
         .enter()
         .append('g')
@@ -131,7 +127,7 @@ MultipleLine = function(layout){
 
     // Bind the svg path to every line displayed in the graph
     for(i = 0; i < layout.name_lines.length; i++){
-        this.lines[i].path = this.container.append("g")
+        this.lines[i].path = this.svg.append("g")
             .attr("clip-path", "url(#clip)")
           .append("path")
             .datum(this.lines[i].framebuffer)
@@ -140,16 +136,19 @@ MultipleLine = function(layout){
             .attr("d", this.line);
     }
 
-    // This function is called back every 1s to render the animation of every line
-    // in the graph
-    this.tick = function(that) {
-        for(var i = 0; i < that.lines.length; i++){
+    this.paint = function(jdata){
+        var last = 0;
+        for(var i = 0; i < this.lines.length; i++){
+            if(this.jdata !== null){
+                last = this.lines[i].accessor(jdata);
+            }
+
             // push a new data point onto the front
-            that.lines[i].framebuffer.unshift(that.lines[i].last);
+            this.lines[i].framebuffer.unshift(last);
 
             // redraw the line, and slide it to the right
-            that.lines[i].path
-              .attr("d", that.line)
+            this.lines[i].path
+              .attr("d", this.line)
               .attr("transform", null)
             .transition()
               .duration(1000)
@@ -157,37 +156,11 @@ MultipleLine = function(layout){
               .attr("transform", "translate(" + x(1) + ",0)");
 
             // pop the old data point off the back
-            if(that.lines[i].framebuffer.length == that.seconds + 1){
-              that.lines[i].framebuffer.pop();
-            }
-        }
-
-        // BUG #2079, registers the callback through d3js to avoid
-        // funky slide movements
-        that.container.transition()
-          .duration(1000)
-          .each("end", function(){that.tick(that)});
-
-    }
-
-    // Constructor of the async callback used to provide this/that to
-    // the async callback
-    this.async_callback_ctor = function() {
-        var that = this;
-        this.tick(this);
-        return function(event){
-            var jdata = JSON.parse(event.data);
-            if(!(jdata instanceof Array)){
-                jdata = [jdata];
-            }
-
-            for(var i = 0; i < that.lines.length; i++){
-                that.lines[i].last = that.lines[i].accessor(jdata);
+            if(this.lines[i].framebuffer.length == this.seconds + 1){
+              this.lines[i].framebuffer.pop();
             }
         }
     }
-    // The async callback is needed in order to remove its event listener
-    this.async_callback = this.async_callback_ctor();
 
     // Clear all the framebuffers of the lines associated with the graph
     this.clear_framebuffers = function(){
@@ -196,6 +169,9 @@ MultipleLine = function(layout){
             this.lines[i].last = 0;
         }
     }
+
+
+
 };
 
 // Register the Klass as a factory for multiple_line widgets

@@ -34,8 +34,16 @@
             // Construct the widget
             try{
                 widget = new widget_factories[layout.type](layout);
+                if(!('svg' in widget)){
+                    throw "svg property not in widget.";
+                }
+                widget.tick_anchor = widget.svg.append("g")
+                                         .attr("class", "tick_anchor");
+                widget.async_callback = widget.async_callback_ctor();
+                widget.tick(widget);
             }catch(err){
                 console.log(err + "\nStopping creation of widget " + layout.name);
+                throw err;
                 continue;
             }
 
@@ -66,6 +74,8 @@
     // data_pipe EventSource
     function remove_widget(widget, event_name){
         var i = widgets[event_name].indexOf(widget);
+        // Reset the last received data event of the widget
+        widget.jdata = null;
         widgets[event_name].splice(i, 1);
         if(widgets[event_name].length === 0){
             delete widgets[event_name];
@@ -84,6 +94,7 @@
         if(type in widget_factories){
             console.log("[!] " + type + " was already registered as a widget factory.")
         }else{
+            factory.prototype = new Widget();
             widget_factories[type] = factory;
         }
     };
