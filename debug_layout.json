@@ -22,5 +22,120 @@
         }],
 
         "range": [0, 100]
+    },
+
+    "distances": {
+        "abstract": true,
+        "parent": "global",
+        "event_names": ["distances"],
+        "anchor": "#distances",
+        "range": [0, 4]
+    },
+    "distances-center": {
+        "parent": "distances",
+        "name_lines": ["Front-left", "Front-center", "Front-right"],
+        "y_name": "Distances front",
+        "accessors": [{
+            "name": "index",
+            "start": 0,
+            "end": 3
+        }]
+    },
+    "distances-middle": {
+        "parent": "distances",
+        "name_lines": ["Middle-left", "Middle-right"],
+        "y_name": "Distances middle",
+        "accessors": [{
+            "name": "index",
+            "start": 3,
+            "end": 5
+        }]
+    },
+    "distances-back": {
+        "parent": "distances",
+        "name_lines": ["Back-left", "Back-center", "Back-right"],
+        "y_name": "Distances back",
+        "accessors": [{
+            "name": "index",
+            "start": 5,
+            "end": 8
+        }]
+    },
+
+    "geometrical": {
+        "abstract": true,
+        "parent": "global",
+        "name_lines": ["x", "y", "z"],
+        "accessors": [{
+            "name": "index",
+            "start": 0,
+            "end": 3
+        }]
+    },
+
+    "rotation": {
+        "parent": "geometrical",
+        "event_names": ["rotation"],
+        "anchor": "#rotation",
+        "y_name": "Rotation",
+
+        "range": [0, 360]
+    },
+
+    "acceleration": {
+        "parent": "geometrical",
+        "event_names": ["acceleration"],
+        "anchor": "#acceleration",
+        "y_name": "Acceleration",
+
+        "range": [0, 10]
+    },
+
+    "floor": {
+        "parent": "global",
+        "event_names": ["floor"],
+        "anchor": "#floor",
+        "name_lines": ["Floor1", "Floor2", "Floor3", "Floor4"],
+        "y_name": "Floor",
+        "accessors": [{
+            "name": "index",
+            "start": 0,
+            "end": 4
+        }],
+
+        "range": [0, 5]
+    },
+
+    "motor": {
+        "abstract": true,
+        "parent": "global",
+        "event_names": ["motor"],
+        "anchor": "#motors"
+    },
+
+    "speed": {
+        "parent": "motor",
+        "name_lines": ["speed-left", "speed-right"],
+        "y_name": "Speed",
+        "accessors": [{
+            "name": "speed_accessor",
+            "start": 0,
+            "end": 2
+        }],
+
+        "range": [0, 5]
+    },
+
+    "turn": {
+        "parent": "motor",
+        "name_lines": ["turn-left", "turn-right"],
+        "y_name": "Turn",
+        "accessors": [{
+            "name": "turn_radius_accessor",
+            "start": 0,
+            "end": 2
+        }],
+
+        "range": [0, 3]
     }
 }
