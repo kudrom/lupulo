@@ -37,9 +37,10 @@ shortly. Every layout is indexed by a name that is used inside the layout file.
 This name is also added to the compiled layout that is sent to the frontend in
 the *name* attribute.
 
-One key attribute is the *event_name* attribute, that describes the data source
-the widget is listening to. Take a look at :ref:`data-schema-language` if you
-don't know what I'm talking about.
+One key attribute is the *event_names* attribute, that describes the data
+sources the widget is listening to. It is a list containing the names of the
+data sources the widget is listening to. Take a look at
+:ref:`data-schema-language` if you don't know what I'm talking about.
 
 Another very important attribute is the type attribute, that defines which type
 of widget will be defined by the layout.
@@ -100,7 +101,7 @@ possible layout file could be:::
 
         "battery": {
             "parent": "global",
-            "event": "battery",
+            "event_names": ["battery"],
             "type": "circular_meter"
         }
     }
@@ -115,7 +116,7 @@ layout:::
                 "width": 960,
                 "height": 500
             },
-            "event": "battery",
+            "event_names": ["battery"],
             "type": "circular_meter"
         }
     ]

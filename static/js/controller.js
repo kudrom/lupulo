@@ -40,11 +40,14 @@
             }
 
             // Add it to the page
-            add_widget(widget, layout.event_name);
+            for(var ii = 0; ii < layout.event_names.length; ii++){
+                add_widget(widget, layout.event_names[ii]);
+            }
         }
     };
 
-    // Add widget to the widgets dictionary and bind it to the data_pipe EventSource
+    // Add widget to the widgets dictionary and bind it to the 
+    // data_pipe EventSource
     function add_widget(widget, source_event){
         var iid = robot_selector.value === "" ? "----" : robot_selector.value;
         if(iid[0] !== "-" ){
@@ -59,14 +62,16 @@
         widgets[complete_event_name].push(widget);
     }
 
-    // Remove widget to the widgets dictionary and unbind it to the data_pipe EventSource
+    // Remove widget to the widgets dictionary and unbind it to the 
+    // data_pipe EventSource
     function remove_widget(widget, event_name){
         var i = widgets[event_name].indexOf(widget);
         widgets[event_name].splice(i, 1);
         if(widgets[event_name].length === 0){
             delete widgets[event_name];
         }
-        // If the widget was binded to any real event source (not the noid- virtual event source)
+        // If the widget was binded to any real event source (not the 
+        // noid-* virtual event source)
         if(event_name[0] !== "n"){
             data_pipe.removeEventListener(event_name, widget.async_callback);
         }
@@ -83,8 +88,8 @@
         }
     };
 
-    // Dictionary which stores all the widgets in the page indexed by the name of the 
-    // tracked event
+    // Dictionary which stores all the widgets in the page indexed by the
+    // name of the tracked event
     var widgets = {};
 
     // Client SSE to access the information from the backend 
@@ -92,7 +97,8 @@
     data_pipe.addEventListener("new_widgets", new_widgets);
     data_pipe.addEventListener("new_robots", new_robots);
 
-    // When the #robot changes, all widgets should be refreshed with the new robot id
+    // When the #robot changes, all widgets should be refreshed with the 
+    // new robot id.
     var robot_selector = document.getElementById("robot");
     robot_selector.addEventListener("change", function(){
         for(var event_name in widgets){

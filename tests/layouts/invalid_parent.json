@@ -6,7 +6,7 @@
 
     "bad-child": {
         "type": "something",
-        "event_name": "something",
+        "event_names": ["something"],
         "anchor": 0,
         "parent": "no-parent",
         "another_thing": "awesome",
@@ -22,7 +22,7 @@
 
     "child": {
         "type": "something",
-        "event_name": "something",
+        "event_names": ["something"],
         "anchor": 0,
         "parent": "bad-parent",
         "another_thing": "awesome",

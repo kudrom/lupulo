@@ -49,7 +49,7 @@ class LayoutManager(object):
 
         # Delete a layout if it doesn't have the required attributes or if
         # its event is unknown
-        required_attributes = set(["event_name", "type", "anchor", "size"])
+        required_attributes = set(["event_names", "type", "anchor", "size"])
         for name, obj in raw_layouts.items():
             keys = raw_layouts[name].keys()
             broken_attrs = required_attributes.difference(set(keys))
@@ -58,11 +58,6 @@ class LayoutManager(object):
                 log.msg("%s couldn't be compiled because "
                         "it lacks required arguments %s." %
                         (name, ",".join(broken_attrs)))
-            elif obj["event_name"] not in self.events:
-                del self.layouts[name]
-                log.msg("%s couldn't be compiled because"
-                        "its event is not in the schema_manager events: %s." %
-                        (name, ",".join(self.events)))
             elif 'height' not in obj["size"].keys():
                 del self.layouts[name]
                 log.msg("%s doesn't have a height in its size attribute." %
@@ -71,6 +66,17 @@ class LayoutManager(object):
                 del self.layouts[name]
                 log.msg("%s doesn't have a width in its size attribute." %
                         name)
+            elif not isinstance(obj["event_names"], list):
+                del self.layouts[name]
+                log.msg("%s couldn't be compiled because its event_names"
+                        "attribute is not a list." % name)
+            elif isinstance(obj["event_names"], list):
+                for event_name in obj["event_names"]:
+                    if event_name not in self.events:
+                        del self.layouts[name]
+                        log.msg("%s couldn't be compiled because its event %s"
+                                "is not in the schema_manager events: %s." %
+                                (name, event_name, ",".join(self.events)))
 
     def inherit(self, obj):
         """

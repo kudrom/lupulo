@@ -1,6 +1,11 @@
 {
     "invalid-event": {
         "type": "something",
-        "event_name": "crap"
+        "event_names": ["crap"],
+        "anchor": "hola",
+        "size": {
+            "height": 500,
+            "width": 250
+        }
     }
 }

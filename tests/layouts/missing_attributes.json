@@ -1,9 +1,19 @@
 {
     "missing":{
-        "type": "something"
+        "type": "something",
+        "anchor": "hola",
+        "size": {
+            "height": 500,
+            "width": 250
+        }
     },
 
     "missing2":{
-        "event_name": "something"
+        "event_names": ["something"],
+        "anchor": "hola",
+        "size": {
+            "height": 500,
+            "width": 250
+        }
     }
 }

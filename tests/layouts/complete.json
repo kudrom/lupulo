@@ -1,7 +1,7 @@
 {
     "simple": {
         "type": 1,
-        "event_name": "something_else",
+        "event_names": ["something_else"],
         "anchor": 0,
         "size": {
             "width": 800,
@@ -28,14 +28,14 @@
 
     "distances-center": {
         "parent": "distances",
-        "event_name": "distances",
+        "event_names": ["distances"],
         "type": "multiple_line"
     },
 
     "overwritten": {
         "overwritten": true,
         "parent": "distances",
-        "event_name": "something_else",
+        "event_names": ["something_else"],
         "type": "multiple_line"
     }
 }

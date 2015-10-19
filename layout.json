@@ -11,7 +11,7 @@
 
     "battery": {
         "parent": "global",
-        "event_name": "battery",
+        "event_names": ["battery"],
         "anchor": "#battery",
         "name_lines": ["Battery"],
         "y_name": "Battery",
@@ -27,7 +27,7 @@
     "distances": {
         "abstract": true,
         "parent": "global",
-        "event_name": "distances",
+        "event_names": ["distances"],
         "anchor": "#distances",
         "range": [0, 4]
     },
@@ -75,7 +75,7 @@
 
     "rotation": {
         "parent": "geometrical",
-        "event_name": "rotation",
+        "event_names": ["rotation"],
         "anchor": "#rotation",
         "y_name": "Rotation",
 
@@ -84,7 +84,7 @@
 
     "acceleration": {
         "parent": "geometrical",
-        "event_name": "acceleration",
+        "event_names": ["acceleration"],
         "anchor": "#acceleration",
         "y_name": "Acceleration",
 
@@ -93,7 +93,7 @@
 
     "floor": {
         "parent": "global",
-        "event_name": "floor",
+        "event_names": ["floor"],
         "anchor": "#floor",
         "name_lines": ["Floor1", "Floor2", "Floor3", "Floor4"],
         "y_name": "Floor",
@@ -109,7 +109,7 @@
     "motor": {
         "abstract": true,
         "parent": "global",
-        "event_name": "motor",
+        "event_names": ["motor"],
         "anchor": "#motors"
     },
 
