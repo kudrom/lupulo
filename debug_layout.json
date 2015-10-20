@@ -73,5 +73,29 @@
             "type": "dict",
             "key": "arg1"
         }]
+    },
+
+    "motor": {
+        "abstract": true,
+        "parent": "global",
+        "event_names": ["motor"],
+        "anchor": "#motors"
+    },
+
+    "speed": {
+        "parent": "motor",
+        "name_lines": ["speed-left", "speed-right"],
+        "y_name": "Speed",
+        "accessors": [{
+            "type": "index",
+            "start": 0,
+            "end": 2,
+            "after": [{
+                "type": "dict",
+                "key": "speed"
+            }]
+        }],
+
+        "range": [0, 5]
     }
 }

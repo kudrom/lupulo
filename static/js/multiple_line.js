@@ -25,7 +25,7 @@ MultipleLine = function(layout){
     // Width of the time scale
     this.seconds = layout.seconds;
 
-    var accessors = get_accessors(layout);
+    var accessors = get_accessors(layout.accessors);
     if(accessors.length < layout.name_lines.length){
         throw "[!] There are more name_lines than accessors for " + layout.name;
     }else if(accessors.length > layout.name_lines.length){
@@ -35,7 +35,7 @@ MultipleLine = function(layout){
     // The Lines present in this graph
     this.lines = [];
     // We use the length of name_lines to not create too much Lines if there are
-    // more accessors that name_lines
+    // more accessors that name_lines;
     for(var i = 0; i < layout.name_lines.length; i++){
         accessor = accessors[i];
         this.lines.push(new Line(accessor));
@@ -170,7 +170,6 @@ MultipleLine = function(layout){
     this.clear_framebuffers = function(){
         for(var i = 0; i < this.lines.length; i++){
             this.lines[i].framebuffer.splice(0, this.lines[i].framebuffer.length);
-            this.lines[i].last = 0;
         }
     }
 };

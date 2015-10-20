@@ -9,14 +9,41 @@
         }
     }
 
-    get_accessors = function(layout){
+    get_accessors = function(description){
         var ret = [],
             accessor,
-            description = layout.accessors;
+            parent_accessors,
+            child_accessors,
+            desc,
+            event;
         for(var i = 0; i < description.length; i++){
             var type = description[i].type;
             if(type in accessors){
-                ret = ret.concat(accessors[type](description[i]));
+                // returns a list
+                parent_accessors = accessors[type](description[i]);
+                if('after' in description[i]){
+                    desc = description[i].after;
+                    event = description[i].event;
+                    for(var iv = 0; iv < desc.length; iv++){
+                        desc[iv].event = event;
+                    }
+                    child_accessors = get_accessors(desc);
+                    for(var ii = 0; ii < parent_accessors.length; ii++){
+                        for(var iii = 0; iii < child_accessors.length; iii++){
+                            ret.push((function (ii, iii){
+                                return function(jdata){
+                                    var rdata = parent_accessors[ii](jdata);
+                                    var complete_event = get_complete_event_name(event);
+                                    var child_data = {}
+                                    child_data[complete_event] = rdata;
+                                    return child_accessors[iii](child_data);
+                                }
+                            })(ii, iii));
+                        }
+                    }
+                }else{
+                    ret = ret.concat(parent_accessors);
+                }
             }else{
                 console.log("[!] Accessor " + description[i] + " is not registered");
             }
@@ -43,11 +70,12 @@ register_accessor("index", function(description){
                 return function (jdata){
                     var event_name = get_complete_event_name(event_source);
                     if(!(event_name in jdata)){
-                        // TODO: better messages
-                        console.log("[!] " + event_name + " not in the data.");
+                        console.log("[!] " + event_source +
+                                    " is not an event source of data.");
                         return 0;
                     }else if(jdata[event_name].length <= index){
-                        console.log("[!] the data list is not long enough.");
+                        console.log("[!] the data of " + event_source +
+                                    " is not long enough for a layout.");
                         return 0;
                     }
                     return jdata[event_name][index];
@@ -70,11 +98,12 @@ register_accessor("dict", function(description){
         ret.push(function(jdata){
             var event_name = get_complete_event_name(event_source);
             if(!(event_name in jdata)){
-                // TODO: better messages
-                console.log("[!] " + event_name + " not in the data.");
+                console.log("[!] " + event_source +
+                            " is not an event source of data.");
                 return 0;
             }else if(!(key in jdata[event_name])){
-                console.log("[!] " + key + " not in the data.");
+                console.log("[!] " + key + " is not in the " + 
+                            event_source + " dict event source.");
                 return 0;
             }
             return jdata[event_name][key];
