@@ -24,7 +24,7 @@ class SSEResource(resource.Resource):
             when new information is published to the sse_resource.
         """
         self.subscribers = set()
-        # The robot ids who have sent a message through this sse resource
+        # The device ids who have sent a message through this sse resource
         self.ids = []
 
         self.schema_fp = open(settings["data_schema"], "r")
@@ -65,7 +65,7 @@ class SSEResource(resource.Resource):
         request.write("".join(msg))
         msg = []
         if len(self.ids) > 0:
-            msg.append('event: new_robots\n')
+            msg.append('event: new_devices\n')
             msg.append('data: [%s]\n\n' % ",".join(map(str, self.ids)))
             request.write("".join(msg))
         return server.NOT_DONE_YET
@@ -93,9 +93,9 @@ class SSEResource(resource.Resource):
 
             msg = []
             if iid not in self.ids:
-                log.msg("New connection from robot %d" % iid)
+                log.msg("New connection from device %d" % iid)
                 self.ids.append(iid)
-                msg.append('event: new_robots\n')
+                msg.append('event: new_devices\n')
                 msg.append('data: [%d]\n\n' % iid)
             for event, data in jdata.items():
                 if event in ["id"]:

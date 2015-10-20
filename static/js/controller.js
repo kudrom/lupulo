@@ -1,20 +1,20 @@
 // Returns the complete event name of a source event
 function get_complete_event_name(source_event){
-    var device = document.getElementById("robot");
+    var device = document.getElementById("device");
     var event_name = "id" + device.value + "-" + source_event;
     return event_name
 }
 
 (function (){
-    // Callback for the new_robots data event source
-    function new_robots(event){
+    // Callback for the new_devices data event source
+    function new_devices(event){
         var list = JSON.parse(event.data);
-        // If a new robot is tracked, show it in the select form
-        var select_element = document.getElementById("robot");
+        // If a new device is tracked, show it in the select form
+        var device_selector = document.getElementById("device");
         for(var i = 0; i < list.length; i++){
             var option = document.createElement("option");
             option.text = list[i];
-            select_element.add(option);
+            device_selector.add(option);
         }
     };
 
@@ -66,7 +66,7 @@ function get_complete_event_name(source_event){
     // Add widget to the widgets dictionary and bind it to the 
     // data_pipe EventSource
     function add_widget(widget, source_event){
-        var iid = robot_selector.value === "" ? "----" : robot_selector.value;
+        var iid = device_selector.value === "" ? "----" : device_selector.value;
         if(iid[0] !== "-" ){
             var complete_event_name = get_complete_event_name(source_event);
             data_pipe.addEventListener(complete_event_name, widget.async_callback);
@@ -115,12 +115,12 @@ function get_complete_event_name(source_event){
     // Client SSE to access the information from the backend 
     var data_pipe = new EventSource("/subscribe");
     data_pipe.addEventListener("new_widgets", new_widgets);
-    data_pipe.addEventListener("new_robots", new_robots);
+    data_pipe.addEventListener("new_devices", new_devices);
 
-    // When the #robot changes, all widgets should be refreshed with the 
-    // new robot id.
-    var robot_selector = document.getElementById("robot");
-    robot_selector.addEventListener("change", function(){
+    // When the #device changes, all widgets should be refreshed with the 
+    // new device id.
+    var device_selector = document.getElementById("device");
+    device_selector.addEventListener("change", function(){
         for(var event_name in widgets){
             var len = widgets[event_name].length;
             for(var i = 0; i < len; i++){
@@ -128,7 +128,7 @@ function get_complete_event_name(source_event){
                 var widget = widgets[event_name][last_index];
                 widget.clear_framebuffers();
                 remove_widget(widget, event_name);
-                // Bind the widget to the new robot id
+                // Bind the widget to the new device id
                 var source_event = event_name.split("-")[1];
                 add_widget(widget, source_event);
             }
