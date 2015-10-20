@@ -1,47 +1,66 @@
-// The only way to retrieve a bunch of accessors is through this function
-function get_accessors(layout){
-    var accessors = {
-        // Returns the data associated with a index i of a list
-        "index": function(event_source, i){
-            return function(jdata){
-                var event_name = get_complete_event_name(event_source);
-                return jdata[event_name][i];
-            }
-        },
+(function(){
+    var accessors = {};
 
-        // Accessors used for the motor event
-        "speed_accessor": function(n){
-            return function(l){
-                return l[n].speed;
-            }
-        },
-        "turn_radius_accessor": function(n){
-            return function(l){
-                return l[n].turn_radius;
-            }
-        },
-    };
-
-    var ret = [],
-        accessor,
-        description = layout.accessors;
-    for(var i = 0; i < description.length; i++){
-        if("start" in description[i] &&
-        "end" in description[i] &&
-        "index" === description[i].type){
-            var type = description[i].type,
-                start = description[i].start,
-                end = description[i].end;
-            for(var ii = start; ii < end; ii++){
-                accessor = accessors[type](description[i].event, ii);
-                ret.push(accessor);
-            }
+    register_accessor = function(type, accessor){
+        if(type in accessors){
+            console.log("[!] " + type + " was already registered as an accesor.")
         }else{
-            console.log("[!] Definition for description #" + i + " in " +
-                        layout.type + " incomplete.");
+            accessors[type] = accessor;
         }
     }
 
-    // Returns as much function accessors as defined in the description
+    get_accessors = function(layout){
+        var ret = [],
+            accessor,
+            description = layout.accessors;
+        for(var i = 0; i < description.length; i++){
+            var type = description[i].type;
+            if(type in accessors){
+                ret = ret.concat(accessors[type](description[i]));
+            }else{
+                console.log("[!] Accessor " + description[i] + " is not registered");
+            }
+        }
+
+        // Returns as much function accessors as defined in the description
+        return ret;
+    }
+})();
+
+// Built-in accessors
+register_accessor("index", function(description){
+    var ret = [],
+        event_source = description.event;
+
+    if("start" in description &&
+    "end" in description){
+        var start = description.start,
+            end = description.end;
+        for(var ii = start; ii < end; ii++){
+            // Push a closure which wraps the ii index.
+            ret.push((function(index){
+                // Return the function which access the jdata
+                return function (jdata){
+                    var event_name = get_complete_event_name(event_source);
+                    return jdata[event_name][index];
+                }
+            })(ii));
+        }
+    }
+
     return ret;
-}
+});
+
+register_accessor("key", function(description){
+    // Accessors used for the motor event
+    "speed_accessor": function(n){
+        return function(l){
+            return l[n].speed;
+        }
+    },
+    "turn_radius_accessor": function(n){
+        return function(l){
+            return l[n].turn_radius;
+        }
+    },
+});
