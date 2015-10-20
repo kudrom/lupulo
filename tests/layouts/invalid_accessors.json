@@ -1,0 +1,45 @@
+{
+    "battery": {
+        "type": "multiple_line",
+        "size": {
+            "width": 760,
+            "height": 500
+        },
+        "event_names": ["something"],
+        "anchor": "#battery",
+        "accessors": [{
+            "type": "index",
+            "event": "nonsense"
+        }]
+    },
+    "battery2": {
+        "type": "multiple_line",
+        "size": {
+            "width": 760,
+            "height": 500
+        },
+        "event_names": ["something"],
+        "anchor": "#battery",
+        "accessors": [{
+            "event": "something"
+        }]
+    },
+    "battery3": {
+        "type": "multiple_line",
+        "size": {
+            "width": 760,
+            "height": 500
+        },
+        "event_names": ["something"],
+        "anchor": "#battery",
+        "accessors": [
+            {
+                "event": "something",
+                "type": "index"
+            },
+            {
+                "event": "nonsense"
+            }
+        ]
+    }
+}

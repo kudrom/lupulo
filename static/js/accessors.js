@@ -2,9 +2,9 @@
 function get_accessors(layout){
     var accessors = {
         // Returns the data associated with a index i of a list
-        "index": function(i){
-            return function(list){
-                return list[i];
+        "index": function(event_name, i){
+            return function(jdata){
+                return jdata[event_name][i];
             }
         },
 
@@ -25,24 +25,20 @@ function get_accessors(layout){
         accessor,
         description = layout.accessors;
     for(var i = 0; i < description.length; i++){
-        if("start" in description[i] && "end" in description[i] && "name" in description[i]){
-            var name = description[i].name,
+        if("start" in description[i] &&
+        "end" in description[i] &&
+        "index" === description[i].type){
+            var type = description[i].type,
                 start = description[i].start,
                 end = description[i].end;
             for(var ii = start; ii < end; ii++){
-                accessor = accessors[name](ii);
+                accessor = accessors[type](event_name, ii);
                 ret.push(accessor);
             }
         }else{
-            console.log("[!] Definition for description #" + i + " in " + layout.name + "incomplete.");
+            console.log("[!] Definition for description #" + i + " in " +
+                        layout.type + " incomplete.");
         }
-    }
-
-    // TODO: How abstract and general is the accessor mechanism?
-    if(ret.length < layout.name_lines.length){
-        throw "[!] There are more name_lines than accessors for " + layout.name;
-    }else if(ret.length > layout.name_lines.length){
-        console.log("[!] There are more accessors that name_lines for " + layout.name);
     }
 
     // Returns as much function accessors as defined in the description

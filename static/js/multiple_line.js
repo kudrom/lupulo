@@ -13,9 +13,6 @@ MultipleLine = function(layout){
     })(['y_name', 'seconds', 'name_lines', 'accessors']);
 
     var Line = function(accessor){
-        // The variable used to store the last data retrieved from the
-        // backend from the async callback
-        this.last = 0;
         // Array for the data displayed
         this.framebuffer = [];
         // SVG path of this line
@@ -27,9 +24,16 @@ MultipleLine = function(layout){
 
     // Width of the time scale
     this.seconds = layout.seconds;
+
+    var accessors = get_accessors(layout);
+    if(accessors.length < layout.name_lines.length){
+        throw "[!] There are more name_lines than accessors for " + layout.name;
+    }else if(accessors.length > layout.name_lines.length){
+        console.log("[!] There are more accessors that name_lines for " + layout.name);
+    }
+
     // The Lines present in this graph
     this.lines = [];
-    var accessors = get_accessors(layout);
     // We use the length of name_lines to not create too much Lines if there are
     // more accessors that name_lines
     for(var i = 0; i < layout.name_lines.length; i++){
@@ -169,9 +173,6 @@ MultipleLine = function(layout){
             this.lines[i].last = 0;
         }
     }
-
-
-
 };
 
 // Register the Klass as a factory for multiple_line widgets

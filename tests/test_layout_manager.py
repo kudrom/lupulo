@@ -36,6 +36,34 @@ class TestsSchemaDescriptor(unittest.TestCase):
     def test_invalid_event(self):
         self.invalid("invalid_event.json")
 
+    def test_invalid_size(self):
+        self.invalid("invalid_size.json")
+
+    def test_invalid_accessors(self):
+        self.invalid("invalid_accessors.json")
+
+    def test_default_accessor(self):
+        layout_path = "tests/layouts/" + "default_accessor.json"
+        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        schema_manager = MagicMock()
+        schema_manager.get_events = MagicMock(return_value=["something"])
+        self.layout_manager = LayoutManager(ifp, schema_manager)
+        self.layout_manager.compile()
+        self.assertEqual(len(self.layout_manager.layouts), 1)
+        accessor = self.layout_manager.layouts['battery']["accessors"][0]
+        self.assertEqual(accessor["event"], "something")
+        ifp.close()
+
+    def test_accessor_with_event(self):
+        layout_path = "tests/layouts/" + "accessor_with_event.json"
+        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        schema_manager = MagicMock()
+        schema_manager.get_events = MagicMock(return_value=["something"])
+        self.layout_manager = LayoutManager(ifp, schema_manager)
+        self.layout_manager.compile()
+        self.assertEqual(len(self.layout_manager.layouts), 1)
+        ifp.close()
+
     def test_missing_attributes(self):
         self.invalid("missing_attributes.json")
 

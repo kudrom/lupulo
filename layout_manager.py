@@ -51,32 +51,51 @@ class LayoutManager(object):
         # its event is unknown
         required_attributes = set(["event_names", "type", "anchor", "size"])
         for name, obj in raw_layouts.items():
-            keys = raw_layouts[name].keys()
-            broken_attrs = required_attributes.difference(set(keys))
+            delete = False
+            broken_attrs = required_attributes.difference(set(obj.keys()))
             if len(broken_attrs) > 0:
                 del self.layouts[name]
                 log.msg("%s couldn't be compiled because "
                         "it lacks required arguments %s." %
                         (name, ",".join(broken_attrs)))
-            elif 'height' not in obj["size"].keys():
-                del self.layouts[name]
+                # Bypass to avoid KeyError when trying to access an attribute
+                # that doesn't exist
+                continue
+            if 'height' not in obj["size"].keys():
+                delete = True
                 log.msg("%s doesn't have a height in its size attribute." %
                         name)
-            elif 'width' not in obj["size"].keys():
-                del self.layouts[name]
+            if 'width' not in obj["size"].keys():
+                delete = True
                 log.msg("%s doesn't have a width in its size attribute." %
                         name)
-            elif not isinstance(obj["event_names"], list):
-                del self.layouts[name]
+            if not isinstance(obj["event_names"], list):
+                delete = True
                 log.msg("%s couldn't be compiled because its event_names"
                         "attribute is not a list." % name)
-            elif isinstance(obj["event_names"], list):
+            if isinstance(obj["event_names"], list):
                 for event_name in obj["event_names"]:
                     if event_name not in self.events:
-                        del self.layouts[name]
+                        delete = True
                         log.msg("%s couldn't be compiled because its event %s"
                                 "is not in the schema_manager events: %s." %
                                 (name, event_name, ",".join(self.events)))
+            if 'accessors' in obj:
+                for accessor in obj['accessors']:
+                    if 'type' not in accessor:
+                        delete = True
+                        log.msg("%s accessor doesn't have a type property." %
+                                name)
+
+                    if 'event' not in accessor:
+                        accessor['event'] = obj['event_names'][0]
+                    elif accessor['event'] not in obj['event_names']:
+                        delete = True
+                        log.msg("%s accessor event property is not in the"
+                                " event_names attribute of the layout." % name)
+
+            if delete:
+                del self.layouts[name]
 
     def inherit(self, obj):
         """

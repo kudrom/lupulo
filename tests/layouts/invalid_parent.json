@@ -16,15 +16,11 @@
         }
     },
 
-    "bad-parent": {
-        "something": "not-interesting"
-    },
-
     "child": {
         "type": "something",
         "event_names": ["something"],
         "anchor": 0,
-        "parent": "bad-parent",
+        "parent": "bad-child",
         "another_thing": "awesome",
         "size": {
             "width": 800,

@@ -1,0 +1,18 @@
+{
+    "battery": {
+        "type": "multiple_line",
+        "size": {
+            "width": 760
+        },
+        "event_names": ["something"],
+        "anchor": "#battery"
+    },
+    "battery2": {
+        "type": "multiple_line",
+        "size": {
+            "height": 760
+        },
+        "event_names": ["something"],
+        "anchor": "#battery"
+    }
+}

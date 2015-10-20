@@ -23,11 +23,13 @@
             // Check requirements
             anchor = $(layout.anchor);
             if(anchor.length == 0){
-                console.log("[!] " + layout.anchor + " anchor doesn't exist in the document.");
+                console.log("[!] " + layout.anchor +
+                            " anchor doesn't exist in the document.");
                 continue;
             }
             if(!(layout.type in widget_factories)){
-                console.log("[!] " + layout.type + " type doesn't exist as a factory of widgets.");
+                console.log("[!] " + layout.type +
+                            " type doesn't exist as a factory of widgets.");
                 continue;
             }
 

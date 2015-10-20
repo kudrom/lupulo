@@ -26,7 +26,8 @@ Widget = function(){
                 jdata = [jdata];
             }
 
-            widget.jdata = {event.type: jdata};
+            widget.jdata = {};
+            widget.jdata[event.type] = jdata;
         }
     }
 }

@@ -16,7 +16,7 @@
         "name_lines": ["Battery"],
         "y_name": "Battery",
         "accessors": [{
-            "name": "index",
+            "type": "index",
             "start": 0,
             "end": 1
         }],
@@ -36,7 +36,7 @@
         "name_lines": ["Front-left", "Front-center", "Front-right"],
         "y_name": "Distances front",
         "accessors": [{
-            "name": "index",
+            "type": "index",
             "start": 0,
             "end": 3
         }]
@@ -46,7 +46,7 @@
         "name_lines": ["Middle-left", "Middle-right"],
         "y_name": "Distances middle",
         "accessors": [{
-            "name": "index",
+            "type": "index",
             "start": 3,
             "end": 5
         }]
@@ -56,7 +56,7 @@
         "name_lines": ["Back-left", "Back-center", "Back-right"],
         "y_name": "Distances back",
         "accessors": [{
-            "name": "index",
+            "type": "index",
             "start": 5,
             "end": 8
         }]
@@ -67,7 +67,7 @@
         "parent": "global",
         "name_lines": ["x", "y", "z"],
         "accessors": [{
-            "name": "index",
+            "type": "index",
             "start": 0,
             "end": 3
         }]
@@ -98,7 +98,7 @@
         "name_lines": ["Floor1", "Floor2", "Floor3", "Floor4"],
         "y_name": "Floor",
         "accessors": [{
-            "name": "index",
+            "type": "index",
             "start": 0,
             "end": 4
         }],
@@ -118,7 +118,7 @@
         "name_lines": ["speed-left", "speed-right"],
         "y_name": "Speed",
         "accessors": [{
-            "name": "speed_accessor",
+            "type": "speed_accessor",
             "start": 0,
             "end": 2
         }],
@@ -131,7 +131,7 @@
         "name_lines": ["turn-left", "turn-right"],
         "y_name": "Turn",
         "accessors": [{
-            "name": "turn_radius_accessor",
+            "type": "turn_radius_accessor",
             "start": 0,
             "end": 2
         }],
