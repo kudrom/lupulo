@@ -22,5 +22,56 @@
         }],
 
         "range": [0, 100]
+    },
+
+    "distances": {
+        "abstract": true,
+        "parent": "global",
+        "event_names": ["distances"],
+        "anchor": "#distances",
+        "range": [0, 4]
+    },
+    "distances-center": {
+        "parent": "distances",
+        "name_lines": ["Front-left", "Front-center", "Front-right"],
+        "y_name": "Distances front",
+        "accessors": [{
+            "type": "index",
+            "start": 0,
+            "end": 3
+        }]
+    },
+    "distances-middle": {
+        "parent": "distances",
+        "name_lines": ["Middle-left", "Middle-right"],
+        "y_name": "Distances middle",
+        "accessors": [{
+            "type": "index",
+            "start": 3,
+            "end": 5
+        }]
+    },
+    "distances-back": {
+        "parent": "distances",
+        "name_lines": ["Back-left", "Back-center", "Back-right"],
+        "y_name": "Distances back",
+        "accessors": [{
+            "type": "index",
+            "start": 5,
+            "end": 8
+        }]
+    },
+
+    "dict-debug-widget": {
+        "parent": "global",
+        "anchor": "#distances",
+        "event_names": ["dict_debug"],
+        "name_lines": ["arg1"],
+        "y_name": "Something",
+        "range": [0, 40],
+        "accessors": [{
+            "type": "dict",
+            "key": "arg1"
+        }]
     }
 }

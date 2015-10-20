@@ -22,7 +22,7 @@ Widget = function(){
         var widget = this;
         return function(event){
             var jdata = JSON.parse(event.data);
-            if(!(jdata instanceof Array)){
+            if(!(jdata instanceof Array || jdata instanceof Object)){
                 jdata = [jdata];
             }
 

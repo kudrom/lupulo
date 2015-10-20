@@ -3,7 +3,7 @@
 
     register_accessor = function(type, accessor){
         if(type in accessors){
-            console.log("[!] " + type + " was already registered as an accesor.")
+            console.log("[!] " + type + " was already registered as an accesor.");
         }else{
             accessors[type] = accessor;
         }
@@ -42,25 +42,46 @@ register_accessor("index", function(description){
                 // Return the function which access the jdata
                 return function (jdata){
                     var event_name = get_complete_event_name(event_source);
+                    if(!(event_name in jdata)){
+                        // TODO: better messages
+                        console.log("[!] " + event_name + " not in the data.");
+                        return 0;
+                    }else if(jdata[event_name].length <= index){
+                        console.log("[!] the data list is not long enough.");
+                        return 0;
+                    }
                     return jdata[event_name][index];
                 }
             })(ii));
         }
+    }else{
+        console.log("[!] Index accessor definition was incomplete.");
     }
 
     return ret;
 });
 
-register_accessor("key", function(description){
-    // Accessors used for the motor event
-    "speed_accessor": function(n){
-        return function(l){
-            return l[n].speed;
-        }
-    },
-    "turn_radius_accessor": function(n){
-        return function(l){
-            return l[n].turn_radius;
-        }
-    },
+register_accessor("dict", function(description){
+    var ret = [],
+        event_source = description.event;
+
+    if("key" in description){
+        var key = description.key;
+        ret.push(function(jdata){
+            var event_name = get_complete_event_name(event_source);
+            if(!(event_name in jdata)){
+                // TODO: better messages
+                console.log("[!] " + event_name + " not in the data.");
+                return 0;
+            }else if(!(key in jdata[event_name])){
+                console.log("[!] " + key + " not in the data.");
+                return 0;
+            }
+            return jdata[event_name][key];
+        });
+    }else{
+        console.log("[!] Dict accessor definition was incomplete.");
+    }
+
+    return ret;
 });
