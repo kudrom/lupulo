@@ -1,3 +1,10 @@
+// Returns the complete event name of a source event
+function get_complete_event_name(source_event){
+    var device = document.getElementById("robot");
+    var event_name = "id" + device.value + "-" + source_event;
+    return event_name
+}
+
 (function (){
     // Callback for the new_robots data event source
     function new_robots(event){
@@ -61,7 +68,7 @@
     function add_widget(widget, source_event){
         var iid = robot_selector.value === "" ? "----" : robot_selector.value;
         if(iid[0] !== "-" ){
-            var complete_event_name = "id" + iid + "-" + source_event;
+            var complete_event_name = get_complete_event_name(source_event);
             data_pipe.addEventListener(complete_event_name, widget.async_callback);
         }else{
             var complete_event_name = "noid-" + source_event;

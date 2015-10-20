@@ -2,8 +2,9 @@
 function get_accessors(layout){
     var accessors = {
         // Returns the data associated with a index i of a list
-        "index": function(event_name, i){
+        "index": function(event_source, i){
             return function(jdata){
+                var event_name = get_complete_event_name(event_source);
                 return jdata[event_name][i];
             }
         },
@@ -32,7 +33,7 @@ function get_accessors(layout){
                 start = description[i].start,
                 end = description[i].end;
             for(var ii = start; ii < end; ii++){
-                accessor = accessors[type](event_name, ii);
+                accessor = accessors[type](description[i].event, ii);
                 ret.push(accessor);
             }
         }else{
