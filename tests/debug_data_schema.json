@@ -50,5 +50,13 @@
         "length": 4,
         "item_type": "number",
         "item_range": [0, 5]
+    },
+    "dict_debug": {
+        "type": "dict",
+        "keys": ["arg1", "arg2"],
+        "arg1_type": "number",
+        "arg1_range": [0, 40],
+        "arg2_type": "number",
+        "arg2_range": [0, 30]
     }
 }
