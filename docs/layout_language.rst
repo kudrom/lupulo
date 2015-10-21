@@ -88,7 +88,7 @@ It isn't allowed multiple inheritance but severals levels of inheritance are
 possible.
 
 For example, if the layout battery would inherit from the global layout, a
-possible layout file could be:::
+possible layout file could be::
 
     {
         "global": {
@@ -108,7 +108,7 @@ possible layout file could be:::
     }
 
 In this example, battery will be sent to the frontend with the compiled
-layout:::
+layout::
 
     [
         {
@@ -125,15 +125,10 @@ layout:::
 Accessors
 ---------
 
-Sometimes a widget can only subscribe to an entire data source even when it only
-needs some information of the entire event stream. To allow an easy way to
-access to information you can use accessors that describe what information you
-want your widget to be notified from an entire event source.
-
-The accessors are described in the layout file and they are not obligatory by
-the framework, the widget decides if it want to use accessors or not.
-
-See :ref:`accessors` to know more about accessors.
+Usually a widget can only subscribe to an entire data source even when it only
+needs some information of the entire event stream. To access only to some
+information of an entire event stream, the widget should use the
+:ref:`accessors` mechanism.
 
 Widgets
 -------

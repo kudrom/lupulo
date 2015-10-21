@@ -1,6 +1,7 @@
 (function(){
     var accessors = {};
 
+    // Register an accessor
     register_accessor = function(type, accessor){
         if(type in accessors){
             console.log("[!] " + type + " was already registered as an accesor.");
@@ -9,6 +10,8 @@
         }
     }
 
+    // Given a description of the accessors usually in the layout, return a 
+    // list with all the accessors properly described.
     get_accessors = function(description){
         var ret = [],
             accessor,
@@ -16,26 +19,39 @@
             child_accessors,
             desc,
             event;
+        // Iterate over the entire description list
         for(var i = 0; i < description.length; i++){
             var type = description[i].type;
+            // If the accessor is registered
             if(type in accessors){
-                // returns a list
+                // Construct the accessor of the current description
                 parent_accessors = accessors[type](description[i]);
+                // If the accessor is part of a chain
                 if('after' in description[i]){
+                    // Construct a descripiton for the child
                     desc = description[i].after;
                     event = description[i].event;
                     for(var iv = 0; iv < desc.length; iv++){
                         desc[iv].event = event;
                     }
+                    // Call recursively with the child definition
                     child_accessors = get_accessors(desc);
+                    // Iterate over the parent and child to combine the
+                    // accessors with a closure that does the composition of two
+                    // accessors
                     for(var ii = 0; ii < parent_accessors.length; ii++){
                         for(var iii = 0; iii < child_accessors.length; iii++){
+                            // Encapsulate the closure with the indexes of the
+                            // parent and child accessors
                             ret.push((function (ii, iii){
                                 return function(jdata){
+                                    // Get the data from the parent
                                     var rdata = parent_accessors[ii](jdata);
-                                    var complete_event = get_complete_event_name(event);
+                                    // Construct the child data
                                     var child_data = {}
+                                    var complete_event = get_complete_event_name(event);
                                     child_data[complete_event] = rdata;
+                                    // Return the data returned by the child
                                     return child_accessors[iii](child_data);
                                 }
                             })(ii, iii));
@@ -95,6 +111,8 @@ register_accessor("dict", function(description){
 
     if("key" in description){
         var key = description.key;
+        // Push the function that returns the value associated with a key in a
+        // JSON object
         ret.push(function(jdata){
             var event_name = get_complete_event_name(event_source);
             if(!(event_name in jdata)){

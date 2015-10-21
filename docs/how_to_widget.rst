@@ -1,3 +1,5 @@
+.. _how_to_widget:
+
 How to program a widget
 =======================
 
