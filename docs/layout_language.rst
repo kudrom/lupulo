@@ -64,6 +64,7 @@ child. If an attribute exists both in the child and parent, the child value for
 the attribute overwrites that of the parent in the child definition.
 
 There are two kinds of layouts:
+
 #. **Leaf layout**: a layout that will be sent to the frontend to construct a
    widget.
 #. **Abstract layout**: a layout that won't be sent to the frontend but that can
