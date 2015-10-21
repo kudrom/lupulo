@@ -43,12 +43,6 @@ function get_complete_event_name(source_event){
             // Construct the widget
             try{
                 widget = new widget_factories[layout.type](layout);
-                if(!('svg' in widget)){
-                    throw "svg property not in widget.";
-                }
-                widget.tick_anchor = widget.svg.append("g")
-                                         .attr("class", "tick_anchor");
-                widget.async_callback = widget.async_callback_ctor();
                 widget.tick(widget);
             }catch(err){
                 console.log(err + "\nStopping creation of widget " + layout.name);
@@ -99,12 +93,12 @@ function get_complete_event_name(source_event){
     // Private object that stores the way of constructing widgets
     var widget_factories = {};
     // Registering in the global scope a function that manages widget_factories
-    register_factory_widgets = function(type, factory){
+    register_widget = function(type, constructor){
         if(type in widget_factories){
-            console.log("[!] " + type + " was already registered as a widget factory.")
+            console.log("[!] " + type + " was already registered as a widget constructor.")
         }else{
-            factory.prototype = new Widget();
-            widget_factories[type] = factory;
+            fill_widget_prototype(constructor);
+            widget_factories[type] = constructor;
         }
     };
 

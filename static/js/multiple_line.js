@@ -11,6 +11,7 @@ MultipleLine = function(layout){
             throw "Broken preconditions for " + layout.name;
         }
     })(['y_name', 'seconds', 'name_lines', 'accessors']);
+    Widget.call(this, layout);
 
     var Line = function(accessor){
         // Array for the data displayed
@@ -41,21 +42,16 @@ MultipleLine = function(layout){
         this.lines.push(new Line(accessor));
     }
 
-    // Sizes of the canvas
-    var margin = {top: 20, right: 20, bottom: 20, left: 40},
-        width = layout.size.width - margin.left - margin.right,
-        height = layout.size.height - margin.top - margin.bottom;
-
     // X axis
     var x = d3.scale.linear()
         .domain([0, this.seconds - 1])
-        .range([0, width]);
+        .range([0, this.width]);
     this.x = x;
 
     // Y axis
     var y = d3.scale.linear()
         .domain(layout.range)
-        .range([height, 0]);
+        .range([this.height, 0]);
     this.y = y;
 
     // Color scale
@@ -67,29 +63,23 @@ MultipleLine = function(layout){
         .x(function(d, ii) { return x(ii - 1); })
         .y(function(d, ii) { return y(d); });
 
-    this.svg = d3.select(layout.anchor).append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
     // The clip is used to avoid rendering of the left control point when
     // it's being moved by the transition
     // The lines have the smallest z-index
     this.svg.append("defs").append("clipPath")
         .attr("id", "clip")
       .append("rect")
-        .attr("width", width)
-        .attr("height", height);
+        .attr("width", this.width)
+        .attr("height", this.height);
 
     // Render the x axis
     this.svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
+        .attr("transform", "translate(0," + this.height + ")")
         .call(d3.svg.axis().scale(x).orient("bottom"))
     .append("text")
         .attr("y", -16)
-        .attr("x", width - 15)
+        .attr("x", this.width - 15)
         .attr("dy", "1em")
         .attr("text-anchor", "end")
         .text("Time (s)")
@@ -110,6 +100,7 @@ MultipleLine = function(layout){
     var width_rect = 15;
     var width_margin = 5;
     var width_legend =  max_name_line + width_rect + width_margin;
+    var width = this.width;
     var legend = this.svg.selectAll('.legend')
         .data(color.domain())
         .enter()
@@ -143,7 +134,7 @@ MultipleLine = function(layout){
     this.paint = function(jdata){
         var last = 0;
         for(var i = 0; i < this.lines.length; i++){
-            if(this.jdata !== null){
+            if(jdata !== null){
                 last = this.lines[i].accessor(jdata);
             }
 
@@ -175,4 +166,4 @@ MultipleLine = function(layout){
 };
 
 // Register the Klass as a factory for multiple_line widgets
-register_factory_widgets("multiple_line", MultipleLine);
+register_widget("multiple_line", MultipleLine);

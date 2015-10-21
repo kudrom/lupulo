@@ -1,10 +1,7 @@
-Widget = function(){
-    // jdata is the parsed data received from the sse connection
-    this.jdata = null;
-
+function fill_widget_prototype(constructor){
     // This function is called back every 1s to render the animation of every
     // line in the graph
-    this.tick = function(widget) {
+    constructor.prototype.tick = function(widget) {
         // Call the callback to paint the widget
         widget.paint(widget.jdata);
 
@@ -18,7 +15,7 @@ Widget = function(){
 
     // Constructor of the async callback used to provide this/that to
     // the async callback
-    this.async_callback_ctor = function() {
+    constructor.prototype.async_callback_ctor = function() {
         var widget = this;
         return function(event){
             var jdata = JSON.parse(event.data);
@@ -30,4 +27,27 @@ Widget = function(){
             widget.jdata[event.type] = jdata;
         }
     }
+}
+
+Widget = function(layout){
+    // JSON data for the paint function
+    this.jdata = null;
+
+    // Sizes of the canvas
+    this.margin = {top: 20, right: 20, bottom: 20, left: 40};
+    this.width = layout.size.width - this.margin.left - this.margin.right;
+    this.height = layout.size.height - this.margin.top - this.margin.bottom;
+
+    // Setup the svg root element
+    this.svg = d3.select(layout.anchor).append("svg")
+        .attr("width", this.width + this.margin.left + this.margin.right)
+        .attr("height", this.height + this.margin.top + this.margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
+    // Anchor for the transition in the tick function
+    this.tick_anchor = this.svg.append("g").attr("class", "tick_anchor");
+
+    // Asynchronous mechanism
+    this.async_callback = this.async_callback_ctor();
 }
