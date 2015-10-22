@@ -87,6 +87,38 @@ arguments, it's time now to present you the built-in accessors present in every
 installation of m3dpi_ui with its required arguments, which you must add to the
 layout file of the desired widget layout.
 
+primitive
+#########
+
+This is the easiest accessor, it returns the data directly associated to the
+event source and have no arguments.
+
+For example, if I had the following data schema::
+
+    {
+        "battery": {
+            "type": "number",
+            "range": [0, 100]
+        }
+    }
+
+And the following layaout::
+
+    {
+        "battery_widget":{
+            "type": "multiple_line",
+            "event_names": ["battery"],
+            "anchor": "#battery",
+            "name_lines": ["Battery"],
+            "y_name": "%",
+            "accessors": [{
+                "type": "primitive"
+            }]
+        }
+    }
+
+The MultipleLine widget will render a single line for the battery event source.
+
 index
 #####
 
@@ -271,9 +303,30 @@ register your own kind of accessor with the function *register_accessor*
 
    :param string type: String used to link an accessor to its description in the
                        layout file
-   :param function accessor: The function accessor.
+   :param function accessor: The constructor of the accessor.
 
-Every accessor must be a function that receives a JSON object of the accessors
-section of the layout that describes the accessors and returns a function that
-will be called with the raw data and that should return some data inside the raw
-data.
+As you can see, you register a constructor of an accessor that must return the
+accessor function. This constructor receives a JSON description of the accessors
+in the layout file for the corresponding widget and returns the accessor
+function.
+
+The accessor function will be called by the widget when some data arrives and it
+will return the data described in the accessors section of the layout.
+
+For example, this is the registration for the primitive accessor:
+
+.. code-block:: javascript
+
+    register_accessor("primitive", function(description){
+        var event_source = description.event;
+
+        return function(jdata){
+            var event_name = get_complete_event_name(event_source);
+            return jdata[event_name];
+        }
+    });
+
+As you can see, the constructor returns a function that gets the complete event
+name that the widget is subscribed to through the accessors section in its
+layout file and then returns the primitive data associated with that
+*event_name*.

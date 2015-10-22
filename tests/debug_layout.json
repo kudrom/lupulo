@@ -16,9 +16,7 @@
         "name_lines": ["Battery"],
         "y_name": "Battery",
         "accessors": [{
-            "type": "index",
-            "start": 0,
-            "end": 1
+            "type": "primitive"
         }],
 
         "range": [0, 100]

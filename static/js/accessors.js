@@ -132,3 +132,12 @@ register_accessor("dict", function(description){
 
     return ret;
 });
+
+register_accessor("primitive", function(description){
+    var event_source = description.event;
+
+    return function(jdata){
+        var event_name = get_complete_event_name(event_source);
+        return jdata[event_name];
+    }
+});

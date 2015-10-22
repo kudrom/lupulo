@@ -1,14 +1,14 @@
 .. _multiline:
 
-MultiLine
+MultipleLine
 ---------
 
-MultiLine is a widget that displays numeric information in a line graph with
+MultipleLine is a widget that displays numeric information in a line graph with
 multiple lines as can be seen in the image:
 
 .. image:: images/multiline.png
 
-MultiLine uses the accessors mechanism, so you should provide an accessor
+MultipleLine uses the accessors mechanism, so you should provide an accessor
 section in your layout that describes how the widget can fetch the data from
 your data schema.
 
