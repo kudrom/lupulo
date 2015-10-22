@@ -1,7 +1,5 @@
-.. _multiline:
-
 MultipleLine
----------
+------------
 
 MultipleLine is a widget that displays numeric information in a line graph with
 multiple lines as can be seen in the image:
