@@ -26,7 +26,7 @@ class TestsListenerManager(unittest.TestCase):
     def test_missing_module(self):
         settings['listener'] = 'crap'
         self.assertRaises(NotListenerFound, connect_listener, self.mock_parent,
-                self. mock_sse_resource)
+                          self. mock_sse_resource)
 
     def test_underscore(self):
         name = get_listener_name("something_weird")

@@ -6,12 +6,13 @@ from m3dpi_ui.exceptions import NotListenerFound
 
 def get_listener_name(name_listener):
     """
-        Transforms the name_listener into CamelCase and adds the Listener to the
-        end.
+        Transforms the name_listener into CamelCase and adds the Listener to
+        the end.
     """
     name_splitted = name_listener.split("_")
     CamelCase = "".join(map(lambda x: x.capitalize(), name_splitted))
     return CamelCase + "Listener"
+
 
 def connect_listener(parent, sse_resource):
     """

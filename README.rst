@@ -109,28 +109,20 @@ The backend is built using twisted and therefore defined in a tac file.
 Therefore you can use all the fine tunning that twistd provides to run a
 server.
 
-For the moment there are two main tac files:
-
-#. **deployment.tac**: uses a serial port specified in the settings file to
-   communicate with the device.
-#. **mock.tac**: is a software virtual device defined by the data schema file
-   that sends random data to the frontend. This is useful to test how the web
-   page behaves without an actual device plugged to the backend.
-
-For the moment, you need superuser permissions to execute the deployment tac
-file. You need to launch the twistd proccess from the **folder which contains
-the directory of the project**.
+For the moment, you need superuser permissions to execute some listeners in the
+tac file. You also need to launch the twistd proccess from the **folder which
+contains the directory of the project**.
 
 **See the settings first before launching the server.**
 
 If you are not familiar with twistd, to run any of the tac files in the
 foreground you need to type::
 
-    twistd -ny <tac_file>
+    twistd -ny m3dpi_ui/startup.tac
 
 to run the application in the background type::
 
-    twistd -y <tac_file>
+    twistd -n m3dpi_ui/startup.tac
 
 Debugging
 ---------

@@ -1,14 +1,16 @@
 import os.path
+import sys
 
 from twisted.application import service, internet
 from twisted.web import server
+from twisted.python import log
 from twisted.python.log import ILogObserver, FileLogObserver
 from twisted.python.logfile import DailyLogFile
 
-from m3dpi_ui.serial_listener import SerialService
 from m3dpi_ui.sse_resource import SSEResource
 from m3dpi_ui.root import get_website
 from m3dpi_ui.settings import settings
+from m3dpi_ui.listeners_manager import connect_listener
 
 # Bind the application and create a multi service that will be the
 # father of all the services below
@@ -17,8 +19,13 @@ multi = service.MultiService()
 multi.setServiceParent(application)
 
 # Setup logging
-logfile = DailyLogFile("deployment.log", os.path.join(settings["cwd"], "log"))
+logfile = DailyLogFile(settings["log_file"],
+                       os.path.join(settings["cwd"], "log"))
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
+
+# Log to stdout too
+if settings["redirect_stdout"]:
+    log.FileLogObserver(sys.stdout).start()
 
 # Create the web server and attach it to multi
 sse_resource = SSEResource()
@@ -27,5 +34,4 @@ tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
 # Create the serial listener and attach it to multi
-serial_service = SerialService(sse_resource)
-serial_service.setServiceParent(multi)
+connect_listener(multi, sse_resource)

@@ -9,11 +9,17 @@ settings = {
     # an instance of the webpage open in a browser
     "web_server_port": 8080,
 
+    # Log settings
+    "log_file": "development.log",
+    # "log_file": "production.log",
+    "redirect_stdout": True,
+
     # Settings for mongodb
     "activate_mongo": False,
     "mongo_host": "localhost",
     "mongo_db": "robots",
 
+    # Sets what listener the backend is using
     "listener": "mock",
 
     # Settings for the mock listener
