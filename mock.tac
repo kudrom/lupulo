@@ -10,7 +10,7 @@ from twisted.python.logfile import DailyLogFile
 from m3dpi_ui.sse_resource import SSEResource
 from m3dpi_ui.root import get_website
 from m3dpi_ui.settings import settings
-from m3dpi_ui.listeners_manager import connect_data_link
+from m3dpi_ui.listeners_manager import connect_listener
 
 # Bind the application and create a multi service that will be the
 # father of all the services below
