@@ -10,7 +10,7 @@ from twisted.python.logfile import DailyLogFile
 from m3dpi_ui.sse_resource import SSEResource
 from m3dpi_ui.root import get_website
 from m3dpi_ui.settings import settings
-from m3dpi_ui.tests.mock_listener import MockListener
+from m3dpi_ui.listeners_manager import connect_data_link
 
 # Bind the application and create a multi service that will be the
 # father of all the services below
@@ -32,5 +32,4 @@ tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
 # Create the serial listener and attach it to multi
-mock_listener = MockListener(2, sse_resource)
-mock_listener.setServiceParent(multi)
+connect_listener(multi, sse_resource)

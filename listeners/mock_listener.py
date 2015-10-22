@@ -7,15 +7,15 @@ from m3dpi_ui.settings import settings
 
 
 class MockListener(service.Service):
-    def __init__(self, ids, sse_resource):
-        self.ids = ids
+    def __init__(self, sse_resource):
+        self.ids = settings["mock_ids"]
         self.sse_resource = sse_resource
         self.data_schema_manager = self.sse_resource.data_schema_manager
         self.loop = LoopingCall(self.timer_callback)
         self.events = set(self.data_schema_manager.descriptors.keys())
 
     def startService(self):
-        self.loop.start(settings["serial_mock_timeout"])
+        self.loop.start(settings["mock_timeout"])
 
     def timer_callback(self):
         num = randint(0, len(self.events))

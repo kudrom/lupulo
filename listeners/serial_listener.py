@@ -4,6 +4,8 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
 from twisted.python import log
 
+from m3dpi_ui.settings import settings
+
 
 class SerialListener(LineReceiver):
     """
@@ -31,13 +33,12 @@ class SerialService(service.Service):
     """
         The service used in the app tac to start the serial listener
     """
-    def __init__(self, sse_resource, device):
+    def __init__(self, sse_resource):
         """
-            @prop device is the name of the serial device file
             @prop sse_resource is the sse_resource served by the web server
                   it's forwarded to the SerialListener
         """
-        self.device = device
+        self.device = settings["serial_device"]
         self.sse_resource = sse_resource
 
     def startService(self):

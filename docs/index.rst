@@ -17,6 +17,7 @@ Contents:
    data_schema_language.rst
    layout_language.rst
    accessors.rst
+   listeners.rst
    how_to_widget.rst
 
 .. Indices and tables

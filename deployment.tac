@@ -27,5 +27,5 @@ tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
 # Create the serial listener and attach it to multi
-serial_service = SerialService(sse_resource, settings["serial_device"])
+serial_service = SerialService(sse_resource)
 serial_service.setServiceParent(multi)
