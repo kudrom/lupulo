@@ -3,6 +3,9 @@
 Overview
 ========
 
+The complete documentation is in
+`ReadTheDocs <http://m3dpi-ui.readthedocs.org/en/latest/>`_
+
 To develop a device which interacts with its environment, it's usually needed a
 visualization of the sensory data in order to understand the behaviour of the
 device in the development stages.
