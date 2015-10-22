@@ -8,3 +8,4 @@ docs/_template/
 docs/_static/
 docs/_build/
 *.lock
+rest/*

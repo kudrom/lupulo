@@ -1,6 +1,6 @@
 import os.path
 
-from twisted.web import resource, server
+from twisted.web import resource, server, script
 from twisted.web.template import Element, XMLFile, flatten
 from twisted.web.static import File
 from twisted.python.filepath import FilePath
@@ -90,5 +90,10 @@ def get_website(sse_resource):
     # Serve the static directory for css/js/image files
     static = File(os.path.join(settings["cwd"], 'static'))
     root.putChild('static', static)
+
+    command = File(os.path.join(settings["cwd"], 'rest'))
+    command.ignoreExt('.rpy')
+    command.processors = {'.rpy': script.ResourceScript}
+    root.putChild('command', command)
 
     return server.Site(root)
