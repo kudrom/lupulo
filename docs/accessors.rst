@@ -12,10 +12,10 @@ hell no. That's what you use the accessors for.
 
 An accessor is a function that returns datums that the widget is expecting to
 work with. The widget doesn't know how is the structure of the raw data it's
-receiving. It just needs to render a number, a date or a list. But that number,
-date or list can be buried in some aggregate structure into the raw data. The
-accessor is therefore responsible to return some datum from some complex
-aggregated raw data that is defined in the data schema file.
+receiving. It just needs to render a number, a date or a list (a datum). But
+that number, date or list can be buried in some aggregate structure into the
+raw data. The accessor is therefore responsible to return some datum from some
+complex aggregated raw data that is defined in the data schema file.
 
 An accessor is described in the layout file of a web page. It's built by the
 widget, usually in its constructor, and when data arrives to the widget, it's
@@ -33,15 +33,15 @@ use easily a widget for several devices with different data schemas.
 But a widget has to render the data the device is sending. And that data follows
 the data schema of the device.
 
-The solution is to provide a mechanism to allow a widget to extract data from
-the raw data that the widget feeds with.
+The solution is to provide a mechanism to allow a widget to extract datums from
+the raw data.
 
 Remember from previous sections that the web page is made of widgets constructed
 with a definition called layout. Each widget subscribes to different event 
 sources, and each event source is defined by some section in the data schema.
 
 So, when a widget calls an accessor with some raw data from an event source, the
-accessor must know somehow the structure of the event source and what data the
+accessor must know somehow the structure of the event source and what datum the
 widget is interested in. That information is written down by the programmer of
 the data schema in the accessors section of the widget in the layout file.
 
@@ -51,7 +51,7 @@ which returns a list of accessors functions for every datum the widget is
 interested in.
 
 Once the widget's paint function is called, the widget calls the accessor with
-the raw data and gets back some data to render.
+the raw data and gets back some datum to render.
 
 This is how the accessors work, for some explanation of the layout format and
 the way a widget should use them, see the following sections.
@@ -67,14 +67,18 @@ You can use several kinds of accessors for the same widget, and you can chain
 them to access data in a complicated schema. Every accessor has some custom
 arguments, but some of them are shared.
 
-All accessors must have an obligatory attribute called *type* which defines the
-type of the accessor. This type can be one of the built-in accessors or of one
-of them you build yourself.
+Also, an accessor description in the layout can be a generator of accessors.
+This way you can summarize repetitive information in a single definition that
+generates several accessors. See :ref:`index` for an example.
 
-Every accessor is first tied to an event source with the event argument. The
+All accessors must have an obligatory attribute called *type* which defines the
+type of the accessor. This type can be one of the built-in accessors or one
+of your own accessors.
+
+Every accessor is first tied to an *event* source with the event argument. The
 accessor will only get information from the event source it's tied to. If no
-event argument is provided, the frontend will tie the accessor to the first
-event source present in the *event_names* property of the layout. If the event
+*event* argument is provided, the frontend will tie the accessor to the first
+event source present in the *event_names* property of the layout. If the *event*
 of the accessor is not present on the *event_names*, the accessor is rejected
 when it's being constructed in the frontend, so pay attention to the browser's
 console if something weird is happening.
@@ -84,7 +88,7 @@ Built-in accessors
 
 Once you know that an accessor is described in the layout and some of its
 arguments, it's time now to present you the built-in accessors present in every
-installation of m3dpi_ui with its required arguments, which you must add to the
+installation of lupulo with its required arguments, which you must add to the
 layout file of the desired widget layout.
 
 primitive
@@ -118,6 +122,8 @@ And the following layaout::
     }
 
 The MultipleLine widget will render a single line for the battery event source.
+
+.. _index:
 
 index
 #####

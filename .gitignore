@@ -9,3 +9,4 @@ docs/_static/
 docs/_build/
 *.lock
 rest/*
+*.bak

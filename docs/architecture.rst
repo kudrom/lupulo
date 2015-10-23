@@ -11,7 +11,7 @@ The frontend and backend will communicate through two main interfaces:
 #. C&C interface: used to command the device from the frontend.
 
 Apart from this two interfaces, the backend will communicate with the device
-through a dynamic data link connection chosen by the user. This way m3dpi_ui
+through a dynamic data link connection chosen by the user. This way lupulo
 provides an abstraction layer that doesn't fix the way the backend communicates
 with the device.
 
@@ -31,7 +31,7 @@ The backend has three main responsibilities:
 
 As said above, the data link connection between the backend and the device is
 constructed dynamically. The user configures the data link connection in the
-main configuration file of m3dpi_ui and a proper data link is built accordingly
+main configuration file of lupulo and a proper data link is built accordingly
 to that simple description.
 
 To allow a more greater personalization, the user can program a factory for data
@@ -57,8 +57,14 @@ Due to the hierarchical nature of the layout, before it's sent to the device
 through the housekeeping data, it first needs to be compiled. This compilation
 is only done once per layout and afterwards is sent to the frontend.
 
-The C&C listening end will be provided by some http resources associated to a
-url schema that respects the RESTful core goals.
+Currently, the C&C interface is served in the *rest* folder of the main project
+directory and is binded to the */command* url. This folder is populated by *rpy*
+twisted files which are loaded when a url with the same name of the file is
+requested to the backend.
+
+So, a user must place his rpy files in the rest folder and then use the same url
+schema to make the http requests from their command controllers rendered in the
+web page.
 
 .. figure:: images/backend.png
 
@@ -71,6 +77,7 @@ The frontend has the responsibility to:
 
 #. Load the layout and construct the widgets.
 #. Render the webpage.
+#. Accessors abstraction.
 
 Once the layout is received from the backend through the asynchronous data link,
 the frontend constructs every widget and place them in the web page in a dynamic
@@ -80,6 +87,10 @@ From now on, every widget will get a notification when some data is received
 for the event sources that the widget is listening on. Once data arrives for a
 widget, the frontend will call it to render itself into the page with the new
 data.
+
+The data that the widget receives has the structure defined in the data schema,
+in order to allow the widget to access the data without the understanding of the
+data schema, the frontend provides an abstraction called accessors.
 
 .. figure:: images/frontend.png
 

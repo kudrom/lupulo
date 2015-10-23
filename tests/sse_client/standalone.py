@@ -1,7 +1,7 @@
 from twisted.internet import reactor
 
-from m3dpi_ui.tests.sse_client.sse_client import SSEClient
-from m3dpi_ui.settings import settings
+from lupulo.tests.sse_client.sse_client import SSEClient
+from lupulo.settings import settings
 
 URL = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
 

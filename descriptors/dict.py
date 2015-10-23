@@ -1,4 +1,4 @@
-from m3dpi_ui.data_schema_manager import find_descriptor
+from lupulo.data_schema_manager import find_descriptor
 
 
 class Dict(object):

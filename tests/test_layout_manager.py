@@ -3,8 +3,8 @@ import os.path
 from twisted.trial import unittest
 from mock import MagicMock
 
-from m3dpi_ui.layout_manager import LayoutManager
-from m3dpi_ui.settings import settings
+from lupulo.layout_manager import LayoutManager
+from lupulo.settings import settings
 
 
 class TestsSchemaDescriptor(unittest.TestCase):

@@ -2,7 +2,7 @@ Layout language
 ===============
 
 As said before throughout the documentation, one of the core concepts in
-m3dpi_ui are the layouts the user writes to define the web page.
+lupulo are the layouts the user writes to define the web page.
 
 A layout is an object that the frontend passes to a widget when it's going to be
 constructed. The main responsibility of a layout is to let the widget know what
@@ -18,15 +18,18 @@ render a web page. A layout is filled with data that:
 #. The widget needs itself to render the information.
 
 Every layout thus shares some common attributes that they must provide in order
-to be valid m3dpi_ui layouts. But depending on the type of widget that the
+to be valid lupulo layouts. But depending on the type of widget that the
 layout is describing, another set of attributes are needed. These last
 attributes are defined by the widget.
 
 An important note is that if a layout doesn't have all the obligatory attributes
 that the framework needs, you will be notified when you launch the server. But
 if the layout doesn't have all the obligatory attributes that the widget needs,
-you will be notified in the browser's console. So when you are building the web
-page, **don't forget to take a look at the browser's console!**.
+you will be notified in the browser's console.
+
+.. note::
+    When you are building the web page, **don't forget to take a look at the
+    browser's console if something is going wrong!**
 
 The raw layout file is compiled before sending it to the frontend. The compile
 process is focused on solving the inheritance tree of the layout file and 
@@ -46,13 +49,14 @@ Another very important attribute is the type attribute, that defines which type
 of widget will be defined by the layout.
 
 Other obligatory attribute is *size* which is a dictionary with two keys:
-*height* and *width*. Both of these attributes receive as value a number which
-is the number of pixels that the widget will occlude in the web page.
+*height* and *width*. The size defines, as his name implies, the size of the
+widget in the web page :)
 
 In order to add the widget to the web page, the web page needs to have a html
 element to bind the widget to. This element is called the *anchor* of the widget
 in the web page and is another obligatory attribute of every layout in the
-layout file.
+layout file. This anchor can be any selector of jquery that resolves to an html
+element.
 
 Inheritance
 -----------
@@ -134,12 +138,12 @@ Widgets
 -------
 
 There are several widgets provided by default in the base distribution of
-m3dpi_ui.
+lupulo.
 
 As said above, each widget can define infinite attributes that the layout must
 provide in order to be constructed and added to the web page.
 
-The widgets distributed currently in m3dpi_ui are:
+The widgets distributed currently in lupulo are:
 
 .. toctree::
     :maxdepth: 1

@@ -3,7 +3,7 @@
 How to program a widget
 =======================
 
-You can extend the way m3pdi_ui renders the web page by writing custom widgets.
+You can extend the way lupulo renders the web page by writing custom widgets.
 A widget is a javascript object that is constructed by the frontend with a
 layout description written by the user and serviced by the backend. Every widget
 is connected to some data source in order to create a visualization of some
@@ -45,7 +45,7 @@ function of the widget.
 
 The data passed to the widget's paint function is in a raw form, usually it's
 complicated to manipulate this kind of information. To ease this manipulation
-there exists a mechanism in m3dpi_ui called :ref:`accessors`.
+there exists a mechanism in lupulo called :ref:`accessors`.
 
 Also, if the frontend needs to clear the drawings of a widget, it will call the
 function *clear_framebuffers*, which is supposed to erase any drawings that the

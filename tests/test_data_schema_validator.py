@@ -3,8 +3,8 @@ import os.path
 from twisted.trial import unittest
 from mock import patch, MagicMock
 
-from m3dpi_ui.data_schema_manager import DataSchemaManager
-from m3dpi_ui.settings import settings
+from lupulo.data_schema_manager import DataSchemaManager
+from lupulo.settings import settings
 
 
 class TestDataSchemaValidations(unittest.TestCase):
@@ -66,7 +66,7 @@ class TestDataSchemaValidations(unittest.TestCase):
         data = '{"leds": ["off"], "id": 1}'
         self.assertEqual(self.valid_schema_desc.validate(data), False)
 
-    @patch('m3dpi_ui.descriptors.enum.Enum')
+    @patch('lupulo.descriptors.enum.Enum')
     def test_validation_list_calls(self, EnumMock):
         test = "tests/data_schemas/list.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
@@ -95,8 +95,8 @@ class TestDataSchemaValidations(unittest.TestCase):
         data = '{"motor": {"speed": 1000, "turn_radius": 2.32}, "id": 1}'
         self.assertEqual(self.valid_schema_desc.validate(data), False)
 
-    @patch('m3dpi_ui.descriptors.enum.Enum')
-    @patch('m3dpi_ui.descriptors.number.Number')
+    @patch('lupulo.descriptors.enum.Enum')
+    @patch('lupulo.descriptors.number.Number')
     def test_validation_dict_calls(self, NumberMock, EnumMock):
         test = "tests/data_schemas/dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
@@ -112,7 +112,7 @@ class TestDataSchemaValidations(unittest.TestCase):
         v_enum.assert_called_once_with(3)
         v_number.assert_called_once_with(4)
 
-    @patch('m3dpi_ui.descriptors.number.Number')
+    @patch('lupulo.descriptors.number.Number')
     def test_validaton_nested_list_dict(self, MockNumber):
         mock_validate = MagicMock(return_value=True)
         MockNumber().validate = mock_validate

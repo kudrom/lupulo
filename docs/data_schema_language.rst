@@ -33,8 +33,9 @@ with a data source. There is only one obligatory property of every data source:
 its *type*.
 
 The type of a data source determines how the data is going to be verified by the
-backend when it is going to be forwarded to the frontend. Each type defines its
-own properties that every data source description of that type must stick to.
+backend when it is going to be forwarded to the frontend plus some other less
+interesting things. Each type defines its own properties that every data source
+description of that type must stick to.
 
 Currently there are two kind of types:
 
@@ -93,7 +94,8 @@ The first is a simple one called length that sets the length of the sequence.
 The second kind of attributes start with the item\_ preffix. These set of
 attributes defines the attributes of every data in the sequence. There are as
 much attributes as necessary to fully define the data source type of the data
-enclosed in the sequence.
+enclosed in the sequence. The rest of the name for this attributes matches that
+of the attributes defined for the data inside the list.
 
 For example, if we'd like to define a list of 8 leds, we could write::
 
@@ -122,12 +124,13 @@ dict
 Aggregated data source type which is a key/value pair of other data sources.
 Like the list data source type, it defines two different kind of attributes.
 
-The first one is a simple one called keys with is a list of the keys in the
+The first one is a simple one called keys which is a list of the keys in the
 dictionary.
 
 The second kind of attributes start with every key of the dictionary followed by
-an underscore. These attributes must fully define the data source associated
-with the given key.
+an underscore followed by the name of the attributes defined for the data inside
+the key for the defined dict. These attributes must fully define the data source
+associated with the given key.
 
 For example, if we'd like to define some leds by its state and intensity, we
 could write::

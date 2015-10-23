@@ -5,9 +5,9 @@ from twisted.trial import unittest
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 
-from m3dpi_ui.sse_resource import SSEResource
-from m3dpi_ui.root import get_website
-from m3dpi_ui.tests.sse_client.sse_client import SSEClient
+from lupulo.sse_resource import SSEResource
+from lupulo.root import get_website
+from lupulo.tests.sse_client.sse_client import SSEClient
 
 
 class TestFunctional(unittest.TestCase):

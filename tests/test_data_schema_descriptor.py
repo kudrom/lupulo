@@ -3,9 +3,9 @@ import os.path
 from twisted.trial import unittest
 from mock import patch, MagicMock
 
-from m3dpi_ui.data_schema_manager import DataSchemaManager
-from m3dpi_ui.settings import settings
-from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
+from lupulo.data_schema_manager import DataSchemaManager
+from lupulo.settings import settings
+from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
 
 
 class TestsSchemaDescriptor(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
             self.assertIn('generate', dir(obj))
             self.assertIn('validate', dir(obj))
 
-    @patch('m3dpi_ui.descriptors.number.Number')
+    @patch('lupulo.descriptors.number.Number')
     def test_argument_constructors(self, typeMocked):
         test = "tests/data_schemas/argument_constructors.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
@@ -69,7 +69,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.assertEqual(mocked.validate.called, True)
         mocked.validate.assert_called_with(["on", "off", "on"])
 
-    @patch('m3dpi_ui.descriptors.dict.Dict')
+    @patch('lupulo.descriptors.dict.Dict')
     def test_construction_nested_list_dict(self, MockedDict):
         test = "tests/data_schemas/list_dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")

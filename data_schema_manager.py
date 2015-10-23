@@ -1,7 +1,7 @@
 import json
 from importlib import import_module
 
-from m3dpi_ui.exceptions import NotFoundDescriptor, RequirementViolated
+from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
 
 
 def find_descriptor(klass_name):
@@ -10,7 +10,7 @@ def find_descriptor(klass_name):
         name the argument klass_name
     """
     try:
-        module = import_module("m3dpi_ui.descriptors.%s" % klass_name)
+        module = import_module("lupulo.descriptors.%s" % klass_name)
     except ImportError as e:
         raise NotFoundDescriptor(e.message.split(" ")[-1])
     return getattr(module, klass_name.capitalize())

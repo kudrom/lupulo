@@ -1,7 +1,7 @@
 from importlib import import_module
 
-from m3dpi_ui.settings import settings
-from m3dpi_ui.exceptions import NotListenerFound
+from lupulo.settings import settings
+from lupulo.exceptions import NotListenerFound
 
 
 def get_listener_name(name_listener):
@@ -20,7 +20,7 @@ def connect_listener(parent, sse_resource):
     """
     module_name = settings["listener"] + "_listener"
     try:
-        module = import_module("m3dpi_ui.listeners.%s" % module_name)
+        module = import_module("lupulo.listeners.%s" % module_name)
     except ImportError as e:
         raise NotListenerFound(e.message.split(" ")[-1])
 

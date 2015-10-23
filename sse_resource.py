@@ -7,9 +7,9 @@ from twisted.web import server, resource
 from twisted.internet import reactor
 from twisted.python import log
 
-from m3dpi_ui.data_schema_manager import DataSchemaManager
-from m3dpi_ui.layout_manager import LayoutManager
-from m3dpi_ui.settings import settings
+from lupulo.data_schema_manager import DataSchemaManager
+from lupulo.layout_manager import LayoutManager
+from lupulo.settings import settings
 
 
 class SSEResource(resource.Resource):

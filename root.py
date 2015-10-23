@@ -5,7 +5,7 @@ from twisted.web.template import Element, XMLFile, flatten
 from twisted.web.static import File
 from twisted.python.filepath import FilePath
 
-from m3dpi_ui.settings import settings
+from lupulo.settings import settings
 
 
 class AbstractResource(resource.Resource):

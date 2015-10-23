@@ -4,7 +4,7 @@ from twisted.protocols.basic import LineReceiver
 from twisted.internet.serialport import SerialPort
 from twisted.python import log
 
-from m3dpi_ui.settings import settings
+from lupulo.settings import settings
 
 
 class SerialListener(LineReceiver):

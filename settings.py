@@ -3,7 +3,7 @@ import os.path
 
 settings = {
     # Current working directory
-    "cwd": "/home/kudrom/src/m3dpi_ui",
+    "cwd": "/home/kudrom/src/lupulo",
 
     # Avoid the testing port 8081 if you are going to run the tests with
     # an instance of the webpage open in a browser

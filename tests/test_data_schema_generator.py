@@ -3,8 +3,8 @@ import json
 
 from twisted.trial import unittest
 
-from m3dpi_ui.data_schema_manager import DataSchemaManager
-from m3dpi_ui.settings import settings
+from lupulo.data_schema_manager import DataSchemaManager
+from lupulo.settings import settings
 
 
 class TestDataSchemaGenerations(unittest.TestCase):

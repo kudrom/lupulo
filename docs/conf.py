@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# m3dpi_ui documentation build configuration file, created by
+# lupulo documentation build configuration file, created by
 # sphinx-quickstart on Wed Oct 14 10:57:02 2015.
 #
 # This file is execfile()d with the current directory set to its
@@ -50,7 +50,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'm3dpi_ui'
+project = u'lupulo'
 copyright = u'2015, Alejandro López Espinosa (kudrom)'
 author = u'Alejandro López Espinosa (kudrom)'
 
@@ -204,7 +204,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'm3dpi_uidoc'
+htmlhelp_basename = 'lupulodoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -226,7 +226,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  (master_doc, 'm3dpi_ui.tex', u'm3dpi\\_ui Documentation',
+  (master_doc, 'lupulo.tex', u'Lupulo Documentation',
    u'Alejandro López Espinosa (kudrom)', 'manual'),
 ]
 
@@ -256,7 +256,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'm3dpi_ui', u'm3dpi_ui Documentation',
+    (master_doc, 'lupulo', u'lupulo Documentation',
      [author], 1)
 ]
 
@@ -270,8 +270,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  (master_doc, 'm3dpi_ui', u'm3dpi_ui Documentation',
-   author, 'm3dpi_ui', 'One line description of project.',
+  (master_doc, 'lupulo', u'lupulo Documentation',
+   author, 'lupulo', 'One line description of project.',
    'Miscellaneous'),
 ]
 

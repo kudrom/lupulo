@@ -1,9 +1,9 @@
 from twisted.trial import unittest
 from mock import patch, MagicMock
 
-from m3dpi_ui.settings import settings
-from m3dpi_ui.listeners_manager import connect_listener, get_listener_name
-from m3dpi_ui.exceptions import NotListenerFound
+from lupulo.settings import settings
+from lupulo.listeners_manager import connect_listener, get_listener_name
+from lupulo.exceptions import NotListenerFound
 
 
 class TestsListenerManager(unittest.TestCase):
@@ -15,7 +15,7 @@ class TestsListenerManager(unittest.TestCase):
     def tearDown(self):
         settings = self.old_settings
 
-    @patch('m3dpi_ui.listeners.mock_listener.MockListener')
+    @patch('lupulo.listeners.mock_listener.MockListener')
     def test_correct_listener(self, Listener):
         settings['listener'] = 'mock'
         Listener.setServiceParent = MagicMock()
