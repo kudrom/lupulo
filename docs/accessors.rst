@@ -31,27 +31,35 @@ schema, you shouldn't change the code inside a widget. Otherwise, you couldn't
 use easily a widget for several devices with different data schemas.
 
 But a widget has to render the data the device is sending. And that data follows
-the data schema of the device.
+the data schema of the device. So apparently, the widget must know the data
+schema in order to access the raw data in the paint function. And that's a
+problem of extensibility because if the data schema changes, the code inside the
+widget must change too.
 
 The solution is to provide a mechanism to allow a widget to extract datums from
-the raw data.
+the raw data without knowing directly the data schema definition.
 
 Remember from previous sections that the web page is made of widgets constructed
 with a definition called layout. Each widget subscribes to different event 
 sources, and each event source is defined by some section in the data schema.
 
-So, when a widget calls an accessor with some raw data from an event source, the
-accessor must know somehow the structure of the event source and what datum the
-widget is interested in. That information is written down by the programmer of
-the data schema in the accessors section of the widget in the layout file.
+In the layout of the widget, there is a section called accessors, which
+describes the data schema definition of the event source to the widget through
+the accessors mechanism.
 
-When the widget is constructed, the frontend passes it the entire layout,
-afterwards, if the widget uses accessors, it calls the *get_accessors* function,
-which returns a list of accessors functions for every datum the widget is
-interested in.
+When the widget is constructed, the frontend passes it the entire layout.
+Afterwards, if the widget uses accessors, the widget calls the *get_accessors*
+function with the accessors section in the layout definition. This function
+returns a list of accessors functions for every datum the widget is interested
+in.
 
-Once the widget's paint function is called, the widget calls the accessor with
-the raw data and gets back some datum to render.
+When a widget calls one of this accessors with some raw data from an event
+source, the accessor already knows the structure of the event source and returns
+the datum the widget is interested in.
+
+This way, the widget don't access the data schema: the accessors do this for
+him. But the widget must construct, store and call them explicitly. That's why
+the accessors are optional.
 
 This is how the accessors work, for some explanation of the layout format and
 the way a widget should use them, see the following sections.
@@ -60,8 +68,14 @@ Layout description
 ------------------
 
 To describe the accessors that the widget will use, you first must provide a
-section in the layout for the widget called *accessors* which is a list that the
-*get_accessors* function will take to return the list of accessors.
+section in the layout for the widget called *accessors* which can be a list or
+an object that the *get_accessors* function will read to return the list of
+accessor functions.
+
+If the *accessors* section is a list, the *get_accessors* function will return a
+list with all the accessors defined in the section. If it's an object, the
+*get_accessors* function will return an object indexed in the same way the
+definition is.
 
 You can use several kinds of accessors for the same widget, and you can chain
 them to access data in a complicated schema. Every accessor has some custom
@@ -121,7 +135,42 @@ And the following layaout::
         }
     }
 
-The MultipleLine widget will render a single line for the battery event source.
+Because the accessors section is a list, the *MultipleLine* widget will access
+the accessors as a list (in this case with one primitive accessor). For example:
+
+.. code-block:: javascript
+
+    var accessors = get_accessors(layout.accessors);
+    for(var i = 0; i < accessors.length; i++){
+        var accessor = accessors[i];
+    }
+
+If the accessors section were an object instead, the *MultipleLine* widget would
+access the accessors as an object. For example::
+
+    {
+        "battery_widget":{
+            "type": "multiple_line",
+            "event_names": ["battery"],
+            "anchor": "#battery",
+            "name_lines": ["Battery"],
+            "y_name": "%",
+            "accessors": {
+                "battery_accessor":{
+                    "type": "primitive"
+                }
+            }
+        }
+    }
+
+.. code-block:: javascript
+
+    var accessors = get_accessors(layout.accessors);
+    var accessor = accessors.battery_accessor
+
+The widget defines how it wants to receive the accessors: as a list or as an
+object. Therefore, every layout description of the widget must stick to this
+preference and write the accessors section with all of this in mind.
 
 .. _index:
 
@@ -230,8 +279,13 @@ structures.
 
 You define chaining in an accessor with the *after* property in the layout
 section for the accessors definition. This property is the description of
-another list of accessors that will extract information from the already
-extracted information of its parent when the accessor is called.
+a **list** of accessors (not an object) that will extract information from the
+already extracted information of its parent when the accessor is called.
+
+.. warning::
+
+    You cannot use an object describing an accessor in the after section of a
+    description of an accessor. You only can use a list.
 
 For example, if you had this schema::
 
@@ -281,7 +335,8 @@ Usage
 -----
 
 To use the accessors, the programmer of the layout file should write accessors
-sections for the widget's layouts as described in the previous paragraphs.
+sections for the widget's layouts as described in the previous paragraphs
+attending to the requirements the widget places on the accessors.
 
 Of course, the programmer of the widget should use that description to extract
 information from the raw data. To use them in your widget, you must first
@@ -291,7 +346,11 @@ construct them by calling the function *get_accessors*:
 
    :param object description: JSON object part of the layout describing the
                               accessors
-   :returns: list of accessors generated from the description
+   :returns: list or object of accessors generated from the description
+
+As explained above, the widget must fix if it wants to receive the accessor as a
+list or as an object indexed by some fixed keys. The user of the widget then
+must stick to this definition.
 
 Once the widget has the list of accessors, it should store them as a private
 member and use them when new data arrives in the paint method. You just have to
@@ -311,10 +370,14 @@ register your own kind of accessor with the function *register_accessor*
                        layout file
    :param function accessor: The constructor of the accessor.
 
-As you can see, you register a constructor of an accessor that must return the
-accessor function. This constructor receives a JSON description of the accessors
+As you can see, you register a constructor of an accessor that must return a
+list of accessors. This constructor receives a JSON description of the accessors
 in the layout file for the corresponding widget and returns the accessor
 function.
+
+.. warning::
+
+    Every accessor constructor must return a list of accessors.
 
 The accessor function will be called by the widget when some data arrives and it
 will return the data described in the accessors section of the layout.
@@ -326,13 +389,19 @@ For example, this is the registration for the primitive accessor:
     register_accessor("primitive", function(description){
         var event_source = description.event;
 
-        return function(jdata){
+        return [function(jdata){
             var event_name = get_complete_event_name(event_source);
+            if(!(event_name in jdata)){
+                console.log("[!] " + event_name +
+                            " is not an event source of data.");
+                return 0;
+            }
+
             return jdata[event_name];
-        }
+        }];
     });
 
 As you can see, the constructor returns a function that gets the complete event
 name that the widget is subscribed to through the accessors section in its
 layout file and then returns the primitive data associated with that
-*event_name*.
+*event_name* whenever it can.

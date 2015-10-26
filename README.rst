@@ -140,7 +140,7 @@ that the backend is sending to your web page. The sse client will create a sse
 connection towards the backend and will print to the standard output all the
 information that it receives. You can use this sse client typing::
 
-    python2 lupulo/tests/sse_client/standalone.py
+    python2 lupulo/tests/backend/sse_client/standalone.py
 
 The second one is a listener mock that will create a fake data link connection
 in the backend and will send random data that respects the data schema of your
