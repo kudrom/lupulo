@@ -2,17 +2,206 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>QUnit basic example</title>
+  <title>Test cases for accessors</title>
   <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.19.0.css">
 </head>
 <body>
   <div id="qunit"></div>
   <div id="qunit-fixture"></div>
+  <script src="/static/js/accessors.js"></script>
   <script src="//code.jquery.com/qunit/qunit-1.19.0.js"></script>
   <script>
-    QUnit.test( "a basic test example", function( assert ) {
-      var value = "hello";
-      assert.equal( value, "hello", "We expect value to be hello" );
+    function get_complete_event_name(e){
+        return e;
+    }
+
+    QUnit.test("Returned Object.", function(assert){
+        var desc = {"battery": {"type": "primitive", "event": "battery"}};
+        var accessors = get_accessors(desc);
+        assert.ok(!(accessors instanceof Array));
+        assert.deepEqual(Object.keys(accessors), ["battery"]);
+        assert.ok(accessors["battery"] instanceof Array);
+        assert.deepEqual(accessors["battery"].length, 1);
+        assert.ok(accessors["battery"][0] instanceof Function);
+
+        desc["direction"] = {"type": "primitive", "event": "direction"};
+        accessors = get_accessors(desc);
+        assert.deepEqual(Object.keys(accessors), ["battery", "direction"]);
+    });
+
+    QUnit.test("Returned Array.", function(assert){
+        var desc = [];
+        desc.push({"type": "primitive", "event": "battery"})
+        var accessors = get_accessors(desc);
+        assert.ok(accessors instanceof Array);
+        assert.deepEqual(accessors.length, 1);
+        assert.ok(accessors[0] instanceof Function);
+
+        desc.push({"type": "primitive", "event": "distances"})
+        accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 2);
+    });
+
+    QUnit.test("Chaining dict with list return test case.", function(assert){
+        var desc = {};
+        desc["leds"] = {"type": "primitive",
+                        "event": "leds",
+                        "after": [
+                            {
+                                "type": "primitive",
+                                "event": "leds"
+                            },
+                            {
+                                "type": "primitive",
+                                "event": "leds"
+                            }
+                        ]};
+        var accessors = get_accessors(desc);
+        assert.ok(!(accessors instanceof Array));
+        assert.deepEqual(Object.keys(accessors), ["leds"]);
+        assert.ok(accessors["leds"] instanceof Array);
+        assert.deepEqual(accessors["leds"].length, 2);
+    });
+
+    QUnit.test("Chaining multiple lists return test case.", function(assert){
+        var desc = [];
+        desc.push({"type": "primitive",
+                   "event": "leds",
+                   "after": [
+                       {
+                           "type": "primitive",
+                           "event": "leds"
+                       },
+                       {
+                           "type": "primitive",
+                           "event": "leds"
+                       }
+                   ]});
+        var accessors = get_accessors(desc);
+        assert.ok(accessors instanceof Array);
+        assert.deepEqual(accessors.length, 2);
+        assert.ok(accessors[0] instanceof Function);
+        assert.ok(accessors[1] instanceof Function);
+
+        desc.push({"type": "primitive", "event": "distances"})
+        var accessors = get_accessors(desc);
+        assert.ok(accessors instanceof Array);
+        assert.deepEqual(accessors.length, 3);
+    });
+
+    QUnit.test("Primitive test case.", function(assert){
+        var desc = [];
+        desc.push({"type": "primitive", "event": "ebattery"})
+        var accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 1);
+        assert.deepEqual(accessors[0]({"ebattery": 10}), 10);
+        assert.deepEqual(accessors[0]({"shit": 10}), 0);
+    });
+
+    QUnit.test("Dict test case.", function(assert){
+        var desc = [];
+        desc.push({"type": "dict", "event": "ebattery", "key": "battery"})
+        var accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 1);
+        assert.deepEqual(accessors[0]({"ebattery": {"battery": 10}}), 10);
+        assert.deepEqual(accessors[0]({"shit": {"battery": 10}}), 0);
+        assert.deepEqual(accessors[0]({"ebattery": {"shit": 10}}), 0);
+
+        assert.deepEqual(accessors[0]({"ebattery": {"battery": 10}, "a": []}), 10);
+
+        var desc = [];
+        desc.push({"type": "dict", "event": "ebattery"})
+        var accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 0);
+    });
+
+    QUnit.test("Chaining dicts.", function(assert){
+        var desc = {};
+        desc["awesome"] = {
+                "type": "dict",
+                "event": "eleds",
+                "key": "leds",
+                "after": [
+                     {
+                         "type": "dict",
+                         "event": "stupid",
+                         "key": "first"
+                     }
+                ]
+        };
+
+        var accessors = get_accessors(desc);
+        assert.deepEqual(Object.keys(accessors), ["awesome"]);
+        assert.deepEqual(accessors.awesome[0]({"eleds": {"leds": {"first": 10}}}), 10);
+        assert.deepEqual(accessors.awesome[0]({"nope": {"leds": {"first": 10}}}), 0);
+        assert.deepEqual(accessors.awesome[0]({"eleds": {"nope": {"first": 10}}}), 0);
+        assert.deepEqual(accessors.awesome[0]({"eleds": {"leds": {"nope": 10}}}), 0);
+    });
+
+    QUnit.test("Index test case.", function(assert){
+        var desc = [];
+        desc.push({"type": "index", "start": 0, "end": 4, "event": "battery"});
+        var accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 4);
+        assert.deepEqual(accessors[0]({"battery": [10, 20, 30, 40]}), 10);
+        assert.deepEqual(accessors[1]({"battery": [10, 20, 30, 40]}), 20);
+        assert.deepEqual(accessors[2]({"battery": [10, 20, 30, 40]}), 30);
+        assert.deepEqual(accessors[3]({"battery": [10, 20, 30, 40]}), 40);
+
+        assert.deepEqual(accessors[3]({"battery": [10, 20, 30]}), 0);
+        assert.deepEqual(accessors[0]({"battery": [10, 20, 30, 40], "a": [100]}), 10);
+
+        desc.push({"type": "index", "start": 6, "end": 7, "event": "battery"});
+        var accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 5);
+        assert.deepEqual(accessors[0]({"battery": [10, 20, 30, 40, 50, 60, 70, 80]}), 10);
+        assert.deepEqual(accessors[1]({"battery": [10, 20, 30, 40, 50, 60, 70, 80]}), 20);
+        assert.deepEqual(accessors[2]({"battery": [10, 20, 30, 40, 50, 60, 70, 80]}), 30);
+        assert.deepEqual(accessors[3]({"battery": [10, 20, 30, 40, 50, 60, 70, 80]}), 40);
+        assert.deepEqual(accessors[4]({"battery": [10, 20, 30, 40, 50, 60, 70, 80]}), 70);
+    });
+
+    QUnit.test("Chaining dict with list.", function(assert){
+        var desc = {};
+        desc["awesome"] = {
+                "type": "dict",
+                "event": "eleds",
+                "key": "leds",
+                "after": [
+                     {
+                         "type": "index",
+                         "start": 0,
+                         "end": 1
+                     }
+                ]
+        };
+
+        var accessors = get_accessors(desc);
+        assert.deepEqual(Object.keys(accessors), ["awesome"]);
+        assert.deepEqual(accessors.awesome[0]({"eleds": {"leds": [10]}}), 10);
+        assert.deepEqual(accessors.awesome[0]({"nope": {"leds": [10]}}), 0);
+        assert.deepEqual(accessors.awesome[0]({"eleds": {"nope": [10]}}), 0);
+    });
+
+    QUnit.test("Generator with chaining.", function(assert){
+        var desc = [{
+            "type": "index",
+            "event": "leds",
+            "start": 0,
+            "end": 2,
+            "after": [{
+                "type": "index",
+                "start": 1,
+                "end": 3
+            }]
+        }];
+
+        var accessors = get_accessors(desc);
+        assert.deepEqual(accessors.length, 4);
+        assert.deepEqual(accessors[0]({"leds": [[1,2,3], [4,5,6]]}), 2);
+        assert.deepEqual(accessors[1]({"leds": [[1,2,3], [4,5,6]]}), 3);
+        assert.deepEqual(accessors[2]({"leds": [[1,2,3], [4,5,6]]}), 5);
+        assert.deepEqual(accessors[3]({"leds": [[1,2,3], [4,5,6]]}), 6);
     });
   </script>
 </body>

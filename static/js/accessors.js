@@ -13,11 +13,16 @@
     // Given a description of the accessors usually in the layout, return a 
     // list with all the accessors properly described.
     get_accessors = function(description){
-        var ret,
-            parent_accessors,
+        var parent_accessors,
             child_accessors,
             desc,
             event;
+
+        var ret = {};
+        if(description instanceof Array){
+            ret = [];
+        }
+
         // Iterate over the entire description list
         for(var i in description){
             var type = description[i].type;
@@ -47,10 +52,17 @@
                                 return function(jdata){
                                     // Get the data from the parent
                                     var rdata = parent_accessors[pi](jdata);
+
+                                    // If rdata is some primitive data
+                                    if(!(rdata instanceof Object)){
+                                        return rdata;
+                                    }
+
                                     // Construct the child data
                                     var child_data = {}
                                     var complete_event = get_complete_event_name(event);
                                     child_data[complete_event] = rdata;
+
                                     // Return the data returned by the child
                                     return child_accessors[ci](child_data);
                                 }
@@ -129,7 +141,8 @@ register_accessor("dict", function(description){
                 console.log("[!] " + event_source +
                             " is not an event source of data.");
                 return 0;
-            }else if(!(key in jdata[event_name])){
+            }
+            if(!(key in jdata[event_name])){
                 console.log("[!] " + key + " is not in the " + 
                             event_source + " dict event source.");
                 return 0;
@@ -148,6 +161,12 @@ register_accessor("primitive", function(description){
 
     return [function(jdata){
         var event_name = get_complete_event_name(event_source);
+        if(!(event_name in jdata)){
+            console.log("[!] " + event_name +
+                        " is not an event source of data.");
+            return 0;
+        }
+
         return jdata[event_name];
     }];
 });
