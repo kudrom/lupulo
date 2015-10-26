@@ -81,21 +81,45 @@ class LayoutManager(object):
                                 "is not in the schema_manager events: %s." %
                                 (name, event_name, ",".join(self.events)))
             if 'accessors' in obj:
-                for accessor in obj['accessors']:
-                    if 'type' not in accessor:
-                        delete = True
-                        log.msg("%s accessor doesn't have a type property." %
-                                name)
-
-                    if 'event' not in accessor:
-                        accessor['event'] = obj['event_names'][0]
-                    elif accessor['event'] not in obj['event_names']:
-                        delete = True
-                        log.msg("%s accessor event property is not in the"
-                                " event_names attribute of the layout." % name)
+                delete = self.check_acc_desc(obj['accessors'], name, obj)
 
             if delete:
                 del self.layouts[name]
+
+    def check_acc_desc(self, desc, *args):
+        delete = False
+
+        if type(desc) is list:
+            accessor_list = desc
+        elif type(desc) is dict:
+            accessor_list = [l[1] for l in desc.items()]
+        else:
+            log.msg("%s accessor description wasn't a list or a dictionary")
+
+        for accessor in accessor_list:
+            delete = self.check_accessor(accessor, *args)
+
+        return delete
+
+    def check_accessor(self, accessor, name, obj):
+        delete = False
+
+        if 'type' not in accessor:
+            delete = True
+            log.msg("%s accessor doesn't have a type property." %
+                    name)
+
+        if 'event' not in accessor:
+            accessor['event'] = obj['event_names'][0]
+        elif accessor['event'] not in obj['event_names']:
+            delete = True
+            log.msg("%s accessor event property is not in the"
+                    " event_names attribute of the layout." % name)
+
+        if 'after' in accessor:
+            delete = self.check_acc_desc(accessor['after'], name, obj)
+
+        return delete
 
     def inherit(self, obj):
         """

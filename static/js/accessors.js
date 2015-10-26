@@ -14,7 +14,6 @@
     // list with all the accessors properly described.
     get_accessors = function(description){
         var ret = [],
-            accessor,
             parent_accessors,
             child_accessors,
             desc,

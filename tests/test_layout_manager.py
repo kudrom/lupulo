@@ -64,6 +64,31 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.assertEqual(len(self.layout_manager.layouts), 1)
         ifp.close()
 
+    def test_accessor_chaining_invalid(self):
+        self.invalid("chaining_invalid.json")
+
+    def test_accessor_chaining_valid(self):
+        layout_path = "tests/layouts/" + "chaining_valid.json"
+        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        schema_manager = MagicMock()
+        schema_manager.get_events = MagicMock(return_value=["something"])
+        self.layout_manager = LayoutManager(ifp, schema_manager)
+        self.layout_manager.compile()
+        self.assertEqual(len(self.layout_manager.layouts), 1)
+        ifp.close()
+
+    def test_accessor_object(self):
+        layout_path = "tests/layouts/" + "accessor_object.json"
+        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        schema_manager = MagicMock()
+        schema_manager.get_events = MagicMock(return_value=["something"])
+        self.layout_manager = LayoutManager(ifp, schema_manager)
+        self.layout_manager.compile()
+        self.assertEqual(len(self.layout_manager.layouts), 1)
+        accessor = self.layout_manager.layouts['battery']['accessors']
+        self.assertEqual(accessor['battery']['event'], 'something')
+        ifp.close()
+
     def test_missing_attributes(self):
         self.invalid("missing_attributes.json")
 
