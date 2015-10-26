@@ -9,7 +9,7 @@ from lupulo.settings import settings
 
 class TestDataSchemaGenerations(unittest.TestCase):
     def setUp(self):
-        test = "tests/data_schemas/complete.json"
+        test = "tests/backend/data_schemas/complete.json"
         self.fp = open(os.path.join(settings["cwd"], test), "r")
         self.valid_schema_desc = DataSchemaManager(self.fp)
 
@@ -55,7 +55,7 @@ class TestDataSchemaGenerations(unittest.TestCase):
         self.assertEqual(type(jdata["motor"]["turn_radius"]), float)
 
     def test_generate_nested_list_dict(self):
-        test = "tests/data_schemas/list_dict.json"
+        test = "tests/backend/data_schemas/list_dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
         data = dsd.generate(1)

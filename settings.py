@@ -14,6 +14,9 @@ settings = {
     # "log_file": "production.log",
     "redirect_stdout": True,
 
+    # Enable some behaviour for debugging
+    "debug": True,
+
     # Settings for mongodb
     "activate_mongo": False,
     "mongo_host": "localhost",

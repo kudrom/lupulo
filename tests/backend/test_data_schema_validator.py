@@ -9,7 +9,7 @@ from lupulo.settings import settings
 
 class TestDataSchemaValidations(unittest.TestCase):
     def setUp(self):
-        test = "tests/data_schemas/complete.json"
+        test = "tests/backend/data_schemas/complete.json"
         self.fp = open(os.path.join(settings["cwd"], test), "r")
         self.valid_schema_desc = DataSchemaManager(self.fp)
 
@@ -25,7 +25,7 @@ class TestDataSchemaValidations(unittest.TestCase):
         self.assertEqual(self.valid_schema_desc.validate(data), False)
 
     def test_validation_enum(self):
-        test = "tests/data_schemas/enum.json"
+        test = "tests/backend/data_schemas/enum.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
         data = '{"interesting_name": 1, "id": 1}'
@@ -68,7 +68,7 @@ class TestDataSchemaValidations(unittest.TestCase):
 
     @patch('lupulo.descriptors.enum.Enum')
     def test_validation_list_calls(self, EnumMock):
-        test = "tests/data_schemas/list.json"
+        test = "tests/backend/data_schemas/list.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
         EnumMock.assert_called_once_with(values=["on", "off", "null"])
@@ -98,7 +98,7 @@ class TestDataSchemaValidations(unittest.TestCase):
     @patch('lupulo.descriptors.enum.Enum')
     @patch('lupulo.descriptors.number.Number')
     def test_validation_dict_calls(self, NumberMock, EnumMock):
-        test = "tests/data_schemas/dict.json"
+        test = "tests/backend/data_schemas/dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
         EnumMock.assert_called_once_with(values=[0, 3], type="enum")
@@ -116,7 +116,7 @@ class TestDataSchemaValidations(unittest.TestCase):
     def test_validaton_nested_list_dict(self, MockNumber):
         mock_validate = MagicMock(return_value=True)
         MockNumber().validate = mock_validate
-        test = "tests/data_schemas/list_dict.json"
+        test = "tests/backend/data_schemas/list_dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
         data = """

@@ -7,7 +7,7 @@ from twisted.web.http_headers import Headers
 
 from lupulo.sse_resource import SSEResource
 from lupulo.root import get_website
-from lupulo.tests.sse_client.sse_client import SSEClient
+from lupulo.tests.backend.sse_client.sse_client import SSEClient
 
 
 class TestFunctional(unittest.TestCase):

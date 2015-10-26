@@ -85,7 +85,6 @@ def get_website(sse_resource):
     """
     root = Root()
     root.putChild('subscribe', sse_resource)
-    root.putChild('debug', Debug())
 
     # Serve the static directory for css/js/image files
     static = File(os.path.join(settings["cwd"], 'static'))
@@ -95,5 +94,10 @@ def get_website(sse_resource):
     command.ignoreExt('.rpy')
     command.processors = {'.rpy': script.ResourceScript}
     root.putChild('command', command)
+
+    if settings['debug']:
+        testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
+        root.putChild('testing', testing)
+        root.putChild('debug', Debug())
 
     return server.Site(root)

@@ -9,7 +9,7 @@ from lupulo.settings import settings
 
 class TestsSchemaDescriptor(unittest.TestCase):
     def setUp(self):
-        test = "tests/layouts/complete.json"
+        test = "tests/backend/layouts/complete.json"
         self.fp = open(os.path.join(settings["cwd"], test), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["distances",
@@ -24,7 +24,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.fp.close()
 
     def invalid(self, filepath):
-        layout_path = "tests/layouts/" + filepath
+        layout_path = "tests/backend/layouts/" + filepath
         ifp = open(os.path.join(settings["cwd"], layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
@@ -43,7 +43,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.invalid("invalid_accessors.json")
 
     def test_default_accessor(self):
-        layout_path = "tests/layouts/" + "default_accessor.json"
+        layout_path = "tests/backend/layouts/" + "default_accessor.json"
         ifp = open(os.path.join(settings["cwd"], layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
@@ -55,7 +55,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         ifp.close()
 
     def test_accessor_with_event(self):
-        layout_path = "tests/layouts/" + "accessor_with_event.json"
+        layout_path = "tests/backend/layouts/" + "accessor_with_event.json"
         ifp = open(os.path.join(settings["cwd"], layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
@@ -68,7 +68,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.invalid("chaining_invalid.json")
 
     def test_accessor_chaining_valid(self):
-        layout_path = "tests/layouts/" + "chaining_valid.json"
+        layout_path = "tests/backend/layouts/" + "chaining_valid.json"
         ifp = open(os.path.join(settings["cwd"], layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
@@ -78,7 +78,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         ifp.close()
 
     def test_accessor_object(self):
-        layout_path = "tests/layouts/" + "accessor_object.json"
+        layout_path = "tests/backend/layouts/" + "accessor_object.json"
         ifp = open(os.path.join(settings["cwd"], layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])

@@ -11,7 +11,7 @@ from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
 class TestsSchemaDescriptor(unittest.TestCase):
     def setUp(self):
         self.fp = open(os.path.join(settings["cwd"],
-                                    "tests/data_schemas/complete.json"),
+                                    "tests/backend/data_schemas/complete.json"),
                        "r")
         self.valid_schema_desc = DataSchemaManager(self.fp)
 
@@ -19,7 +19,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.fp.close()
 
     def test_invalid_file(self):
-        test = "tests/data_schemas/invalid_syntax.json"
+        test = "tests/backend/data_schemas/invalid_syntax.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         self.assertRaises(ValueError, DataSchemaManager, ifp)
         ifp.close()
@@ -33,7 +33,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     @patch('lupulo.descriptors.number.Number')
     def test_argument_constructors(self, typeMocked):
-        test = "tests/data_schemas/argument_constructors.json"
+        test = "tests/backend/data_schemas/argument_constructors.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         DataSchemaManager(ifp)
         self.assertEqual(typeMocked.called, True)
@@ -42,13 +42,13 @@ class TestsSchemaDescriptor(unittest.TestCase):
                                       type=u'number')
 
     def test_invalid_descriptor(self):
-        test = "tests/data_schemas/not_exists_descriptor.json"
+        test = "tests/backend/data_schemas/not_exists_descriptor.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         self.assertRaises(NotFoundDescriptor, DataSchemaManager, ifp)
         ifp.close()
 
     def test_requirement_violated(self):
-        test = "tests/data_schemas/requirements.json"
+        test = "tests/backend/data_schemas/requirements.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         self.assertRaises(RequirementViolated, DataSchemaManager, ifp)
 
@@ -71,7 +71,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     @patch('lupulo.descriptors.dict.Dict')
     def test_construction_nested_list_dict(self, MockedDict):
-        test = "tests/data_schemas/list_dict.json"
+        test = "tests/backend/data_schemas/list_dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         DataSchemaManager(ifp)
         MockedDict.assert_called_once_with(keys=["speed", "turn_radius"],
@@ -81,7 +81,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
                                            turn_radius_range=[0, 3])
 
     def test_attributes_nested_list_dict(self):
-        test = "tests/data_schemas/list_dict.json"
+        test = "tests/backend/data_schemas/list_dict.json"
         ifp = open(os.path.join(settings["cwd"], test), "r")
         dsd = DataSchemaManager(ifp)
         motor = dsd.descriptors["motor"]
