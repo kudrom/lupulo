@@ -1,6 +1,11 @@
 import json
+from copy import deepcopy
 
 from twisted.python import log
+from twisted.python.filepath import FilePath
+from twisted.internet.inotify import INotify, humanReadableMask
+
+from lupulo.settings import settings
 
 
 class LayoutManager(object):
@@ -9,19 +14,31 @@ class LayoutManager(object):
     """
     def __init__(self, fp, schema_manager):
         self.fp = fp
-        self.raw = json.load(self.fp)
+        self.schema_manager = schema_manager
+        self.inotify_callbacks = []
+        self.initialize()
+        if settings["activate_inotify"]:
+            self.setup_inotify()
+
+    def initialize(self):
         # Parent layouts
         self.contexts = {}
         # All events that the widgets can listen to
-        self.events = schema_manager.get_events()
+        self.events = self.schema_manager.get_events()
         # The compiled layouts
         self.layouts = {}
+
+        # Load the layout file and reset the position to allow second reads
+        self.raw = json.load(self.fp)
+        self.fp.seek(0)
 
     def compile(self):
         """
             Transform the layout description into a json object without
             inheritance and with some interesting checks.
         """
+        self.initialize()
+
         # Classify the objects in abstract or concrete types
         raw_layouts = {}
         for name, obj in self.raw.items():
@@ -78,8 +95,8 @@ class LayoutManager(object):
                     if event_name not in self.events:
                         delete = True
                         log.msg("%s couldn't be compiled because its event %s"
-                                "is not in the schema_manager events: %s." %
-                                (name, event_name, ",".join(self.events)))
+                                " is not in the schema_manager events: %s." %
+                                (name, event_name, ", ".join(self.events)))
             if 'accessors' in obj:
                 delete = self.check_acc_desc(obj['accessors'], name, obj)
 
@@ -139,3 +156,69 @@ class LayoutManager(object):
             Return a string of the compiled layout
         """
         return json.dumps(self.layouts.values())
+
+    def register_inotify_callback(self, callback):
+        self.inotify_callbacks.append(callback)
+
+    def setup_inotify(self):
+        self.notifier = INotify()
+        self.notifier.startReading()
+        filepath = FilePath(self.fp.name)
+        self.notifier.watch(filepath, callbacks=[self.inotify])
+
+    def inotify(self, ignored, filepath, mask):
+        """
+            Callback for the INotify. It should call the sse resource with the
+            changed layouts in the layout file if there are changes in the
+            layout file.
+        """
+        hmask = humanReadableMask(mask)
+
+        # Some editors move the file triggering several events in inotify. All
+        # of them change some attribute of the file, so if that event happens,
+        # see if there are changes and alert the sse resource in that case.
+        if 'attrib' in hmask or 'modify' in hmask:
+            jdata = {}
+
+            old_layouts = deepcopy(self.layouts)
+
+            # Reload file if some kind of buffering is being used by the editor
+            self.fp.close()
+            self.fp = open(self.fp.name, 'r')
+
+            self.compile()
+
+            old_keys = set(old_layouts.keys())
+            new_keys = set(self.layouts.keys())
+
+            removed_keys = old_keys.difference(new_keys)
+            jdata["removed"] = list(removed_keys)
+
+            added_keys = new_keys.difference(old_keys)
+            added_layouts = dict((key, layout)
+                                 for key, layout in self.layouts.items()
+                                 if key in added_keys)
+            jdata["added"] = added_layouts
+
+            changed = {}
+            for key in new_keys.difference(added_keys):
+                if key in old_keys:
+                    old_layout = old_layouts[key]
+                    new_layout = self.layouts[key]
+                    if old_layout != new_layout:
+                        changed[key] = new_layout
+
+            jdata["changed"] = changed
+
+            changes = len(removed_keys) + len(added_layouts) + len(changed)
+
+            if changes > 0:
+                for callback in self.inotify_callbacks:
+                    callback(jdata)
+                log.msg("Changes in the layout file.")
+
+        # Some editors move the file and inotify lose track of the file, so the
+        # notifier must be restarted when some attribute changed is received.
+        if 'attrib' in hmask:
+            self.notifier.stopReading()
+            self.setup_inotify()

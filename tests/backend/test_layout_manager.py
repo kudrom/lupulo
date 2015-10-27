@@ -7,21 +7,27 @@ from lupulo.layout_manager import LayoutManager
 from lupulo.settings import settings
 
 
-class TestsSchemaDescriptor(unittest.TestCase):
+class TestsLayout(unittest.TestCase):
     def setUp(self):
+        self.old_value = settings['activate_inotify']
+        settings['activate_inotify'] = False
+
         test = "tests/backend/layouts/complete.json"
         self.fp = open(os.path.join(settings["cwd"], test), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["distances",
                                               "something_else"])
+
         self.layout_manager = LayoutManager(self.fp, schema_manager)
         self.raw = self.layout_manager.raw
+
         self.contexts = self.layout_manager.contexts
         self.contexts["global"] = self.raw["global"]
         self.contexts["distances"] = self.raw["distances"]
 
     def tearDown(self):
         self.fp.close()
+        settings['activate_inotify'] = self.old_value
 
     def invalid(self, filepath):
         layout_path = "tests/backend/layouts/" + filepath

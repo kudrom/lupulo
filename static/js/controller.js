@@ -18,6 +18,10 @@ function get_complete_event_name(source_event){
         }
     };
 
+    function cha_widgets(event){
+        console.log(event.data);
+    };
+
     // Callback for the new_widgets data event source
     function new_widgets(event){
         var layouts = JSON.parse(event.data),
@@ -109,6 +113,7 @@ function get_complete_event_name(source_event){
     // Client SSE to access the information from the backend 
     var data_pipe = new EventSource("/subscribe");
     data_pipe.addEventListener("new_widgets", new_widgets);
+    data_pipe.addEventListener("cha_widgets", cha_widgets);
     data_pipe.addEventListener("new_devices", new_devices);
 
     // When the #device changes, all widgets should be refreshed with the 

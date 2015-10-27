@@ -8,18 +8,24 @@ from twisted.web.http_headers import Headers
 from lupulo.sse_resource import SSEResource
 from lupulo.root import get_website
 from lupulo.tests.backend.sse_client.sse_client import SSEClient
+from lupulo.settings import settings
 
 
 class TestFunctional(unittest.TestCase):
     def setUp(self):
+        self.old_value = settings['activate_inotify']
+        settings['activate_inotify'] = False
+
         self.sse_resource = SSEResource()
         site = get_website(self.sse_resource)
         self.server = reactor.listenTCP(8081, site)
+
         self.url = 'http://localhost:' + "8081" + '/subscribe'
         self.client = SSEClient(self.url)
 
     def tearDown(self):
         self.server.stopListening()
+        settings['activate_inotify'] = self.old_value
 
     def cleanup_connections(self):
         for sub in list(self.sse_resource.subscribers):

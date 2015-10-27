@@ -27,12 +27,12 @@ class SSEResource(resource.Resource):
         # The device ids who have sent a message through this sse resource
         self.ids = []
 
-        self.schema_fp = open(settings["data_schema"], "r")
-        self.data_schema_manager = DataSchemaManager(self.schema_fp)
+        fp = open(settings["data_schema"], "r")
+        self.data_schema_manager = DataSchemaManager(fp)
 
-        self.widgets_fp = open(settings["layout"], "r")
-        self.layout_manager = LayoutManager(self.widgets_fp,
-                                            self.data_schema_manager)
+        fp = open(settings["layout"], "r")
+        self.layout_manager = LayoutManager(fp, self.data_schema_manager)
+        self.layout_manager.register_inotify_callback(self.layout_changed)
         self.layout_manager.compile()
 
         self.mongo_client = MongoClient(settings['mongo_host'])
@@ -42,8 +42,17 @@ class SSEResource(resource.Resource):
 
     def clean_up(self):
         log.msg("SSEResource cleanup.")
-        self.schema_fp.close()
-        self.widgets_fp.close()
+        self.data_schema_manager.fp.close()
+        self.layout_manager.fp.close()
+
+    def removeSubscriber(self, subscriber):
+        """
+            When the request is finished for some reason, the request is
+            finished and the subscriber is removed from the set.
+        """
+        if subscriber in self.subscribers:
+            subscriber.finish()
+            self.subscribers.remove(subscriber)
 
     def render_GET(self, request):
         """
@@ -69,15 +78,6 @@ class SSEResource(resource.Resource):
             msg.append('data: [%s]\n\n' % ",".join(map(str, self.ids)))
             request.write("".join(msg))
         return server.NOT_DONE_YET
-
-    def store(self, data):
-        """
-            Store the data in the data collection.
-            A string is passed as attribute to avoid pollution of the argument.
-        """
-        jdata = json.loads(data)
-        jdata['timestamp'] = datetime.utcnow()
-        self.db.data.insert(jdata)
 
     def publish(self, data):
         """
@@ -107,11 +107,21 @@ class SSEResource(resource.Resource):
             for subscriber in self.subscribers:
                 subscriber.write("".join(msg))
 
-    def removeSubscriber(self, subscriber):
+    def store(self, data):
         """
-            When the request is finished for some reason, the request is
-            finished and the subscriber is removed from the set.
+            Store the data in the data collection.
+            A string is passed as attribute to avoid pollution of the argument.
         """
-        if subscriber in self.subscribers:
-            subscriber.finish()
-            self.subscribers.remove(subscriber)
+        jdata = json.loads(data)
+        jdata['timestamp'] = datetime.utcnow()
+        self.db.data.insert(jdata)
+
+    def layout_changed(self, data):
+        msg = []
+        jdata = json.dumps(data)
+        print jdata
+        msg.append('event: cha_widgets\n')
+        msg.append('data: %s\n\n' % jdata)
+
+        for subscriber in self.subscribers:
+            subscriber.write("".join(msg))

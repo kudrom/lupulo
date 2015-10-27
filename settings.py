@@ -17,6 +17,9 @@ settings = {
     # Enable some behaviour for debugging
     "debug": True,
 
+    # Activate the hot notification of layout and data schema
+    "activate_inotify": True,
+
     # Settings for mongodb
     "activate_mongo": False,
     "mongo_host": "localhost",
