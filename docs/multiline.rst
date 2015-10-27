@@ -8,7 +8,7 @@ multiple lines as can be seen in the image:
 
 MultipleLine uses the accessors mechanism, so you should provide an accessor
 section in your layout that describes how the widget can fetch the data from
-your data schema.
+your data schema. This accessors section must be a list.
 
 The obligatory attributes for the layout are:
 

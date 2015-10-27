@@ -15,6 +15,7 @@
         return e;
     }
 
+    QUnit.module("Accessors");
     QUnit.test("Returned Object.", function(assert){
         var desc = {"battery": {"type": "primitive", "event": "battery"}};
         var accessors = get_accessors(desc);
