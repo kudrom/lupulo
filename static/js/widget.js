@@ -33,6 +33,9 @@ Widget = function(layout){
     // JSON data for the paint function
     this.jdata = null;
 
+    // Event sources the widget is subscribed to
+    this.event_sources = [];
+
     // Sizes of the canvas
     this.margin = {top: 20, right: 20, bottom: 20, left: 40};
     this.width = layout.size.width - this.margin.left - this.margin.right;

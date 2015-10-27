@@ -119,8 +119,7 @@ class SSEResource(resource.Resource):
     def layout_changed(self, data):
         msg = []
         jdata = json.dumps(data)
-        print jdata
-        msg.append('event: cha_widgets\n')
+        msg.append('event: new_widgets\n')
         msg.append('data: %s\n\n' % jdata)
 
         for subscriber in self.subscribers:

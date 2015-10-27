@@ -155,7 +155,8 @@ class LayoutManager(object):
         """
             Return a string of the compiled layout
         """
-        return json.dumps(self.layouts.values())
+        obj = {'removed': {}, 'changed': {}, 'added': self.layouts}
+        return json.dumps(obj)
 
     def register_inotify_callback(self, callback):
         self.inotify_callbacks.append(callback)
