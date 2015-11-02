@@ -9,12 +9,25 @@
         "seconds": 100
     },
 
-    "battery": {
+    "battery1": {
         "parent": "global",
         "event_names": ["battery"],
         "anchor": "#battery",
         "name_lines": ["Battery"],
-        "y_name": "Battery",
+        "y_name": "Battery1",
+        "accessors": [{
+            "type": "primitive"
+        }],
+
+        "range": [0, 100]
+    },
+
+    "battery2": {
+        "parent": "global",
+        "event_names": ["battery"],
+        "anchor": "#battery",
+        "name_lines": ["Battery"],
+        "y_name": "Battery2",
         "accessors": [{
             "type": "primitive"
         }],

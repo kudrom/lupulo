@@ -44,45 +44,45 @@ function get_complete_event_name(source_event){
             name = widgets_removed[i];
             if(name in widgets){
                 remove_widget(name);
+                $('#' + name).remove();
             }
         }
 
-        var layouts,
-            layout,
+        var layout,
             widget,
             anchor;
         for(var i = 0; i < widgets_added.length; i++){
-            layouts = obj['added'];
-            for(var name in layouts){
-                layout = layouts[name];
-
-                // Check requirements
-                anchor = $(layout.anchor);
-                if(anchor.length == 0){
-                    console.log("[!] " + layout.anchor +
-                                " anchor doesn't exist in the document.");
-                    continue;
-                }
-                if(!(layout.type in widget_constructors)){
-                    console.log("[!] " + layout.type +
-                                " type doesn't exist as a factory of widgets.");
-                    continue;
-                }
-
-                // Construct the widget
-                try{
-                    widget = new widget_constructors[layout.type](layout);
-                    widget.tick(widget);
-                }catch(err){
-                    console.log(err + "\nStopping creation of widget " + layout.name);
-                    throw err;
-                    continue;
-                }
-
-                // Add it to the page
-                widget.layout = layout;
-                add_widget(widget);
+            layout = widgets_added[i];
+            if(layout.name in widgets){
+                continue;
             }
+
+            // Check requirements
+            anchor = $(layout.anchor);
+            if(anchor.length == 0){
+                console.log("[!] " + layout.anchor +
+                            " anchor doesn't exist in the document.");
+                continue;
+            }
+            if(!(layout.type in widget_constructors)){
+                console.log("[!] " + layout.type +
+                            " type doesn't exist as a factory of widgets.");
+                continue;
+            }
+
+            // Construct the widget
+            try{
+                widget = new widget_constructors[layout.type](layout);
+                widget.tick(widget);
+            }catch(err){
+                console.log(err + "\nStopping creation of widget " + layout.name);
+                throw err;
+                continue;
+            }
+
+            // Add it to the page
+            widget.layout = layout;
+            add_widget(widget);
         }
     };
 

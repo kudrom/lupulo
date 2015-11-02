@@ -45,8 +45,10 @@ Widget = function(layout){
     this.svg = d3.select(layout.anchor).append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
         .attr("height", this.height + this.margin.top + this.margin.bottom)
-      .append("g")
+    this.svg.attr('id', layout.name);
+    this.svg = this.svg.append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+
 
     // Anchor for the transition in the tick function
     this.tick_anchor = this.svg.append("g").attr("class", "tick_anchor");
