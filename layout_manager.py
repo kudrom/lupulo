@@ -157,59 +157,34 @@ class LayoutManager(INotifyObserver):
         obj = {'removed': {}, 'changed': {}, 'added': self.layouts}
         return json.dumps(obj)
 
-    def inotify(self, ignored, filepath, mask):
+    def inotify_callback(self, jdata):
         """
             Callback for the INotify. It should call the sse resource with the
             changed layouts in the layout file if there are changes in the
             layout file.
         """
-        hmask = humanReadableMask(mask)
+        old_layouts = deepcopy(self.layouts)
 
-        # Some editors move the file triggering several events in inotify. All
-        # of them change some attribute of the file, so if that event happens,
-        # see if there are changes and alert the sse resource in that case.
-        if 'attrib' in hmask or 'modify' in hmask:
-            jdata = {}
+        self.compile()
 
-            old_layouts = deepcopy(self.layouts)
+        old_keys = set(old_layouts.keys())
+        new_keys = set(self.layouts.keys())
 
-            # Reload file if some kind of buffering is being used by the editor
-            self.fp.close()
-            self.fp = open(self.fp.name, 'r')
+        removed_keys = old_keys.difference(new_keys)
+        jdata["removed"] = list(removed_keys)
 
-            self.compile()
+        added_keys = new_keys.difference(old_keys)
+        added_layouts = dict((key, layout)
+                             for key, layout in self.layouts.items()
+                             if key in added_keys)
+        jdata["added"] = added_layouts
 
-            old_keys = set(old_layouts.keys())
-            new_keys = set(self.layouts.keys())
+        changed = {}
+        for key in new_keys.difference(added_keys):
+            if key in old_keys:
+                old_layout = old_layouts[key]
+                new_layout = self.layouts[key]
+                if old_layout != new_layout:
+                    changed[key] = new_layout
 
-            removed_keys = old_keys.difference(new_keys)
-            jdata["removed"] = list(removed_keys)
-
-            added_keys = new_keys.difference(old_keys)
-            added_layouts = dict((key, layout)
-                                 for key, layout in self.layouts.items()
-                                 if key in added_keys)
-            jdata["added"] = added_layouts
-
-            changed = {}
-            for key in new_keys.difference(added_keys):
-                if key in old_keys:
-                    old_layout = old_layouts[key]
-                    new_layout = self.layouts[key]
-                    if old_layout != new_layout:
-                        changed[key] = new_layout
-
-            jdata["changed"] = changed
-
-            changes = len(removed_keys) + len(added_layouts) + len(changed)
-
-            if changes > 0:
-                for callback in self.inotify_callbacks:
-                    callback(jdata)
-                log.msg("Changes in the layout file.")
-
-        # Some editors move the file and inotify lose track of the file, so the
-        # notifier must be restarted when some attribute changed is received.
-        if 'attrib' in hmask:
-            self.notifier.stopReading()
-            self.setup_inotify()
+        jdata["changed"] = changed

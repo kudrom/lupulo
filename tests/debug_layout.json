@@ -12,7 +12,7 @@
     "battery": {
         "parent": "global",
         "event_names": ["battery"],
-        "anchor": "#battery",
+        "anchor": "#battery-anchor",
         "name_lines": ["Battery"],
         "y_name": "Battery",
         "accessors": [{
@@ -26,7 +26,7 @@
         "abstract": true,
         "parent": "global",
         "event_names": ["distances"],
-        "anchor": "#distances",
+        "anchor": "#distances-anchor",
         "range": [0, 4]
     },
     "distances-center": {
@@ -62,7 +62,7 @@
 
     "dict-debug-widget": {
         "parent": "global",
-        "anchor": "#distances",
+        "anchor": "#distances-anchor",
         "event_names": ["dict_debug"],
         "name_lines": ["arg1"],
         "y_name": "Something interesting",
@@ -77,7 +77,7 @@
         "abstract": true,
         "parent": "global",
         "event_names": ["motor"],
-        "anchor": "#motors"
+        "anchor": "#motors-anchor"
     },
 
     "speed": {
