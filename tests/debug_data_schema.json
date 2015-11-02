@@ -3,7 +3,7 @@
         "type": "list",
         "length": 8,
         "item_type": "number",
-        "item_range": [0, 4]
+        "item_range": [0, 14]
     },
     "leds": {
         "type": "list",

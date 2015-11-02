@@ -2,23 +2,22 @@ import json
 from copy import deepcopy
 
 from twisted.python import log
-from twisted.python.filepath import FilePath
-from twisted.internet.inotify import INotify, humanReadableMask
 
-from lupulo.settings import settings
+from lupulo.inotify_observer import INotifyObserver
+
+from twisted.internet.inotify import humanReadableMask
 
 
-class LayoutManager(object):
+class LayoutManager(INotifyObserver):
     """
         Manages the layout description.
     """
     def __init__(self, fp, schema_manager):
+        super(LayoutManager, self).__init__(fp)
         self.fp = fp
         self.schema_manager = schema_manager
         self.inotify_callbacks = []
         self.initialize()
-        if settings["activate_inotify"]:
-            self.setup_inotify()
 
     def initialize(self):
         # Parent layouts
@@ -157,15 +156,6 @@ class LayoutManager(object):
         """
         obj = {'removed': {}, 'changed': {}, 'added': self.layouts}
         return json.dumps(obj)
-
-    def register_inotify_callback(self, callback):
-        self.inotify_callbacks.append(callback)
-
-    def setup_inotify(self):
-        self.notifier = INotify()
-        self.notifier.startReading()
-        filepath = FilePath(self.fp.name)
-        self.notifier.watch(filepath, callbacks=[self.inotify])
 
     def inotify(self, ignored, filepath, mask):
         """

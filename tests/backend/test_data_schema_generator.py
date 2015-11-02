@@ -11,10 +11,13 @@ class TestDataSchemaGenerations(unittest.TestCase):
     def setUp(self):
         test = "tests/backend/data_schemas/complete.json"
         self.fp = open(os.path.join(settings["cwd"], test), "r")
+        self.old_inotify = settings['activate_inotify']
+        settings['activate_inotify'] = False
         self.valid_schema_desc = DataSchemaManager(self.fp)
 
     def tearDown(self):
         self.fp.close()
+        settings['activate_inotify'] = self.old_inotify
 
     def test_generate_complete(self):
         data = self.valid_schema_desc.generate(1)

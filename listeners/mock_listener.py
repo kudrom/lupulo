@@ -12,16 +12,16 @@ class MockListener(service.Service):
         self.sse_resource = sse_resource
         self.data_schema_manager = self.sse_resource.data_schema_manager
         self.loop = LoopingCall(self.timer_callback)
-        self.events = set(self.data_schema_manager.descriptors.keys())
 
     def startService(self):
         self.loop.start(settings["mock_timeout"])
 
     def timer_callback(self):
-        num = randint(0, len(self.events))
+        events = set(self.data_schema_manager.descriptors.keys())
+        num = randint(0, len(events))
         current_events = set()
         for i in range(num):
-            events_left = list(self.events.difference(current_events))
+            events_left = list(events.difference(current_events))
             current_events.add(choice(events_left))
 
         random_id = randint(1, self.ids)

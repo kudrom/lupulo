@@ -13,9 +13,12 @@ class TestsSchemaDescriptor(unittest.TestCase):
         self.fp = open(os.path.join(settings["cwd"],
                                     "tests/backend/data_schemas/complete.json"),
                        "r")
+        self.old_inotify = settings['activate_inotify']
+        settings['activate_inotify'] = False
         self.valid_schema_desc = DataSchemaManager(self.fp)
 
     def tearDown(self):
+        settings['activate_inotify'] = self.old_inotify
         self.fp.close()
 
     def test_invalid_file(self):

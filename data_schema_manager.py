@@ -1,7 +1,11 @@
 import json
 from importlib import import_module
 
+from twisted.python import log
+from twisted.internet.inotify import humanReadableMask
+
 from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
+from lupulo.inotify_observer import INotifyObserver
 
 
 def find_descriptor(klass_name):
@@ -16,7 +20,7 @@ def find_descriptor(klass_name):
     return getattr(module, klass_name.capitalize())
 
 
-class DataSchemaManager(object):
+class DataSchemaManager(INotifyObserver):
     """
         Validates and generates random data for a data schema.
     """
@@ -26,17 +30,20 @@ class DataSchemaManager(object):
             @member desc is the dictionary of the data schema
             @events is a set with all of the events defined in the data schema
         """
+        super(DataSchemaManager, self).__init__(fp)
         self.fp = fp
-        self.desc = json.load(self.fp)
-        self.events = set(self.desc.keys())
-        self.init_descriptors()
+        self.compile()
 
-    def init_descriptors(self):
+    def compile(self):
         """
             Initializes @member descriptors as a dictionary indexed by
             each event in @events and its value a class loaded with
             find_descriptor
         """
+        self.desc = json.load(self.fp)
+
+        self.events = set(self.desc.keys())
+
         self.descriptors = {}
         for key, value in self.desc.items():
             klass = find_descriptor(value["type"])
@@ -92,3 +99,46 @@ class DataSchemaManager(object):
 
     def get_events(self):
         return self.descriptors.keys()
+
+    def inotify(self, ignored, filepath, mask):
+        """
+            Callback for the INotify. It should call the sse resource with the
+            changed layouts in the layout file if there are changes in the
+            layout file.
+        """
+        hmask = humanReadableMask(mask)
+
+        # Some editors move the file triggering several events in inotify. All
+        # of them change some attribute of the file, so if that event happens,
+        # see if there are changes and alert the sse resource in that case.
+        # TODO: Abstract this calls chain
+        if 'attrib' in hmask or 'modify' in hmask:
+            old_descs = set(self.desc.keys())
+
+            self.fp.close()
+            self.fp = open(self.fp.name, 'r')
+            self.fp.seek(0)
+
+            self.compile()
+            new_descs = set(self.desc.keys())
+
+            added_descs = new_descs.difference(old_descs)
+            removed_descs = old_descs.difference(new_descs)
+
+            jdata = {}
+            jdata['added'] = list(added_descs)
+            jdata['removed'] = list(removed_descs)
+
+            print added_descs, removed_descs
+
+            changes = len(added_descs) + len(removed_descs)
+            if changes > 0:
+                for callback in self.inotify_callbacks:
+                    callback(jdata)
+                log.msg("Change in data schema.")
+
+        # Some editors move the file and inotify lose track of the file, so the
+        # notifier must be restarted when some attribute changed is received.
+        if 'attrib' in hmask:
+            self.notifier.stopReading()
+            self.setup_inotify()

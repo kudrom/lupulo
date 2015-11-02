@@ -29,6 +29,7 @@ class SSEResource(resource.Resource):
 
         fp = open(settings["data_schema"], "r")
         self.data_schema_manager = DataSchemaManager(fp)
+        self.data_schema_manager.register_inotify_callback(self.schema_changed)
 
         fp = open(settings["layout"], "r")
         self.layout_manager = LayoutManager(fp, self.data_schema_manager)
@@ -116,11 +117,17 @@ class SSEResource(resource.Resource):
         jdata['timestamp'] = datetime.utcnow()
         self.db.data.insert(jdata)
 
-    def layout_changed(self, data):
+    def something_changed(self, event_source, data):
         msg = []
         jdata = json.dumps(data)
-        msg.append('event: new_widgets\n')
+        msg.append('event: %s\n' % event_source)
         msg.append('data: %s\n\n' % jdata)
 
         for subscriber in self.subscribers:
             subscriber.write("".join(msg))
+
+    def layout_changed(self, data):
+        self.something_changed('new_widgets', data)
+
+    def schema_changed(self, data):
+        self.something_changed('new_event_sources', data)

@@ -18,6 +18,20 @@ function get_complete_event_name(source_event){
         }
     };
 
+    function new_event_sources(event){
+        var obj = JSON.parse(event.data),
+            events_removed = obj.removed,
+            events_added = obj.added;
+
+        for(var i = 0; i < events_added.length; i++){
+            console.log(events_added[i] + " event source was added.");
+        }
+
+        for(var i = 0; i < events_removed.length; i++){
+            console.log(events_removed[i] + " event source was removed.");
+        }
+    }
+
     // Callback for the new_widgets data event source
     function new_widgets(event){
         var obj = JSON.parse(event.data),
@@ -140,6 +154,7 @@ function get_complete_event_name(source_event){
     var data_pipe = new EventSource("/subscribe");
     data_pipe.addEventListener("new_widgets", new_widgets);
     data_pipe.addEventListener("new_devices", new_devices);
+    data_pipe.addEventListener("new_event_sources", new_event_sources);
 
     // When the #device changes, all widgets should be refreshed with the 
     // new device id.
