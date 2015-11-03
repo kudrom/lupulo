@@ -1,6 +1,7 @@
 from twisted.internet.inotify import INotify, humanReadableMask
 from twisted.python.filepath import FilePath
 from twisted.python import log
+from twisted.internet.defer import Deferred
 
 from lupulo.settings import settings
 
@@ -8,20 +9,29 @@ from lupulo.settings import settings
 class INotifyObserver(object):
     def __init__(self, fp):
         self.fp = fp
+        self.setup_done = Deferred()
         if settings["activate_inotify"]:
             self.setup_inotify()
         self.inotify_callbacks = []
 
     def setup_inotify(self):
+        """
+            Setup the INotifier watcher.
+        """
         self.notifier = INotify()
         self.notifier.startReading()
         filepath = FilePath(self.fp.name)
         self.notifier.watch(filepath, callbacks=[self.inotify])
 
+        # The setup_done is used mainly in testing
+        self.setup_done.callback(True)
+        self.setup_done = Deferred()
+
+
     def register_inotify_callback(self, callback):
         self.inotify_callbacks.append(callback)
 
-    def inotifycallback(self, jdata):
+    def inotify_callback(self, jdata):
         """
             Must be overwritten by a child.
         """

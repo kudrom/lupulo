@@ -1,0 +1,35 @@
+{
+    "simple": {
+        "type": 1,
+        "event_names": ["something_else"],
+        "anchor": 0,
+        "size": {
+            "width": 800,
+            "height": 600
+        }
+    },
+
+    "global": {
+        "abstract": true,
+        "anchor": 0,
+        "seconds": 100,
+        "size": {
+            "width": 800,
+            "height": 600
+        }
+    },
+
+    "distances": {
+        "abstract": true,
+        "parent": "global",
+        "range": [0, 4],
+        "overwritten": false
+    },
+
+    "overwritten": {
+        "overwritten": true,
+        "parent": "distances",
+        "event_names": ["something_else"],
+        "type": "multiple_line"
+    }
+}

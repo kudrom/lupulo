@@ -137,3 +137,65 @@ class TestsLayout(unittest.TestCase):
         self.assertEqual(set(layouts["overwritten"].keys()),
                          set(attributes))
         self.assertEqual(layouts["overwritten"]["overwritten"], True)
+
+    def difference(self, filepath, result):
+        self.layout_manager.compile()
+
+        layout_path = "tests/backend/layouts/" + filepath
+        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+
+        self.layout_manager.fp = ifp
+        jdata = {}
+        self.layout_manager.inotify_callback(jdata)
+        self.assertEqual(jdata, result)
+
+        ifp.close()
+
+    def test_inotify_difference_added(self):
+        jdata = {}
+        jdata['removed'] = []
+        jdata['changed'] = {}
+        jdata['added'] = {
+            'distances2': {
+                'overwritten': False,
+                'name': 'distances2',
+                'seconds': 100,
+                'range': [0, 4],
+                'type': 'multiple_line',
+                'anchor': 0,
+                'event_names': ['distances'],
+                'size': {'width': 800, 'height': 600}
+            }
+        }
+        self.difference('difference_added.json', jdata)
+
+    def test_inotify_difference_removed(self):
+        jdata = {}
+        jdata['removed'] = ['distances-center']
+        jdata['changed'] = {}
+        jdata['added'] = {}
+        self.difference('difference_removed.json', jdata)
+
+    def test_inotify_difference_changed(self):
+        jdata = {}
+        jdata['removed'] = []
+        jdata['added'] = {}
+        jdata['changed'] = {
+            'distances-center': {
+                'overwritten': False,
+                'name': 'distances-center',
+                'seconds': 100,
+                'range': [0, 4],
+                'type': 'awesomeness',
+                'anchor': 0,
+                'event_names': ['distances'],
+                'size': {'width': 800, 'height': 600}
+            }
+        }
+        self.difference('difference_changed.json', jdata)
+
+    def test_inotify_not_difference(self):
+        self.layout_manager.compile()
+        jdata = {}
+        self.layout_manager.inotify_callback(jdata)
+        self.assertEqual(jdata, {'added': {}, 'changed': {}, 'removed': []})

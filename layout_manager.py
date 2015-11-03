@@ -14,7 +14,6 @@ class LayoutManager(INotifyObserver):
     """
     def __init__(self, fp, schema_manager):
         super(LayoutManager, self).__init__(fp)
-        self.fp = fp
         self.schema_manager = schema_manager
         self.inotify_callbacks = []
         self.initialize()
