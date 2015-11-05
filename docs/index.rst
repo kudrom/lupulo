@@ -19,6 +19,7 @@ Contents:
    accessors.rst
    listeners.rst
    how_to_widget.rst
+   changelog.rst
 
 .. Indices and tables
 .. ==================
