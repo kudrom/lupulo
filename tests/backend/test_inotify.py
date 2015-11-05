@@ -22,7 +22,8 @@ class TestsInotify(unittest.TestCase):
         self.timeout = 2
         self.old_inotify = settings['activate_inotify']
         settings['activate_inotify'] = True
-        self.path = os.path.join(settings['cwd'], 'tests/backend/inotify.txt')
+        cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
+        self.path = os.path.join(cwd, 'tests/backend/inotify.txt')
         self.fp = open(self.path, 'w+', 0)
         self.fp.write("you should exist")
         self.d = Deferred()

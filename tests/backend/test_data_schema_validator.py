@@ -9,8 +9,9 @@ from lupulo.settings import settings
 
 class TestDataSchemaValidations(unittest.TestCase):
     def setUp(self):
+        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
         test = "tests/backend/data_schemas/complete.json"
-        self.fp = open(os.path.join(settings["cwd"], test), "r")
+        self.fp = open(os.path.join(self.cwd, test), "r")
         self.old_inotify = settings['activate_inotify']
         settings['activate_inotify'] = False
         self.valid_schema_desc = DataSchemaManager(self.fp)
@@ -29,7 +30,7 @@ class TestDataSchemaValidations(unittest.TestCase):
 
     def test_validation_enum(self):
         test = "tests/backend/data_schemas/enum.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         dsd = DataSchemaManager(ifp)
         data = '{"interesting_name": 1, "id": 1}'
         self.assertEqual(dsd.validate(data), True)
@@ -72,7 +73,7 @@ class TestDataSchemaValidations(unittest.TestCase):
     @patch('lupulo.descriptors.enum.Enum')
     def test_validation_list_calls(self, EnumMock):
         test = "tests/backend/data_schemas/list.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         dsd = DataSchemaManager(ifp)
         EnumMock.assert_called_once_with(values=["on", "off", "null"])
         data = '{"leds": ["on", "off", "null"], "id": 1}'
@@ -102,7 +103,7 @@ class TestDataSchemaValidations(unittest.TestCase):
     @patch('lupulo.descriptors.number.Number')
     def test_validation_dict_calls(self, NumberMock, EnumMock):
         test = "tests/backend/data_schemas/dict.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         dsd = DataSchemaManager(ifp)
         EnumMock.assert_called_once_with(values=[0, 3], type="enum")
         NumberMock.assert_called_once_with(range=[0, 5], type="number")
@@ -120,7 +121,7 @@ class TestDataSchemaValidations(unittest.TestCase):
         mock_validate = MagicMock(return_value=True)
         MockNumber().validate = mock_validate
         test = "tests/backend/data_schemas/list_dict.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         dsd = DataSchemaManager(ifp)
         data = """
             {

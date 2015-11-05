@@ -12,8 +12,9 @@ class TestsLayout(unittest.TestCase):
         self.old_value = settings['activate_inotify']
         settings['activate_inotify'] = False
 
+        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
         test = "tests/backend/layouts/complete.json"
-        self.fp = open(os.path.join(settings["cwd"], test), "r")
+        self.fp = open(os.path.join(self.cwd, test), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["distances",
                                               "something_else"])
@@ -31,7 +32,7 @@ class TestsLayout(unittest.TestCase):
 
     def invalid(self, filepath):
         layout_path = "tests/backend/layouts/" + filepath
-        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
         self.layout_manager = LayoutManager(ifp, schema_manager)
@@ -50,7 +51,7 @@ class TestsLayout(unittest.TestCase):
 
     def test_default_accessor(self):
         layout_path = "tests/backend/layouts/" + "default_accessor.json"
-        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
         self.layout_manager = LayoutManager(ifp, schema_manager)
@@ -62,7 +63,7 @@ class TestsLayout(unittest.TestCase):
 
     def test_accessor_with_event(self):
         layout_path = "tests/backend/layouts/" + "accessor_with_event.json"
-        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
         self.layout_manager = LayoutManager(ifp, schema_manager)
@@ -75,7 +76,7 @@ class TestsLayout(unittest.TestCase):
 
     def test_accessor_chaining_valid(self):
         layout_path = "tests/backend/layouts/" + "chaining_valid.json"
-        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
         self.layout_manager = LayoutManager(ifp, schema_manager)
@@ -85,7 +86,7 @@ class TestsLayout(unittest.TestCase):
 
     def test_accessor_object(self):
         layout_path = "tests/backend/layouts/" + "accessor_object.json"
-        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
         schema_manager = MagicMock()
         schema_manager.get_events = MagicMock(return_value=["something"])
         self.layout_manager = LayoutManager(ifp, schema_manager)
@@ -142,7 +143,7 @@ class TestsLayout(unittest.TestCase):
         self.layout_manager.compile()
 
         layout_path = "tests/backend/layouts/" + filepath
-        ifp = open(os.path.join(settings["cwd"], layout_path), "r")
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
 
         self.layout_manager.fp = ifp
         jdata = {}

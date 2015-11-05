@@ -10,3 +10,6 @@ docs/_build/
 *.lock
 rest/*
 *.bak
+build/*
+dist/*
+lupulo.egg-info/*

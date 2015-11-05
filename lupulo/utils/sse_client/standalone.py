@@ -1,6 +1,6 @@
 from twisted.internet import reactor
 
-from lupulo.tests.backend.sse_client.sse_client import SSEClient
+from lupulo.utils.sse_client.sse_client import SSEClient
 from lupulo.settings import settings
 
 URL = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'

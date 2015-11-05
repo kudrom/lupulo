@@ -3,8 +3,7 @@ from mock import MagicMock
 from twisted.trial import unittest
 
 from lupulo.settings import settings
-from lupulo.tests.backend.sse_client.sse_client import SSEClient
-from lupulo.tests.backend.sse_client.sse_client import SSEClientProtocol
+from lupulo.utils.sse_client.sse_client import SSEClient, SSEClientProtocol
 
 
 class TestWebServer(unittest.TestCase):

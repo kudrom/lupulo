@@ -10,9 +10,9 @@ from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
 
 class TestsSchemaDescriptor(unittest.TestCase):
     def setUp(self):
-        self.fp = open(os.path.join(settings["cwd"],
-                                    "tests/backend/data_schemas/complete.json"),
-                       "r")
+        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
+        schema = "tests/backend/data_schemas/complete.json"
+        self.fp = open(os.path.join(self.cwd, schema), "r")
         self.old_inotify = settings['activate_inotify']
         settings['activate_inotify'] = False
         self.valid_schema_desc = DataSchemaManager(self.fp)
@@ -23,7 +23,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     def test_invalid_file(self):
         test = "tests/backend/data_schemas/invalid_syntax.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         self.assertRaises(ValueError, DataSchemaManager, ifp)
         ifp.close()
 
@@ -37,7 +37,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
     @patch('lupulo.descriptors.number.Number')
     def test_argument_constructors(self, typeMocked):
         test = "tests/backend/data_schemas/argument_constructors.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         DataSchemaManager(ifp)
         self.assertEqual(typeMocked.called, True)
         typeMocked.assert_called_with(arg0=u'argument0',
@@ -46,13 +46,13 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     def test_invalid_descriptor(self):
         test = "tests/backend/data_schemas/not_exists_descriptor.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         self.assertRaises(NotFoundDescriptor, DataSchemaManager, ifp)
         ifp.close()
 
     def test_requirement_violated(self):
         test = "tests/backend/data_schemas/requirements.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         self.assertRaises(RequirementViolated, DataSchemaManager, ifp)
 
     def test_validate_different_keys(self):
@@ -75,7 +75,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
     @patch('lupulo.descriptors.dict.Dict')
     def test_construction_nested_list_dict(self, MockedDict):
         test = "tests/backend/data_schemas/list_dict.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         DataSchemaManager(ifp)
         MockedDict.assert_called_once_with(keys=["speed", "turn_radius"],
                                            speed_type="number",
@@ -85,7 +85,7 @@ class TestsSchemaDescriptor(unittest.TestCase):
 
     def test_attributes_nested_list_dict(self):
         test = "tests/backend/data_schemas/list_dict.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         dsd = DataSchemaManager(ifp)
         motor = dsd.descriptors["motor"]
         self.assertEqual(motor.delegate.__class__.__name__, "Dict")

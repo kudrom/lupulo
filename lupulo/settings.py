@@ -3,7 +3,7 @@ import os.path
 
 settings = {
     # Current working directory
-    "cwd": "/home/kudrom/src/lupulo",
+    "lupulo_cwd": os.path.dirname(os.path.abspath(__file__)),
 
     # Avoid the testing port 8081 if you are going to run the tests with
     # an instance of the webpage open in a browser
@@ -36,14 +36,11 @@ settings = {
     "serial_device": "/dev/ttyACM0",
 }
 
-# Directory of the templates
-settings["templates_dir"] = os.path.join(settings["cwd"], "templates")
+settings["templates_dir"] = os.path.join(settings["lupulo_cwd"],
+                                         "defaults/templates")
 
-# Production
-# settings["layout"] = os.path.join(settings["cwd"], "layout.json")
-# settings["data_schema"] = os.path.join(settings["cwd"], "data_schema.json")
+settings["data_schema"] = os.path.join(settings["lupulo_cwd"],
+                                       "defaults/data_schema.json")
 
-# Testing
-settings["data_schema"] = os.path.join(settings["cwd"],
-                                       "tests/debug_data_schema.json")
-settings["layout"] = os.path.join(settings["cwd"], "tests/debug_layout.json")
+settings["layout"] = os.path.join(settings["lupulo_cwd"],
+                                  "defaults/layout.json")

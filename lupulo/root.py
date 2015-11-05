@@ -87,17 +87,19 @@ def get_website(sse_resource):
     root.putChild('subscribe', sse_resource)
 
     # Serve the static directory for css/js/image files
-    static = File(os.path.join(settings["cwd"], 'static'))
+    static = File(os.path.join(settings["lupulo_cwd"], 'defaults/static'))
     root.putChild('static', static)
 
-    command = File(os.path.join(settings["cwd"], 'rest'))
-    command.ignoreExt('.rpy')
-    command.processors = {'.rpy': script.ResourceScript}
-    root.putChild('command', command)
+    # TODO: fix this
+    # command = File(os.path.join(settings["cwd"], 'rest'))
+    # command.ignoreExt('.rpy')
+    # command.processors = {'.rpy': script.ResourceScript}
+    # root.putChild('command', command)
 
-    if settings['debug']:
-        testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
-        root.putChild('testing', testing)
-        root.putChild('debug', Debug())
+    # TODO: fix this
+    # if settings['debug']:
+    #     testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
+    #     root.putChild('testing', testing)
+    #     root.putChild('debug', Debug())
 
     return server.Site(root)

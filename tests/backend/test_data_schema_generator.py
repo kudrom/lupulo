@@ -9,8 +9,9 @@ from lupulo.settings import settings
 
 class TestDataSchemaGenerations(unittest.TestCase):
     def setUp(self):
+        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
         test = "tests/backend/data_schemas/complete.json"
-        self.fp = open(os.path.join(settings["cwd"], test), "r")
+        self.fp = open(os.path.join(self.cwd, test), "r")
         self.old_inotify = settings['activate_inotify']
         settings['activate_inotify'] = False
         self.valid_schema_desc = DataSchemaManager(self.fp)
@@ -59,7 +60,7 @@ class TestDataSchemaGenerations(unittest.TestCase):
 
     def test_generate_nested_list_dict(self):
         test = "tests/backend/data_schemas/list_dict.json"
-        ifp = open(os.path.join(settings["cwd"], test), "r")
+        ifp = open(os.path.join(self.cwd, test), "r")
         dsd = DataSchemaManager(ifp)
         data = dsd.generate(1)
         jdata = json.loads(data)
