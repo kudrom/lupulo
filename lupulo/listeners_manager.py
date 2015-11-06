@@ -17,7 +17,6 @@ def get_listener_name(name_listener):
 def connect_listener(parent, sse_resource):
     """
         Load, instantiate and registers a Listener.
-        This method is not tested due to the shortcomings of patch.
     """
     module_name = settings["listener"] + "_listener"
     try:
@@ -36,5 +35,6 @@ def connect_listener(parent, sse_resource):
         # Instantiate it and register towards the application
         listener = Listener(sse_resource)
         listener.setServiceParent(parent)
+        return listener
     except AttributeError as e:
         raise NotListenerFound(e.message.split(" ")[-1])
