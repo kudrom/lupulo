@@ -4,8 +4,8 @@ clean:
 	-rm -r lupulo.egg-info
 
 launch:
-	cd virtual
-	lupulo_create
+	cd virtual && \
+	lupulo_create && \
 	lupulo_start
 
 install:
