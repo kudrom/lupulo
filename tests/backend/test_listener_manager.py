@@ -15,16 +15,6 @@ class TestsListenerManager(unittest.TestCase):
     def tearDown(self):
         settings = self.old_settings
 
-    """
-    @patch('lupulo.listeners.mock_listener.MockListener')
-    def test_correct_listener(self, Listener):
-        settings['listener'] = 'mock'
-        Listener.setServiceParent = MagicMock()
-
-        connect_listener(self.mock_parent, self.mock_sse_resource)
-        Listener.assert_called_once_with(self.mock_sse_resource)
-    """
-
     def test_missing_module(self):
         settings['listener'] = 'crap'
         self.assertRaises(NotListenerFound, connect_listener, self.mock_parent,
@@ -33,3 +23,9 @@ class TestsListenerManager(unittest.TestCase):
     def test_underscore(self):
         name = get_listener_name("something_weird")
         self.assertEqual(name, "SomethingWeirdListener")
+
+    def test_double_underscore(self):
+        pass
+
+    def test_no_underscore(self):
+        pass

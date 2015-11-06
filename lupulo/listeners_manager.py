@@ -17,12 +17,16 @@ def get_listener_name(name_listener):
 def connect_listener(parent, sse_resource):
     """
         Load, instantiate and registers a Listener.
+        This method is not tested due to the shortcomings of patch.
     """
     module_name = settings["listener"] + "_listener"
     try:
         module = import_module("lupulo.listeners.%s" % module_name)
     except ImportError as e:
-        raise NotListenerFound(e.message.split(" ")[-1])
+        try:
+            module = import_module("listeners.%s" % module_name)
+        except ImportError:
+            raise NotListenerFound(e.message.split(" ")[-1])
 
     # Find the Listener
     try:
