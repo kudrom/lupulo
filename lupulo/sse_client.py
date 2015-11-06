@@ -4,6 +4,8 @@ from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.protocols.basic import LineReceiver
 
+from lupulo.settings import settings
+
 
 class SSEClientProtocol(LineReceiver):
     """
@@ -95,3 +97,18 @@ class SSEClient(object):
 
     def addEventListener(self, event, callback):
         self.protocol.addCallback(event, callback)
+
+
+def onmessage(data):
+    print 'Got payload with data %s' % data
+
+if __name__ == '__main__':
+    """
+        Launches the reactor for infinite time, this should be launched in the
+        project's main directory with PYTHONPATH='.:$PYTHONPATH'
+    """
+    URL = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
+    client = SSEClient(URL)
+    client.addEventListener("id1-battery", onmessage)
+    client.connect()
+    reactor.run()

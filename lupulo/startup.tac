@@ -19,8 +19,7 @@ multi = service.MultiService()
 multi.setServiceParent(application)
 
 # Setup logging
-logfile = DailyLogFile(settings["log_file"],
-                       os.path.join(settings["cwd"], "log"))
+logfile = DailyLogFile(settings["log_file"], "/var/log/lupulo/")
 application.setComponent(ILogObserver, FileLogObserver(logfile).emit)
 
 # Log to stdout too

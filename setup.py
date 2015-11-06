@@ -25,11 +25,12 @@ setup(
 
     packages = find_packages(),
     package_dir = {'lupulo': 'lupulo'},
-    package_data = {'lupulo': ['defaults/*.json', 'defaults/startup.tac',
+    package_data = {'lupulo': ['defaults/*.json', 'startup.tac',
                                'defaults/static/js/*.js',
                                'defaults/static/js/widgets/*.js',
                                'defaults/static/css/*.css',
                                'defaults/templates/*.html']},
+    scripts = ['bin/lupulo_start'],
 
     install_requires = ['pyserial', 'twisted', 'pymongo'],
 

@@ -7,7 +7,7 @@ from twisted.web.http_headers import Headers
 
 from lupulo.sse_resource import SSEResource
 from lupulo.root import get_website
-from lupulo.utils.sse_client.sse_client import SSEClient
+from lupulo.sse_client import SSEClient
 from lupulo.settings import settings
 
 
