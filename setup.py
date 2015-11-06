@@ -26,6 +26,7 @@ setup(
     packages = find_packages(),
     package_dir = {'lupulo': 'lupulo'},
     package_data = {'lupulo': ['defaults/*.json', 'startup.tac',
+                               'defaults/default_settings.py',
                                'defaults/static/js/*.js',
                                'defaults/static/js/widgets/*.js',
                                'defaults/static/css/*.css',

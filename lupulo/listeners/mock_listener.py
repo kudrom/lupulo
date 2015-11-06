@@ -3,7 +3,7 @@ from random import choice, randint
 from twisted.application import service
 from twisted.internet.task import LoopingCall
 
-from lupulo.settings import settings
+from settings import settings
 
 
 class MockListener(service.Service):

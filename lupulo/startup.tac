@@ -3,9 +3,7 @@ import sys
 
 from lupulo.settings import settings as lupulo_settings
 lupulo_settings['cwd'] = os.environ['LUPULO_PROJECT_DIR']
-lupulo_settings["templates_dir"] = os.path.join(lupulo_settings["cwd"], "templates")
-
-settings = lupulo_settings
+from settings import settings
 
 from twisted.application import service, internet
 from twisted.python import log

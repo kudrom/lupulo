@@ -15,7 +15,7 @@ settings = {
     "redirect_stdout": True,
 
     # Enable some behaviour for debugging
-    "debug_lupulo": False,
+    "debug_lupulo": True,
 
     # Activate the hot notification of layout and data schema
     "activate_inotify": True,

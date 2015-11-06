@@ -5,7 +5,7 @@ from twisted.web.template import Element, XMLFile, flatten
 from twisted.web.static import File
 from twisted.python.filepath import FilePath
 
-from lupulo.settings import settings
+from settings import settings
 
 
 class AbstractResource(resource.Resource):
@@ -103,8 +103,8 @@ def get_website(sse_resource):
     command.processors = {'.rpy': script.ResourceScript}
     root.putChild('command', command)
 
-    #if settings['debug_lupulo']:
-    #    testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
-    #    root.putChild('testing', testing)
+    if settings['debug_lupulo']:
+        testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
+        root.putChild('testing', testing)
 
     return server.Site(root)

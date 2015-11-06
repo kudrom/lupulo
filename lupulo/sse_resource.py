@@ -9,7 +9,7 @@ from twisted.python import log
 
 from lupulo.data_schema_manager import DataSchemaManager
 from lupulo.layout_manager import LayoutManager
-from lupulo.settings import settings
+from settings import settings
 
 
 class SSEResource(resource.Resource):

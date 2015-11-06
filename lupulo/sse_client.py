@@ -4,7 +4,7 @@ from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.protocols.basic import LineReceiver
 
-from lupulo.settings import settings
+from settings import settings
 
 
 class SSEClientProtocol(LineReceiver):

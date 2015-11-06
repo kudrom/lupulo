@@ -3,7 +3,7 @@ from twisted.python.filepath import FilePath
 from twisted.python import log
 from twisted.internet.defer import Deferred
 
-from lupulo.settings import settings
+from settings import settings
 
 
 class INotifyObserver(object):

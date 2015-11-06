@@ -16,6 +16,8 @@ class TestFunctional(unittest.TestCase):
         self.old_value = settings['activate_inotify']
         settings['activate_inotify'] = False
 
+        settings['cwd'] = settings['lupulo_cwd']
+
         self.sse_resource = SSEResource()
         site = get_website(self.sse_resource)
         self.server = reactor.listenTCP(8081, site)
@@ -24,6 +26,7 @@ class TestFunctional(unittest.TestCase):
         self.client = SSEClient(self.url)
 
     def tearDown(self):
+        del settings['cwd']
         self.server.stopListening()
         settings['activate_inotify'] = self.old_value
 
@@ -89,7 +92,7 @@ class TestFunctional(unittest.TestCase):
         return d
 
     def test_static_files(self):
-        url = 'http://localhost:' + "8081" + '/static/'
+        url = 'http://localhost:' + "8081" + '/lupulo_static/'
         return self.http_request(url)
 
     def test_root(self):

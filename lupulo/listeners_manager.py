@@ -1,6 +1,6 @@
 from importlib import import_module
 
-from lupulo.settings import settings
+from settings import settings
 from lupulo.exceptions import NotListenerFound
 
 
