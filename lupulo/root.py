@@ -15,7 +15,6 @@ class AbstractResource(resource.Resource):
     """
     def __init__(self):
         resource.Resource.__init__(self)
-        self.element_delegate = AbstractElement("")
 
     def getChild(self, name, request):
         """
@@ -39,9 +38,11 @@ class AbstractElement(Element):
         Abstract twisted resource which is inherited to render all
         the webpages of the web server.
     """
-    def __init__(self, page=""):
+    def __init__(self, page="", directory=""):
         Element.__init__(self)
-        filepath = os.path.join(settings["templates_dir"], page)
+        if directory == "":
+            directory = settings["templates_dir"]
+        filepath = os.path.join(directory, page)
         self.loader = XMLFile(FilePath(filepath))
 
 
@@ -59,7 +60,8 @@ class RootElement(AbstractElement):
         Called by Root to render the template.
     """
     def __init__(self):
-        AbstractElement.__init__(self, "index.html")
+        directory = settings['lupulo_templates_dir']
+        AbstractElement.__init__(self, "index.html", directory)
 
 
 class Debug(AbstractResource):
@@ -76,7 +78,8 @@ class DebugElement(AbstractElement):
         Called by Debug to render the template.
     """
     def __init__(self):
-        AbstractElement.__init__(self, "debug.html")
+        directory = settings['lupulo_templates_dir']
+        AbstractElement.__init__(self, "debug.html", directory)
 
 
 def get_website(sse_resource):
@@ -85,21 +88,23 @@ def get_website(sse_resource):
     """
     root = Root()
     root.putChild('subscribe', sse_resource)
+    root.putChild('debug', Debug())
 
-    # Serve the static directory for css/js/image files
-    static = File(os.path.join(settings["lupulo_cwd"], 'defaults/static'))
+    # Serve the static directory for css/js/image files of lupulo
+    lupulo_static = File(os.path.join(settings["lupulo_cwd"], 'defaults/static'))
+    root.putChild('lupulo_static', lupulo_static)
+
+    # Serve the static directory for css/js/image files of the project
+    static = File(os.path.join(settings["cwd"], 'static'))
     root.putChild('static', static)
 
-    # TODO: fix this
-    # command = File(os.path.join(settings["cwd"], 'rest'))
-    # command.ignoreExt('.rpy')
-    # command.processors = {'.rpy': script.ResourceScript}
-    # root.putChild('command', command)
+    command = File(os.path.join(settings["cwd"], 'rest'))
+    command.ignoreExt('.rpy')
+    command.processors = {'.rpy': script.ResourceScript}
+    root.putChild('command', command)
 
-    # TODO: fix this
-    # if settings['debug']:
-    #     testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
-    #     root.putChild('testing', testing)
-    #     root.putChild('debug', Debug())
+    #if settings['debug_lupulo']:
+    #    testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
+    #    root.putChild('testing', testing)
 
     return server.Site(root)

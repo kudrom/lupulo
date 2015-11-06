@@ -1,0 +1,23 @@
+#! /usr/bin/env python2
+
+import os
+import shutil
+
+from lupulo.settings import settings
+
+def create_if_not_exists(directory):
+    if not os.path.exists(directory):
+        os.mkdir(directory)
+
+def main():
+    create_if_not_exists("rest")
+    create_if_not_exists("templates")
+    create_if_not_exists("static")
+
+    src = os.path.join(settings['lupulo_cwd'], 'defaults')
+    shutil.copyfile(os.path.join(src, 'data_schema.json'), "./data_schema.json")
+    shutil.copyfile(os.path.join(src, 'layout.json'), "./layout.json")
+    shutil.copyfile(os.path.join(src, 'default_settings.py'), "./settings.py")
+
+if __name__ == "__main__":
+    main()

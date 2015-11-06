@@ -1,16 +1,21 @@
-import os.path
+import os
 import sys
 
+from lupulo.settings import settings as lupulo_settings
+lupulo_settings['cwd'] = os.environ['LUPULO_PROJECT_DIR']
+lupulo_settings["templates_dir"] = os.path.join(lupulo_settings["cwd"], "templates")
+
+settings = lupulo_settings
+
 from twisted.application import service, internet
-from twisted.web import server
 from twisted.python import log
 from twisted.python.log import ILogObserver, FileLogObserver
 from twisted.python.logfile import DailyLogFile
 
 from lupulo.sse_resource import SSEResource
 from lupulo.root import get_website
-from lupulo.settings import settings
 from lupulo.listeners_manager import connect_listener
+
 
 # Bind the application and create a multi service that will be the
 # father of all the services below

@@ -12,7 +12,9 @@ then
     command="from lupulo.settings import settings; print settings['lupulo_cwd']"
     path=$(python2 -c "$command")
 
-    twistd -ny "$path/startup.tac"
+    dir=$(realpath ./)
+
+    LUPULO_PROJECT_DIR=$dir twistd -ny "$path/startup.tac"
 else
     echo "You need a python2 interpreter."
 fi

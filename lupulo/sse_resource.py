@@ -36,8 +36,9 @@ class SSEResource(resource.Resource):
         self.layout_manager.register_inotify_callback(self.layout_changed)
         self.layout_manager.compile()
 
-        self.mongo_client = MongoClient(settings['mongo_host'])
-        self.db = self.mongo_client[settings['mongo_db']]
+        if settings['activate_mongo']:
+            self.mongo_client = MongoClient(settings['mongo_host'])
+            self.db = self.mongo_client[settings['mongo_db']]
 
         reactor.addSystemEventTrigger('after', 'shutdown', self.clean_up)
 
