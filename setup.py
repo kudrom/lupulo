@@ -31,7 +31,7 @@ setup(
                                'defaults/static/js/widgets/*.js',
                                'defaults/static/css/*.css',
                                'defaults/templates/*.html']},
-    scripts = ['bin/lupulo_start', 'bin/lupulo_create'],
+    scripts = ['bin/lupulo_start', 'bin/lupulo_create', 'bin/lupulo_sse_client'],
 
     install_requires = ['pyserial', 'twisted', 'pymongo'],
 

@@ -1,10 +1,10 @@
+#! /usr/bin/env python2
+
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.web.client import Agent
 from twisted.web.http_headers import Headers
 from twisted.protocols.basic import LineReceiver
-
-from settings import settings
 
 
 class SSEClientProtocol(LineReceiver):
@@ -107,7 +107,8 @@ if __name__ == '__main__':
         Launches the reactor for infinite time, this should be launched in the
         project's main directory with PYTHONPATH='.:$PYTHONPATH'
     """
-    URL = 'http://localhost:' + str(settings['web_server_port']) + '/subscribe'
+    # TODO: Fix this
+    URL = 'http://localhost:' + "8080" + '/subscribe'
     client = SSEClient(URL)
     client.addEventListener("id1-battery", onmessage)
     client.connect()
