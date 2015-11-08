@@ -4,7 +4,9 @@ Overview
 ========
 
 The complete documentation is in
-`ReadTheDocs <http://lupulo.readthedocs.org/en/latest/>`_
+`ReadTheDocs <http://lupulo.readthedocs.org/en/latest/>`_.
+
+The python2 module is in `pip <https://pypi.python.org/pypi/lupulo>`_.
 
 To develop a device which interacts with its environment, it's usually needed a
 visualization of the sensory data in order to understand the behaviour of the
