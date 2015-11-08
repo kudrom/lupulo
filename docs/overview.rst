@@ -97,38 +97,52 @@ web page in different ways.
 Installation
 ------------
 
-Currently there is a script in bash that install all the dependencies and
-configures the environment but it only works on distributions of GNU/Linux that
-derive from **Arch Linux**.
+*lupulo* is a python2 package uploaded to `pip 
+<https://pypi.python.org/pypi/lupulo/>`_, so to install it you can type in a
+linux console::
 
-To install lupulo just type with superuser permissions::
+    pip install lupulo
 
-    ./install.sh
+Currently only python2 is supported so you need a proper installation of python
+in order to install it.
+
+You also need to have a proper installation of mongodb if you want to register
+the information gathered by the backend from the device with mongodb.
 
 Use
 ---
 
-The backend is built using twisted and defined in a tac file. Therefore you
-can use all the fine tunning that twistd provides to run a server.
+In order to launch the lupulo's server, first you have to have create a folder
+structure for a valid lupulo's project. To do that, you must execute from the
+project's folder the program **lupulo_create**. This will create a folder
+structure similar to this one::
+
+    <project folder>
+    `---templates/
+    `---rest/
+    `---static/
+    `---data_schema.json
+    `---layout.json
+    `---settings.py
+
+The templates folder must contain the html files you want the server to serve to
+the users. The rest folder must contain rpy scripts that will get executed for
+the restful interface of the command interface. The static folder can contain
+subdirectories that contain javascript, css and image files.
+
+The data_schema defines the schema of the data sent by the device and received
+by the backend. The layout file describes the web page. Finally, the settings
+file defines some parameters for the lupulo server.
+
+Then you must launch the lupulo server with the command **lupulo_start**.
 
 .. warning::
 
-    For the moment, you need superuser permissions to execute some listeners in
-    the tac file. You also need to launch the twistd proccess from the **folder
-    which contains the directory of the project**.
+    For the moment, you need superuser permissions to execute some listeners.
 
 .. note::
 
-   See the settings before running the backend.
-
-If you are not familiar with twistd, to run any of the tac files in the
-foreground you need to type::
-
-    twistd -ny lupulo/startup.tac
-
-to run the application in the background type::
-
-    twistd -n lupulo/startup.tac
+   See the settings before running the server.
 
 Debugging
 ---------
@@ -140,12 +154,16 @@ that the backend is sending to your web page. The sse client will create a sse
 connection towards the backend and will print to the standard output all the
 information that it receives. You can use this sse client typing::
 
-    python2 lupulo/tests/backend/sse_client/standalone.py
+    lupulo_sse_client
 
 The second one is a listener mock that will create a fake data link connection
 in the backend and will send random data that respects the data schema of your
 device. That way you can test how the web page looks without the need of a real
 robot sending information. You can use this mock by configuring the mock
 listener in the *settings.py* file::
+
+    settings['listener'] = 'mock'
+    settings['mock_timeout'] = 1
+    settings['mock_ids'] = 2
 
 Enjoy!

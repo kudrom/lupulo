@@ -1,6 +1,9 @@
 Changelog
 =========
 
+lupulo follows the semantic versioning without distinction between even and odd
+numbers of major or minor releases.
+
 [0.1.0] 05/11/2015
 ------------------
 
