@@ -4,6 +4,7 @@ import sys
 import os
 import imp
 import json
+from termcolor import colored
 
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
@@ -116,21 +117,34 @@ if __name__ == '__main__':
     """
     def onmessage(event_source, device):
         def aux(data):
-            print '%s got payload with data %s from device %d' \
-                  % (event_source, data, device)
+            if selected:
+                c_data = colored(data, 'magenta')
+                print '%s got payload with data %s from device %s' \
+                      % (c_event_source, c_data, c_device)
 
+        selected = True
+        if len(filter_devices) > 0:
+            selected &= str(device) in filter_devices
+        if len(filter_events) > 0:
+            selected &= event_source in filter_events
+        c_event_source = colored(event_source, 'blue', attrs=['bold'])
+        c_device = colored(device, 'green', attrs=['bold'])
         return aux
 
     def new_event_sources(jdata):
         data = json.loads(jdata)
 
         for event_source in data['added']:
+            c_event_source = colored(event_source, 'blue')
+            print '%s New event source %s' % (warning, c_event_source)
             for device in devices:
                 complete_event_source = "id%d-%s" % (device, event_source)
                 client.addEventListener(complete_event_source,
                                         onmessage(event_source, device))
 
         for event_source in data['removed']:
+            c_event_source = colored(event_source, 'red')
+            print '%s Event source removed %s' % (warning, c_event_source)
             for device in devices:
                 complete_event_source = "id%d-%s" % (device, event_source)
                 client.delEventListener(complete_event_source)
@@ -141,8 +155,40 @@ if __name__ == '__main__':
         data = json.loads(jdata)
         devices = devices + data
 
+        for device in data:
+            c_device = colored(device, 'green')
+            print '%s New device added with id %s' % (warning, c_device)
+
+    def print_help():
+        print """Usage:
+    lupulo_sse_client [-h|-help] [devices=<list>, event_sources=<list>]
+
+lupulo_sse_client prints information received from the backend for a given set
+of devices or event_sources if provided or for all of them if not.
+
+Both the devices and event_sources are a list of ids or names respectively
+separated by commas.
+
+If a -h[elp] argument is provided as its first argument, only this help message
+is printed."""
+        sys.exit(0)
+
     # global variable for the script
     devices = []
+    warning = colored('[!]', 'red', attrs=['bold', 'blink'])
+    filter_events = filter_devices = []
+    if len(sys.argv) > 1:
+        if sys.argv[1].startswith('-h'):
+            print_help()
+
+        for arg in sys.argv[1:]:
+            if arg.startswith('devices='):
+                filter_devices = set(arg.split('devices=')[1].split(','))
+            elif arg.startswith('event_sources='):
+                filter_events = set(arg.split('event_sources=')[1].split(','))
+
+    print filter_devices
+    print filter_events
 
     try:
         path = os.path.join(os.getcwd(), 'settings.py')

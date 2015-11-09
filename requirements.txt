@@ -1,3 +1,4 @@
 pyserial
 twisted
 pymongo
+termcolor

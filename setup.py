@@ -19,6 +19,9 @@ with open('README.rst') as f:
 with open('changelog.rst') as f:
     changelog = f.read()
 
+with open('requirements.txt') as f:
+    requirements = f.readlines()
+
 setup(
     name = "lupulo",
     version = version,
@@ -33,7 +36,7 @@ setup(
                                'defaults/templates/*.html']},
     scripts = ['bin/lupulo_start', 'bin/lupulo_create', 'bin/lupulo_sse_client'],
 
-    install_requires = ['pyserial', 'twisted', 'pymongo'],
+    install_requires = requirements,
 
     author = "kudrom",
     author_email = "kudrom@riseup.net",
