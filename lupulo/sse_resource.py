@@ -63,22 +63,34 @@ class SSEResource(resource.Resource):
         """
         def wrap(x):
             return '"' + str(x) + '"'
-        log.msg("SSE connection made by %s" % request.getClientIP())
+
         request.setHeader('Content-Type', 'text/event-stream; charset=utf-8')
         request.setResponseCode(200)
+
         self.subscribers.add(request)
         d = request.notifyFinish()
         d.addBoth(self.removeSubscriber)
-        msg = []
-        widgets = self.layout_manager.get_widgets()
-        msg.append('event: new_widgets\n')
-        msg.append('data: %s\n\n' % widgets)
-        request.write("".join(msg))
+
         msg = []
         if len(self.ids) > 0:
             msg.append('event: new_devices\n')
             msg.append('data: [%s]\n\n' % ",".join(map(str, self.ids)))
             request.write("".join(msg))
+
+        msg = []
+        widgets = self.layout_manager.get_widgets()
+        msg.append('event: new_widgets\n')
+        msg.append('data: %s\n\n' % widgets)
+        request.write("".join(msg))
+
+        msg = []
+        events = self.data_schema_manager.get_events()
+        jdata = json.dumps({'added': events, 'removed': []})
+        msg.append('event: new_event_sources\n')
+        msg.append('data: %s\n\n' % jdata)
+        request.write("".join(msg))
+
+        log.msg("SSE connection made by %s" % request.getClientIP())
         return server.NOT_DONE_YET
 
     def publish(self, data):

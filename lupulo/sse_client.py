@@ -3,7 +3,7 @@
 import sys
 import os
 import imp
-from importlib import import_module
+import json
 
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
@@ -31,6 +31,9 @@ class SSEClientProtocol(LineReceiver):
             Only one callback per event is allowed.
         """
         self.callbacks[event] = func
+
+    def removeCallback(self, event):
+        del self.callbacks[event]
 
     def lineReceived(self, line):
         if line == '':
@@ -103,15 +106,44 @@ class SSEClient(object):
     def addEventListener(self, event, callback):
         self.protocol.addCallback(event, callback)
 
+    def delEventListener(self, event):
+        self.protocol.removeCallback(event)
 
-def onmessage(data):
-    print 'Got payload with data %s' % data
 
 if __name__ == '__main__':
     """
-        Launches the reactor for infinite time, this should be launched in the
-        project's main directory with PYTHONPATH='.:$PYTHONPATH'
+        Used by lupulo_sse_client.
     """
+    def onmessage(event_source, device):
+        def aux(data):
+            print '%s got payload with data %s from device %d' \
+                  % (event_source, data, device)
+
+        return aux
+
+    def new_event_sources(jdata):
+        data = json.loads(jdata)
+
+        for event_source in data['added']:
+            for device in devices:
+                complete_event_source = "id%d-%s" % (device, event_source)
+                client.addEventListener(complete_event_source,
+                                        onmessage(event_source, device))
+
+        for event_source in data['removed']:
+            for device in devices:
+                complete_event_source = "id%d-%s" % (device, event_source)
+                client.delEventListener(complete_event_source)
+
+    def new_devices(jdata):
+        global devices
+
+        data = json.loads(jdata)
+        devices = devices + data
+
+    # global variable for the script
+    devices = []
+
     try:
         path = os.path.join(os.getcwd(), 'settings.py')
         settings = imp.load_source('settings', path)
@@ -128,6 +160,7 @@ if __name__ == '__main__':
 
     URL = 'http://localhost:' + port + '/subscribe'
     client = SSEClient(URL)
-    client.addEventListener("id1-battery", onmessage)
+    client.addEventListener("new_event_sources", new_event_sources)
+    client.addEventListener("new_devices", new_devices)
     client.connect()
     reactor.run()
