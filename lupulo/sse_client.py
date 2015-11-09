@@ -187,9 +187,6 @@ is printed."""
             elif arg.startswith('event_sources='):
                 filter_events = set(arg.split('event_sources=')[1].split(','))
 
-    print filter_devices
-    print filter_events
-
     try:
         path = os.path.join(os.getcwd(), 'settings.py')
         settings = imp.load_source('settings', path)

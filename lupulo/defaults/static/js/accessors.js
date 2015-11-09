@@ -4,7 +4,8 @@
     // Register an accessor
     register_accessor = function(type, accessor){
         if(type in accessors){
-            console.log("[!] " + type + " was already registered as an accesor.");
+            var type_s = "<strong>" + type + "</strong>";
+            add_alert("warning", type_s + " was already registered as an accesor.");
         }else{
             accessors[type] = accessor;
         }
@@ -83,7 +84,8 @@
                     }
                 }
             }else{
-                console.log("[!] Accessor " + description[i] + " is not registered");
+                var type_s = "<strong>" + description[i].type + "</strong>";
+                add_alert("danger", "Accessor " + type_s + " is not registered");
             }
         }
 
@@ -107,13 +109,13 @@ register_accessor("index", function(description){
                 // Return the function which access the jdata
                 return function (jdata){
                     var event_name = get_complete_event_name(event_source);
+                    var event_s = "<strong>" + event_source + "</strong>"
                     if(!(event_name in jdata)){
-                        console.log("[!] " + event_source +
-                                    " is not an event source of data.");
+                        add_alert("danger", event_s + " is not an event source of data.");
                         return 0;
                     }else if(jdata[event_name].length <= index){
-                        console.log("[!] the data of " + event_source +
-                                    " is not long enough for a layout.");
+                        add_alert("danger", "The data of " + event_s +
+                                  " is not long enough for a layout.");
                         return 0;
                     }
                     return jdata[event_name][index];
@@ -121,7 +123,7 @@ register_accessor("index", function(description){
             })(ii));
         }
     }else{
-        console.log("[!] Index accessor definition was incomplete.");
+        add_alert("danger", "<strong>Index</strong> accessor definition was incomplete.");
     }
 
     return ret;
@@ -137,20 +139,20 @@ register_accessor("dict", function(description){
         // JSON object
         ret.push(function(jdata){
             var event_name = get_complete_event_name(event_source);
+            var event_s = "<strong>" + event_source + "</strong>"
             if(!(event_name in jdata)){
-                console.log("[!] " + event_source +
-                            " is not an event source of data.");
+                add_alert("danger", event_s + " is not an event source of data.");
                 return 0;
             }
             if(!(key in jdata[event_name])){
-                console.log("[!] " + key + " is not in the " + 
-                            event_source + " dict event source.");
+                var key_s = "<strong>" + key + "</strong>";
+                add_alert("danger", key_s + " is not in the " + event_s + " dict event source.");
                 return 0;
             }
             return jdata[event_name][key];
         });
     }else{
-        console.log("[!] Dict accessor definition was incomplete.");
+        add_alert("danger", "<strong>Dict</strong> accessor definition was incomplete.");
     }
 
     return ret;
@@ -161,9 +163,9 @@ register_accessor("primitive", function(description){
 
     return [function(jdata){
         var event_name = get_complete_event_name(event_source);
+        var event_s = "<strong>" + event_source + "</strong>"
         if(!(event_name in jdata)){
-            console.log("[!] " + event_name +
-                        " is not an event source of data.");
+            add_alert("danger", event_s + " is not an event source of data.");
             return 0;
         }
 

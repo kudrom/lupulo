@@ -5,19 +5,6 @@ function get_complete_event_name(source_event){
     return event_name
 }
 
-// Add an alert to the webpage
-function add_alert(type, text){
-    var button = '<button type="button" class="close" data-dismiss="alert" ' +
-                 'aria-label="Close">' +
-                     '<span aria-hidden="true">&times;</span>' +
-                 '</button>';
-    var alert_html = '<div class="alert alert-dismissible alert-' + type + '">'
-                         + button + text +
-                     '</div>';
-
-    $('.warnings').append(alert_html);
-}
-
 (function (){
     // Callback for the new_devices data event source
     function new_devices(event){
@@ -87,13 +74,15 @@ function add_alert(type, text){
             // Check requirements
             anchor = $(layout.anchor);
             if(anchor.length == 0){
-                console.log("[!] " + layout.anchor +
-                            " anchor doesn't exist in the document.");
+                var text = "<strong>" + layout.anchor + "</strong>" +
+                           " anchor doesn't exist in the document."
+                add_alert('danger', text);
                 continue;
             }
             if(!(layout.type in widget_constructors)){
-                console.log("[!] " + layout.type +
-                            " type doesn't exist as a factory of widgets.");
+                var text = "<strong>" + layout.type + "</strong>" +
+                           " type doesn't exist as a factory of widgets.";
+                add_alert('danger', text);
                 continue;
             }
 
@@ -102,8 +91,8 @@ function add_alert(type, text){
                 widget = new widget_constructors[layout.type](layout);
                 widget.tick(widget);
             }catch(err){
-                console.log(err + "\nStopping creation of widget " + layout.name);
-                throw err;
+                var name = "<strong>" + layout.name + "</strong>";
+                add_alert('danger', err + ", stopping creation of widget " + name);
                 continue;
             }
 
@@ -156,7 +145,9 @@ function add_alert(type, text){
     // Registering in the global scope a function that manages widget_constructors
     register_widget = function(type, constructor){
         if(type in widget_constructors){
-            console.log("[!] " + type + " was already registered as a widget constructor.")
+            var text = "<strong>" + type + "</strong>" +
+                       " was already registered as a widget constructor.";
+            add_alert("warning", text);
         }else{
             fill_widget_prototype(constructor);
             widget_constructors[type] = constructor;

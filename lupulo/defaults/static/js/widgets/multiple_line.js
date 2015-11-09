@@ -3,7 +3,9 @@ MultipleLine = function(layout){
         var broken = false;
         for(var i = 0; i < requirements.length; i++){
             if(!(requirements[i] in layout)){
-                console.log(requirements[i] + " not in layout " + layout.name);
+                var req = "<strong>" + requirements[i] + "</strong>";
+                var name = "<strong>" + layout.name + "</strong>";
+                add_alert("danger", req + " not in layout " + name);
                 broken = true;
             }
         }
@@ -28,9 +30,11 @@ MultipleLine = function(layout){
 
     var accessors = get_accessors(layout.accessors);
     if(accessors.length < layout.name_lines.length){
-        throw "[!] There are more name_lines than accessors for " + layout.name;
+        var name = "<strong>" + layout.name + "</strong>";
+        throw "There are more name_lines than accessors for " + name;
     }else if(accessors.length > layout.name_lines.length){
-        console.log("[!] There are more accessors that name_lines for " + layout.name);
+        var name = "<strong>" + layout.name + "</strong>";
+        add_alert("warning", "There are more accessors that name_lines for " + name);
     }
 
     // The Lines present in this graph
