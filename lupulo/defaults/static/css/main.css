@@ -1,10 +1,20 @@
-.command{
-    position: fixed;
-    top: 0;
+.warnings{
+    margin-top: 10px;
+}
+
+.alert{
+    padding: 5px 10px;
+    margin-bottom: 5px;
+}
+
+.alert button.close{
     right: 0;
 }
 
-#robot{
+.command{
+}
+
+#device{
     margin-left: 10px;
 }
 

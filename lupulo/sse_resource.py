@@ -88,7 +88,6 @@ class SSEResource(resource.Resource):
         jdata = json.dumps({'added': events, 'removed': []})
         msg.append('event: new_event_sources\n')
         msg.append('data: %s\n\n' % jdata)
-        print jdata
         request.write("".join(msg))
 
         log.msg("SSE connection made by %s" % request.getClientIP())
