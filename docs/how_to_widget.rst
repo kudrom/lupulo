@@ -71,3 +71,16 @@ The frontend will provide:
 #. A notification whenever some data arrives that the widget is subscribed to
    through the *paint* callback.
 #. The accessors mechanism.
+
+Finally, a widget should display in the web pages all kinds of information
+relevant to the user with the alerts library. You can use the function
+*add_alert* defined here:
+
+.. js:function:: add_alert(type, text)
+
+    This function will render at the top of the web page a box displaying the
+    text you pass to it as an argument.
+
+    :param enum type: string describing the level of relevance of the text,
+                      it can be success, info, warning and danger.
+    :param string text: text to display in the box.
