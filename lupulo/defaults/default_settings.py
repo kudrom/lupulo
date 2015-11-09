@@ -33,8 +33,11 @@ settings["mock_ids"] = 2
 # Settings for the serial listener
 settings["serial_device"] = "/dev/ttyACM0"
 
-settings["templates_dir"] = os.path.join(settings["cwd"], "templates")
+# Allow executions of settings when startup.tac file is not executed, for
+# example in sse_client.py
+if 'cwd' in settings:
+    settings["templates_dir"] = os.path.join(settings["cwd"], "templates")
 
-settings["data_schema"] = os.path.join(settings["cwd"], "data_schema.json")
+    settings["data_schema"] = os.path.join(settings["cwd"], "data_schema.json")
 
-settings["layout"] = os.path.join(settings["cwd"], "layout.json")
+    settings["layout"] = os.path.join(settings["cwd"], "layout.json")

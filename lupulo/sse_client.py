@@ -1,5 +1,10 @@
 #! /usr/bin/env python2
 
+import sys
+import os
+import imp
+from importlib import import_module
+
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.web.client import Agent
@@ -107,8 +112,21 @@ if __name__ == '__main__':
         Launches the reactor for infinite time, this should be launched in the
         project's main directory with PYTHONPATH='.:$PYTHONPATH'
     """
-    # TODO: Fix this
-    URL = 'http://localhost:' + "8080" + '/subscribe'
+    try:
+        path = os.path.join(os.getcwd(), 'settings.py')
+        settings = imp.load_source('settings', path)
+    except IOError:
+        print "lupulo_sse_client was executed in a directory which doesn't" \
+              " contain a valid lupulo project."
+        sys.exit(-1)
+
+    try:
+        port = str(settings.settings['web_server_port'])
+    except AttributeError:
+        print "settings file doesn't contain web_server_port setting"
+        sys.exit(-1)
+
+    URL = 'http://localhost:' + port + '/subscribe'
     client = SSEClient(URL)
     client.addEventListener("id1-battery", onmessage)
     client.connect()
