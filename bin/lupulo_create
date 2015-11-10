@@ -18,6 +18,7 @@ def main():
     shutil.copyfile(os.path.join(src, 'data_schema.json'), "./data_schema.json")
     shutil.copyfile(os.path.join(src, 'layout.json'), "./layout.json")
     shutil.copyfile(os.path.join(src, 'default_settings.py'), "./settings.py")
+    shutil.copyfile(os.path.join(src, 'default_urls.py'), "./urls.py")
     shutil.copyfile(os.path.join(src, 'templates/index.html'), "./templates/index.html")
 
 if __name__ == "__main__":

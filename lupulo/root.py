@@ -1,4 +1,5 @@
 import os.path
+import imp
 
 from twisted.web import resource, server, script
 from twisted.web.static import File
@@ -51,11 +52,25 @@ class Root(LupuloResource):
         return self.template.render()
 
 
+def connect_user_urls(root):
+    try:
+        urls = imp.load_source('urls', os.path.join(settings['cwd'], "urls.py"))
+    except IOError:
+        log.msg("[!] There's no urls.py module valid in the project directory.")
+        sys.exit(-1)
+
+    for path, Resource in urls.urlpatterns:
+        root.putChild(path, Resource())
+
 def get_website(sse_resource):
     """
         Return the Site for the web server.
     """
     root = Root()
+    connect_user_urls(root)
+
+    # If the user has overwritten some urls of the lupulo namespace, they will
+    # be overwritten here again
     root.putChild('subscribe', sse_resource)
     #root.putChild('debug', Debug())
 
