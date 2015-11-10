@@ -1,59 +1,43 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>lupulo main page</title>
-        <meta charset="utf-8" />
+{% extends "base.html" %}
 
-        <!-- Allow zooming in mobile phones -->
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% block title %}
+    default main page
+{% endblock %}
 
-        <!-- Load dependencies -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js" />
-
-        <!-- Load resources -->
-        <link rel="stylesheet" type="text/css" href="lupulo_static/css/main.css" />
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-12 warnings">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-xs-10 information">
-                    <h2>Information</h2>
-                    <div id="date-anchor"></div>
-                    <div id="battery-anchor"></div>
-                    <div id="distances-anchor"></div>
-                    <div id="rotation-anchor"></div>
-                    <div id="direction-anchor"></div>
-                    <div id="acceleration-anchor"></div>
-                    <div id="motors-anchor"></div>
-                    <div id="floor-anchor"></div>
-                </div>
-
-                <div class="col-xs-2 command">
-                    <h2>C&amp;C</h2>
-
-                    <form class="form-inline">
-                        <label for="device">Id of the device:</label>
-                        <select id="device" class="form-control">
-                            <option>----</option>
-                        </select>
-                    </form>
-
-                </div>
+{% block body %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 warnings">
             </div>
         </div>
+        <div class="row">
+            <div class="col-xs-10 information">
+                <h2>Information</h2>
+                <div id="date-anchor"></div>
+                <div id="battery-anchor"></div>
+                <div id="distances-anchor"></div>
+                <div id="rotation-anchor"></div>
+                <div id="direction-anchor"></div>
+                <div id="acceleration-anchor"></div>
+                <div id="motors-anchor"></div>
+                <div id="floor-anchor"></div>
+            </div>
 
-        <!-- Only controller has resources over the other js files -->
-        <script src="lupulo_static/js/alerts.js" />
-        <script src="lupulo_static/js/accessors.js" />
-        <script src="lupulo_static/js/widget.js" />
-        <script src="lupulo_static/js/controller.js" />
-        <script src="lupulo_static/js/widgets/multiple_line.js" />
-    </body>
-</html>
+            <div class="col-xs-2 command">
+                <h2>C&amp;C</h2>
+
+                <form class="form-inline">
+                    <label for="device">Id of the device:</label>
+                    <select id="device" class="form-control">
+                        <option>----</option>
+                    </select>
+                </form>
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script src="lupulo_static/js/widgets/multiple_line.js"></script>
+{% endblock %}

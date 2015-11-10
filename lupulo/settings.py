@@ -32,7 +32,7 @@ settings = {
 }
 
 settings["lupulo_templates_dir"] = os.path.join(settings["lupulo_cwd"],
-                                                "defaults/templates")
+                                                "templates")
 
 settings["data_schema"] = os.path.join(settings["lupulo_cwd"],
                                        "defaults/data_schema.json")

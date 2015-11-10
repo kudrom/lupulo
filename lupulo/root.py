@@ -1,20 +1,27 @@
 import os.path
 
 from twisted.web import resource, server, script
-from twisted.web.template import Element, XMLFile, flatten
 from twisted.web.static import File
-from twisted.python.filepath import FilePath
+
+from jinja2 import Environment, FileSystemLoader
 
 from settings import settings
 
 
-class AbstractResource(resource.Resource):
+class LupuloResource(resource.Resource):
     """
         Abstract twisted resource which is inherited by every path
         served by the web server.
     """
     def __init__(self):
         resource.Resource.__init__(self)
+        directories = [settings['templates_dir'], settings['lupulo_templates_dir']]
+        loader = FileSystemLoader(directories)
+        options = {"auto_reload": True, "autoescape": True}
+        self.environment = Environment(loader=loader, **options)
+
+    def get_template(self, path):
+        return LupuloTemplate(self.environment.get_template(path))
 
     def getChild(self, name, request):
         """
@@ -24,62 +31,24 @@ class AbstractResource(resource.Resource):
             return self
         return resource.Resource.getChild(self, name, request)
 
+
+class LupuloTemplate(object):
+    def __init__(self, template):
+        self.template = template
+
+    def render(self):
+        utext = self.template.render()
+        text = utext.encode('ascii', 'ignore')
+        return text
+
+
+class Root(LupuloResource):
+    def __init__(self):
+        LupuloResource.__init__(self)
+        self.template = self.get_template('index.html')
+
     def render_GET(self, request):
-        """
-            Called by twisted to render a GET http request.
-        """
-        d = flatten(request, self.element_delegate, request.write)
-        d.addCallback(lambda _, x: x.finish(), request)
-        return server.NOT_DONE_YET
-
-
-class AbstractElement(Element):
-    """
-        Abstract twisted resource which is inherited to render all
-        the webpages of the web server.
-    """
-    def __init__(self, page="", directory=""):
-        Element.__init__(self)
-        if directory == "":
-            directory = settings["templates_dir"]
-        filepath = os.path.join(directory, page)
-        self.loader = XMLFile(FilePath(filepath))
-
-
-class Root(AbstractResource):
-    """
-        Root resource of the web server.
-    """
-    def __init__(self):
-        AbstractResource.__init__(self)
-        self.element_delegate = RootElement()
-
-
-class RootElement(AbstractElement):
-    """
-        Called by Root to render the template.
-    """
-    def __init__(self):
-        directory = settings['lupulo_templates_dir']
-        AbstractElement.__init__(self, "index.html", directory)
-
-
-class Debug(AbstractResource):
-    """
-        Debug resource of the web server.
-    """
-    def __init__(self):
-        AbstractResource.__init__(self)
-        self.element_delegate = DebugElement()
-
-
-class DebugElement(AbstractElement):
-    """
-        Called by Debug to render the template.
-    """
-    def __init__(self):
-        directory = settings['lupulo_templates_dir']
-        AbstractElement.__init__(self, "debug.html", directory)
+        return self.template.render()
 
 
 def get_website(sse_resource):
@@ -88,10 +57,10 @@ def get_website(sse_resource):
     """
     root = Root()
     root.putChild('subscribe', sse_resource)
-    root.putChild('debug', Debug())
+    #root.putChild('debug', Debug())
 
     # Serve the static directory for css/js/image files of lupulo
-    lupulo_static = File(os.path.join(settings["lupulo_cwd"], 'defaults/static'))
+    lupulo_static = File(os.path.join(settings["lupulo_cwd"], 'static'))
     root.putChild('lupulo_static', lupulo_static)
 
     # Serve the static directory for css/js/image files of the project

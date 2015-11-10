@@ -2,3 +2,4 @@ pyserial
 twisted
 pymongo
 termcolor
+jinja2
