@@ -14,9 +14,12 @@ class LupuloResource(resource.Resource):
         Abstract twisted resource which is inherited by every path
         served by the web server.
     """
-    def __init__(self):
+    def __init__(self, next_resources):
         resource.Resource.__init__(self)
-        directories = [settings['templates_dir'], settings['lupulo_templates_dir']]
+        self.next_resources = next_resources
+        directories = []
+        directories.append(settings['templates_dir'])
+        directories.append(settings['lupulo_templates_dir'])
         loader = FileSystemLoader(directories)
         options = {"auto_reload": True, "autoescape": True}
         self.environment = Environment(loader=loader, **options)
@@ -30,10 +33,17 @@ class LupuloResource(resource.Resource):
         """
         if name == '':
             return self
+        else:
+            if name in self.next_resources:
+                return self.next_resources[name]
         return resource.Resource.getChild(self, name, request)
 
 
 class LupuloTemplate(object):
+    """
+        Adapter around a jinja2 template which will render the template in an
+        asynchronous way.
+    """
     def __init__(self, template):
         self.template = template
 
@@ -44,8 +54,11 @@ class LupuloTemplate(object):
 
 
 class Root(LupuloResource):
-    def __init__(self):
-        LupuloResource.__init__(self)
+    """
+        Root resource for the index.html template of the project.
+    """
+    def __init__(self, *args):
+        LupuloResource.__init__(self, *args)
         self.template = self.get_template('index.html')
 
     def render_GET(self, request):
@@ -53,20 +66,42 @@ class Root(LupuloResource):
 
 
 def connect_user_urls(root):
+    """
+        Reads the urls defined by the user and creates all necessary resources.
+    """
     try:
         urls = imp.load_source('urls', os.path.join(settings['cwd'], "urls.py"))
     except IOError:
         log.msg("[!] There's no urls.py module valid in the project directory.")
         sys.exit(-1)
 
-    for path, Resource in urls.urlpatterns:
-        root.putChild(path, Resource())
+    sorted_urls = sorted(urls.urlpatterns,
+                         key=lambda x: len(x[0].split("/")))
+
+    for path, Resource in sorted_urls:
+        node = root
+
+        splitted = path.split("/")
+        if splitted[-1] == "":
+            splitted = splitted[:-1]
+
+        for path in splitted[:-1]:
+            if path not in node.next_resources:
+                node.next_resources[path] = LupuloResource({})
+            node = node.next_resources[path]
+
+        last = splitted[-1]
+        node.next_resources[last] = Resource({})
+
+    for path, resource in root.next_resources.items():
+        root.putChild(path, resource)
+
 
 def get_website(sse_resource):
     """
         Return the Site for the web server.
     """
-    root = Root()
+    root = Root({})
     connect_user_urls(root)
 
     # If the user has overwritten some urls of the lupulo namespace, they will
