@@ -21,3 +21,10 @@ dist/*
 lupulo.egg-info/*
 
 virtual/*
+
+*.aux
+*.nav
+*.out
+*.snm
+*.toc
+*.vrb

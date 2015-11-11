@@ -1,0 +1,209 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\beamertemplatenavigationsymbolsempty
+
+\mode<presentation> {
+    \usetheme{Singapore}
+    \usecolortheme{rose}
+}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{color}
+
+\title[Overview of lupulo]{Report of the progress made in \textbf{lupulo}}
+
+\author{Alejandro López Espinosa}
+\institute[VIVES university]
+{
+    VIVES University
+    \medskip
+}
+\date{\today}
+
+\begin{document}
+    \begin{frame}
+    \titlepage
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Table of contents}
+        \tableofcontents
+    \end{frame}
+
+    \section{Overview}
+    \begin{frame}
+        \frametitle{Useful info}
+        lupulo is developed as a free software project under the GPL
+        license (for the moment).
+
+        lupulo's backend currently \textbf{is built with python2} because
+        twisted is not written to be compatible with python3.
+
+        lupulo is currently at the 0.1.0 stable release.
+        \\~\\
+
+        You can find the source code in 
+        \textcolor{orange}{\href{http://github.com/kudrom/lupulo}{github.com/kudrom/lupulo}}
+
+        You can download lupulo with pip.
+
+        The docs are updated in ReadTheDocs.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Goals}
+        \begin{itemize}
+            \item Dynamic description of the data the device is sending
+            \item Allow big modifications of the web page
+            \item Multiple web pages for a single device
+            \item Ease of development of the web pages
+            \item Reuse of code
+            \item Extensibility of the behaviour
+        \end{itemize}
+        \vspace{1cm}
+
+        \begin{block}{What's lupulo}
+            lupulo is a web framework to build realtime web pages that monitor
+            and/or command the state of a device.
+        \end{block}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Main abstractions}
+        \begin{itemize}
+            \item Data schema language
+            \item Layout language
+            \item Templates
+            \item Widgets
+            \item Accessors
+            \item Listeners
+        \end{itemize}
+    \end{frame}
+
+    \section{How to use it}
+    \begin{frame}
+        \frametitle{Create a valid project}
+        You type \texttt{lupulo\_create} in a directory.
+
+        It's going to create a bunch of directories and files that you're going
+        to change later on.
+
+        One of those files is the \textbf{settings.py} file which you'll modify
+        to configure the backend mostly.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Write the data schema}
+
+        The data schema is made of \textbf{source events} that relate to every
+        sensory information the device is sending.
+
+        Each source event is described by a set of obligatory parameters
+        depending of its \textbf{type}.
+
+        There are two kind of types, the \textbf{primitive} and the
+        \textbf{aggregated}.
+
+        The primitive type describes some raw data like \textbf{number}, 
+        \textbf{enum} or \textbf{date}.
+
+        The aggregated type is an aggregation of other types. There are two
+        aggregated types: \textbf{dict} and \textbf{list}.
+
+        \textbf{There is no limit to aggregation}.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Write the layout}
+        A widget is some \textbf{JS object} that renders information in the web
+        page.
+
+        A layout is a \textbf{description} of a widget, it describes how the
+        widget is going to behave in the web page.
+
+        In  the layout the user \textbf{binds} a particular widget with a
+        particular data source event.
+
+        A layout can \textbf{inherit} from another layout some or all of its
+        parameters.
+
+        \textbf{There is no limit to the levels of inheritance.}
+
+        Multiple inheritance is not allowed.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Templates}
+        You can modify the html pages with \textbf{jinja2} templates.
+
+        At the moment lupulo provides some base templates that you can extend.
+
+        You can design your own url sitemap and use RESTful principles for the
+        command interface. You only need to write your own \textbf{urls.py} file
+        in the same fashion that django does.
+
+        Each url must be handled by a \textbf{twisted Resource}.
+
+    \begin{frame}
+        \frametitle{Launch}
+        Once you have written everything, you launch the server with
+        \texttt{lupulo\_start}.
+
+        You can test that everything is working as expected with a standalone
+        sse client called \texttt{lupulo\_sse\_client} or you can go to
+        localhost:8080 and enjoy your first lupulo realtime web page.
+    \end{frame}
+
+    \section{Architecture}
+    \begin{frame}
+        \frametitle{Backend}
+        The backend is responsible of:
+
+        \begin{itemize}
+            \item Compile the data schema
+            \item Compile the layout
+            \item Implement a web server
+            \item Push information to the frontend whenever it's available
+            \item Provide the listeners abstraction
+            \item Provide the templates abstraction
+            \item Provide hot layout and data schema
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Frontend}
+        The frontend is responsible of:
+
+        \begin{itemize}
+            \item Initiate the connection towards the server
+            \item Render the information
+            \item Provide the widgets abstraction
+            \item Provide the accessors abstraction
+        \end{itemize}
+    \end{frame}
+
+    \section{Demo}
+    \begin{frame}
+    \Huge{\centerline{Demo}}
+    \end{frame}
+
+    \begin{frame}
+    \Huge{\centerline{Any question?}}
+    \end{frame}
+
+\end{document} 
