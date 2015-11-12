@@ -120,7 +120,6 @@ def get_website(sse_resource):
     root.putChild('static', static)
 
     testing = File(os.path.join(settings["lupulo_cwd"], 'tests/frontend'))
-    print testing
     root.putChild('lupulo_testing', testing)
 
     return server.Site(root)

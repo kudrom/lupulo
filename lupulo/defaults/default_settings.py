@@ -12,9 +12,6 @@ settings["web_server_port"] = 8080
 settings["log_file"] = "development.log"
 settings["redirect_stdout"] = True
 
-# Never turn this to True unless you are on the git directory of the project
-settings["debug_lupulo"] = False
-
 # Activate the hot notification of layout and data schema
 settings["activate_inotify"] = True
 

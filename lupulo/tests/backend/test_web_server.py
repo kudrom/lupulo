@@ -1,4 +1,5 @@
-import os.path
+import os
+import shutil
 
 from mock import MagicMock
 
@@ -15,13 +16,15 @@ from lupulo.settings import settings
 
 class TestFunctional(unittest.TestCase):
     def setUp(self):
-        self.old_value = settings['activate_inotify']
+        self.old_value_inotify = settings['activate_inotify']
         settings['activate_inotify'] = False
 
-        settings['cwd'] = settings['lupulo_cwd']
+        settings['cwd'] = os.path.join(settings['lupulo_cwd'], 'defaults')
 
-        cwd = "/".join(settings['lupulo_templates_dir'].split("/")[:-1])
-        settings['templates_dir'] = os.path.join(cwd, "defaults/templates")
+        settings['templates_dir'] = os.path.join(settings['cwd'], "templates")
+        src = os.path.join(settings['cwd'], 'default_urls.py')
+        self.dst = os.path.join(settings['cwd'], 'urls.py')
+        shutil.copyfile(src, self.dst)
 
         self.sse_resource = SSEResource()
         site = get_website(self.sse_resource)
@@ -31,9 +34,11 @@ class TestFunctional(unittest.TestCase):
         self.client = SSEClient(self.url)
 
     def tearDown(self):
+        os.remove(self.dst)
         del settings['cwd']
+        del settings['templates_dir']
         self.server.stopListening()
-        settings['activate_inotify'] = self.old_value
+        settings['activate_inotify'] = self.old_value_inotify
 
     def cleanup_connections(self):
         for sub in list(self.sse_resource.subscribers):
@@ -69,11 +74,10 @@ class TestFunctional(unittest.TestCase):
         d.addCallback(after_publishing)
         return d
 
-    def test_dispatchEvent(self):
+    def test_dispatch_event(self):
         def after_publishing():
             callback = self.client.protocol.dispatchEvent
             self.assertEqual(callback.called, True)
-            self.assertEqual(callback.call_count, 3)
             self.cleanup_connections()
 
         self.client.protocol.dispatchEvent = MagicMock()

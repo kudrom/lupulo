@@ -14,9 +14,6 @@ settings = {
     "log_file": "development.log",
     "redirect_stdout": True,
 
-    # Enable some behaviour for debugging
-    "debug_lupulo": True,
-
     # Activate the hot notification of layout and data schema
     "activate_inotify": True,
 
