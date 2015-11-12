@@ -72,6 +72,7 @@
             \item Allow big modifications of the web page
             \item Multiple web pages for a single device
             \item Ease of development of the web pages
+            \item Record the data for offline analysis
             \item Reuse of code
             \item Extensibility of the behaviour
         \end{itemize}
@@ -98,7 +99,18 @@
     \section{How to use it}
     \begin{frame}
         \frametitle{Create a valid project}
-        You type \texttt{lupulo\_create} in a directory.
+        You \textbf{can} install the software with:
+            
+        \texttt{pip install lupulo}
+
+        But you \textbf{should} build your own distribution from the source 
+        code and later install it from your filesystem with pip. You can use a 
+        Makefile that does just that and something more.
+
+        \vspace{0.5cm}
+
+        Once you have installed lupulo, you type \texttt{lupulo\_create} in a
+        directory to launch the server.
 
         It's going to create a bunch of directories and files that you're going
         to change later on.
@@ -158,6 +170,7 @@
         in the same fashion that django does.
 
         Each url must be handled by a \textbf{twisted Resource}.
+    \end{frame}
 
     \begin{frame}
         \frametitle{Launch}
@@ -170,6 +183,21 @@
     \end{frame}
 
     \section{Architecture}
+    \begin{frame}
+        \frametitle{Main components}
+        There are two main components of the project, the \textbf{backend},
+        which is built with python2 and twisted and the \textbf{frontend}
+        which is built in javascript.
+
+        These two main components communicate through an asynchronous data link
+        provided by a HTML5 API called \textbf{Server Sent Events}, which
+        provides a unidirectional stream to push information from the server to
+        the browser.
+
+        The user doesn't see this asynchronous data link, it only configures
+        what widgets listen to what data sources.
+    \end{frame}
+
     \begin{frame}
         \frametitle{Backend}
         The backend is responsible of:
@@ -194,6 +222,27 @@
             \item Render the information
             \item Provide the widgets abstraction
             \item Provide the accessors abstraction
+        \end{itemize}
+    \end{frame}
+
+    \section{Future releases}
+    \begin{frame}
+        \frametitle{The future}
+        I'm working currently on (for the 0.2.0 release):
+        \begin{itemize}
+            \item The templates abstraction
+            \item Building a smart debug web page
+            \item Building a smart web page for mongodb
+            \item Expanding the number of default widgets
+            \item Spotting and fixing bugs
+        \end{itemize}
+
+        I'd like to work on:
+        \begin{itemize}
+            \item Expanding the number of default listeners
+            \item Test the framework with real devices
+            \item Think about what more abstractions I can provide in the
+                frontend and the embedded device
         \end{itemize}
     \end{frame}
 
