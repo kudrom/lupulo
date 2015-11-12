@@ -21,10 +21,13 @@ class TestFunctional(unittest.TestCase):
 
         settings['cwd'] = os.path.join(settings['lupulo_cwd'], 'defaults')
 
-        settings['templates_dir'] = os.path.join(settings['cwd'], "templates")
+        os.mkdir(os.path.join(settings['cwd'], 'static'))
+
         src = os.path.join(settings['cwd'], 'default_urls.py')
         self.dst = os.path.join(settings['cwd'], 'urls.py')
         shutil.copyfile(src, self.dst)
+
+        settings['templates_dir'] = os.path.join(settings['cwd'], "templates")
 
         self.sse_resource = SSEResource()
         site = get_website(self.sse_resource)
@@ -34,6 +37,7 @@ class TestFunctional(unittest.TestCase):
         self.client = SSEClient(self.url)
 
     def tearDown(self):
+        os.rmdir(os.path.join(settings['cwd'], 'static'))
         os.remove(self.dst)
         del settings['cwd']
         del settings['templates_dir']
@@ -100,8 +104,12 @@ class TestFunctional(unittest.TestCase):
         contradiction = reactor.callLater(3, self.assertEqual, True, False)
         return d
 
-    def test_static_files(self):
+    def test_lupulo_static_files(self):
         url = 'http://localhost:' + "8081" + '/lupulo_static/'
+        return self.http_request(url)
+
+    def test_static_files(self):
+        url = 'http://localhost:' + "8081" + '/static/'
         return self.http_request(url)
 
     def test_root(self):

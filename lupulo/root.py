@@ -1,58 +1,12 @@
 import os.path
-import imp
-import sys
-
-from twisted.web import resource, server, script
+from twisted.web import server
 from twisted.web.static import File
-from twisted.python import log
 
-from jinja2 import Environment, FileSystemLoader
+from lupulo.resource import LupuloResource
+from lupulo.exceptions import UrlInvalid
 
 from settings import settings
-
-
-class LupuloResource(resource.Resource):
-    """
-        Abstract twisted resource which is inherited by every path
-        served by the web server.
-    """
-    def __init__(self, next_resources):
-        resource.Resource.__init__(self)
-        self.next_resources = next_resources
-        directories = []
-        directories.append(settings['templates_dir'])
-        directories.append(settings['lupulo_templates_dir'])
-        loader = FileSystemLoader(directories)
-        options = {"auto_reload": True, "autoescape": True}
-        self.environment = Environment(loader=loader, **options)
-
-    def get_template(self, path):
-        return LupuloTemplate(self.environment.get_template(path))
-
-    def getChild(self, name, request):
-        """
-            Called by twisted to resolve a url.
-        """
-        if name == '':
-            return self
-        else:
-            if name in self.next_resources:
-                return self.next_resources[name]
-        return resource.Resource.getChild(self, name, request)
-
-
-class LupuloTemplate(object):
-    """
-        Adapter around a jinja2 template which will render the template in an
-        asynchronous way.
-    """
-    def __init__(self, template):
-        self.template = template
-
-    def render(self):
-        utext = self.template.render()
-        text = utext.encode('ascii', 'ignore')
-        return text
+import urls
 
 
 class Root(LupuloResource):
@@ -71,14 +25,18 @@ def connect_user_urls(root):
     """
         Reads the urls defined by the user and creates all necessary resources.
     """
+    reload(urls)
     try:
-        urls = imp.load_source('urls', os.path.join(settings['cwd'], "urls.py"))
-    except IOError:
-        log.msg("[!] There's no urls.py module valid in the project directory.")
-        sys.exit(-1)
+        urlpatterns = urls.urlpatterns
+    except AttributeError:
+        raise UrlInvalid("There's no urlpatterns attribute in urls.py")
 
     sorted_urls = sorted(urls.urlpatterns,
                          key=lambda x: len(x[0].split("/")))
+
+    if len(sorted_urls) > 0 and len(sorted_urls[0]) != 2:
+        msg = "Each entry in urlpatterns should be a tuple of two elements"
+        raise UrlInvalid(msg)
 
     for path, Resource in sorted_urls:
         node = root

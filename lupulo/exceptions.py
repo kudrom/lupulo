@@ -28,3 +28,11 @@ class RequiredAttributes(Exception):
 
     def __str__(self):
         return "The layout %s lacks of required attributes."
+
+
+class UrlInvalid(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+
+    def __str__(self):
+        return self.msg

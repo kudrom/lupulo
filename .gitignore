@@ -28,3 +28,5 @@ virtual/*
 *.snm
 *.toc
 *.vrb
+
+urls.py

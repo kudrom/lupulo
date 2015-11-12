@@ -2,11 +2,11 @@
 # urlpatterns = [
 #     ('url/to/my/resource', MyResource),
 # ]
-from lupulo.root import LupuloResource
+from lupulo.resource import LupuloResource
 
-class HolaResource(LupuloResource):
+class HelloResource(LupuloResource):
     def render_GET(self, request):
-        return "Hola mundo"
+        return "Hello world"
 
 class MundoResource(LupuloResource):
     def render_GET(self, request):
@@ -14,6 +14,6 @@ class MundoResource(LupuloResource):
 
 
 urlpatterns = [
-    ('hola', HolaResource),
+    ('hello', HelloResource),
     ('hola/buen/mundo', MundoResource)
 ]
