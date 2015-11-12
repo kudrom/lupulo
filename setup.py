@@ -34,7 +34,8 @@ setup(
                                'static/js/*.js',
                                'static/js/widgets/*.js',
                                'static/css/*.css',
-                               'templates/*.html']},
+                               'templates/*.html',
+                               'tests/frontend/*.html']},
     scripts = ['bin/lupulo_start', 'bin/lupulo_create', 'bin/lupulo_sse_client'],
 
     install_requires = requirements,

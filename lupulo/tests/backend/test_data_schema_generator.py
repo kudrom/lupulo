@@ -9,7 +9,7 @@ from lupulo.settings import settings
 
 class TestDataSchemaGenerations(unittest.TestCase):
     def setUp(self):
-        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
+        self.cwd = settings["lupulo_cwd"]
         test = "tests/backend/data_schemas/complete.json"
         self.fp = open(os.path.join(self.cwd, test), "r")
         self.old_inotify = settings['activate_inotify']

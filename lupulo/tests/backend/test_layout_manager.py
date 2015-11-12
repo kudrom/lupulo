@@ -12,7 +12,7 @@ class TestsLayout(unittest.TestCase):
         self.old_value = settings['activate_inotify']
         settings['activate_inotify'] = False
 
-        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
+        self.cwd = settings["lupulo_cwd"]
         test = "tests/backend/layouts/complete.json"
         self.fp = open(os.path.join(self.cwd, test), "r")
         schema_manager = MagicMock()

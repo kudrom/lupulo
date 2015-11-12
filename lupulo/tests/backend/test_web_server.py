@@ -1,3 +1,5 @@
+import os.path
+
 from mock import MagicMock
 
 from twisted.internet import reactor
@@ -17,6 +19,9 @@ class TestFunctional(unittest.TestCase):
         settings['activate_inotify'] = False
 
         settings['cwd'] = settings['lupulo_cwd']
+
+        cwd = "/".join(settings['lupulo_templates_dir'].split("/")[:-1])
+        settings['templates_dir'] = os.path.join(cwd, "defaults/templates")
 
         self.sse_resource = SSEResource()
         site = get_website(self.sse_resource)

@@ -10,7 +10,7 @@ from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
 
 class TestsSchemaDescriptor(unittest.TestCase):
     def setUp(self):
-        self.cwd = "/".join(settings["lupulo_cwd"].split("/")[:-1])
+        self.cwd = settings["lupulo_cwd"]
         schema = "tests/backend/data_schemas/complete.json"
         self.fp = open(os.path.join(self.cwd, schema), "r")
         self.old_inotify = settings['activate_inotify']

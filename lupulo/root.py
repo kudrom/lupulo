@@ -1,8 +1,10 @@
 import os.path
 import imp
+import sys
 
 from twisted.web import resource, server, script
 from twisted.web.static import File
+from twisted.python import log
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -117,13 +119,8 @@ def get_website(sse_resource):
     static = File(os.path.join(settings["cwd"], 'static'))
     root.putChild('static', static)
 
-    command = File(os.path.join(settings["cwd"], 'rest'))
-    command.ignoreExt('.rpy')
-    command.processors = {'.rpy': script.ResourceScript}
-    root.putChild('command', command)
-
-    if settings['debug_lupulo']:
-        testing = File(os.path.join(settings["cwd"], 'tests/frontend'))
-        root.putChild('testing', testing)
+    testing = File(os.path.join(settings["lupulo_cwd"], 'tests/frontend'))
+    print testing
+    root.putChild('lupulo_testing', testing)
 
     return server.Site(root)
