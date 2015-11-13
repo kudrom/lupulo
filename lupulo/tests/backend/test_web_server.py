@@ -115,3 +115,14 @@ class TestFunctional(unittest.TestCase):
     def test_root(self):
         url = 'http://localhost:' + "8081"
         return self.http_request(url)
+
+    def test_custom_resource(self):
+        src = os.path.join(settings['lupulo_cwd'],
+                           "tests/backend/urls/template_resource.py")
+        with open("../urls.py", 'w+') as fp_urls:
+            with open(src) as fp_mocked:
+                text = "".join(fp_mocked.readlines())
+                fp_urls.write(text)
+
+        url = 'http://localhost:' + "8081" + '/hello'
+        return self.http_request(url)
