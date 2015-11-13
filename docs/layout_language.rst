@@ -1,3 +1,5 @@
+.. _layout:
+
 Layout language
 ===============
 

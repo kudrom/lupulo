@@ -96,6 +96,9 @@ As said above, you can expand both the types of data descriptors to recognize
 different data formats and also different widgets to display information in the
 web page in different ways.
 
+There are more mechanisms to customize your web page that will be discussed in
+the following sections of this documentation.
+
 Installation
 ------------
 
@@ -121,20 +124,20 @@ structure similar to this one::
 
     <project folder>
     `---templates/
-    `---rest/
     `---static/
     `---data_schema.json
     `---layout.json
     `---settings.py
+    `---urls.py
 
-The templates folder must contain the html files you want the server to serve to
-the users. The rest folder must contain rpy scripts that will get executed for
-the restful interface of the command interface. The static folder can contain
-subdirectories that contain javascript, css and image files.
+The templates and static directories and the urls.py file are discussed in 
+:ref:`templates`.
 
-The data_schema defines the schema of the data sent by the device and received
-by the backend. The layout file describes the web page. Finally, the settings
-file defines some parameters for the lupulo server.
+The data_schema json file is discussed in :ref:`data-schema-language`.
+
+The layout json file is discussed in :ref:`layout`.
+
+Finally, the settings file is discussed in :ref:`settings`.
 
 Then you must launch the lupulo server with the command **lupulo_start**.
 

@@ -10,7 +10,6 @@ def create_if_not_exists(directory):
         os.mkdir(directory)
 
 def main():
-    create_if_not_exists("rest")
     create_if_not_exists("templates")
     create_if_not_exists("static")
 

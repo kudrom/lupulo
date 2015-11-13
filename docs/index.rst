@@ -18,6 +18,8 @@ Contents:
    layout_language.rst
    accessors.rst
    listeners.rst
+   settings.rst
+   templates.rst
    how_to_widget.rst
    changelog.rst
 

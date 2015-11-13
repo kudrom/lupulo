@@ -8,12 +8,7 @@ class HelloResource(LupuloResource):
     def render_GET(self, request):
         return "Hello world"
 
-class MundoResource(LupuloResource):
-    def render_GET(self, request):
-        return "Mundo sano"
-
 
 urlpatterns = [
     ('hello', HelloResource),
-    ('hola/buen/mundo', MundoResource)
 ]
