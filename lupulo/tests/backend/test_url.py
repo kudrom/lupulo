@@ -34,6 +34,7 @@ class TestsUrls(unittest.TestCase):
         del settings['templates_dir']
         if os.path.exists(URLS):
             with open(URLS, "w+") as fp:
+                fp.seek(0)
                 fp.write("")
         if os.path.exists(URLS + 'c'):
             os.remove(URLS + 'c')

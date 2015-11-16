@@ -1,4 +1,4 @@
-from lupulo.root import LupuloResource
+from lupulo.http import LupuloResource
 
 
 class HelloResource(LupuloResource):

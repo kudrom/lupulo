@@ -39,6 +39,8 @@ class TestFunctional(unittest.TestCase):
         self.url = 'http://localhost:' + "8081" + '/subscribe'
         self.client = SSEClient(self.url)
 
+        self.urls = False
+
     def tearDown(self):
         os.rmdir(os.path.join(settings['cwd'], 'static'))
         os.remove(self.dst)
@@ -46,6 +48,13 @@ class TestFunctional(unittest.TestCase):
         del settings['templates_dir']
         self.server.stopListening()
         settings['activate_inotify'] = self.old_value_inotify
+        if self.urls:
+            URLS = '../urls.py'
+            with open(URLS, "w+") as fp:
+                fp.seek(0)
+                fp.write("")
+            os.remove(URLS + 'c')
+            self.urls = False
 
     def cleanup_connections(self):
         for sub in list(self.sse_resource.subscribers):
@@ -126,6 +135,8 @@ class TestFunctional(unittest.TestCase):
             with open(src) as fp_mocked:
                 text = "".join(fp_mocked.readlines())
                 fp_urls.write(text)
+
+        self.urls = True
 
         url = 'http://localhost:' + "8081" + '/hello'
         return self.http_request(url)

@@ -1,4 +1,4 @@
-from lupulo.resource import LupuloResource
+from lupulo.http import LupuloResource
 
 class HelloResource(LupuloResource):
     def render_GET(self, request):

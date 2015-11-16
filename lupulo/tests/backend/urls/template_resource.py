@@ -1,4 +1,4 @@
-from lupulo.resource import LupuloResource
+from lupulo.http import LupuloResource
 
 
 class TestingResource(LupuloResource):
