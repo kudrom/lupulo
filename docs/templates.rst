@@ -16,7 +16,7 @@ resource
 <https://twistedmatrix.com/documents/15.0.0/web/howto/using-twistedweb.html#resource-objects>`_
 (which is the second element) will listen to and render some information.
 
-This resource must inherit from *lupulo.resource.LupuloResource* and can ask for
+This resource must inherit from *lupulo.http.LupuloResource* and can ask for
 some template with the method *get_template*.
 
 .. py:function:: get_template(path)
@@ -36,7 +36,7 @@ some url
 
     # urls.py file
 
-    from lupulo.resource import LupuloResource
+    from lupulo.http import LupuloResource
 
     class HelloResource(LupuloResource):
         def render_GET(self, request):

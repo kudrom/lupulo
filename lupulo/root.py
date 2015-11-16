@@ -2,7 +2,7 @@ import os.path
 from twisted.web import server
 from twisted.web.static import File
 
-from lupulo.resource import LupuloResource
+from lupulo.http import LupuloResource
 from lupulo.exceptions import UrlInvalid, InvalidResource
 
 from settings import settings
