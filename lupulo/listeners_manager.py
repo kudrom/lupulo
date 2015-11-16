@@ -1,7 +1,9 @@
 from importlib import import_module
 
+from twisted.application import service
+
 from settings import settings
-from lupulo.exceptions import NotListenerFound
+from lupulo.exceptions import NotListenerFound, InvalidListener
 
 
 def get_listener_name(name_listener):
@@ -27,14 +29,17 @@ def connect_listener(parent, sse_resource):
         except ImportError:
             raise NotListenerFound(e.message.split(" ")[-1])
 
-    # Find the Listener
+    # Find the Listener class
+    listener_name = get_listener_name(settings["listener"])
     try:
-        listener_name = get_listener_name(settings["listener"])
         Listener = getattr(module, listener_name)
-
-        # Instantiate it and register towards the application
-        listener = Listener(sse_resource)
-        listener.setServiceParent(parent)
-        return listener
     except AttributeError as e:
         raise NotListenerFound(e.message.split(" ")[-1])
+
+    if not issubclass(Listener, service.Service):
+        raise InvalidListener(Listener.__name__)
+
+    # Instantiate it and register towards the application
+    listener = Listener(sse_resource)
+    listener.setServiceParent(parent)
+    return listener

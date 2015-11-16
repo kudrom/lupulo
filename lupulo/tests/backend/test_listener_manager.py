@@ -7,7 +7,7 @@ from mock import MagicMock
 
 from lupulo.settings import settings
 from lupulo.listeners_manager import connect_listener, get_listener_name
-from lupulo.exceptions import NotListenerFound
+from lupulo.exceptions import NotListenerFound, InvalidListener
 
 missing_listener = """
 class MissingListener(object):
@@ -15,8 +15,18 @@ class MissingListener(object):
         self.sse_resource = sse_resource
 """
 
+missing_service_listener = """
+class MissingListener(object):
+    def __init__(self, sse_resource):
+        self.sse_resource = sse_resource
+
+    def setServiceParent(self, parent):
+        self.parent = parent
+"""
+
 awesome_listener = """
-class AwesomeListener(object):
+from twisted.application import service
+class AwesomeListener(service.Service):
     def __init__(self, sse_resource):
         self.sse_resource = sse_resource
 
@@ -61,6 +71,10 @@ class TestsListenerManager(unittest.TestCase):
         listener = connect_listener('parent', 'sse')
         self.assertEqual(listener.sse_resource, 'sse')
         self.assertEqual(listener.parent, 'parent')
+
+    def test_listener_missing_service(self):
+        self.create_listener('missing', missing_service_listener)
+        self.assertRaises(InvalidListener, connect_listener, 'parent', 'sse')
 
     def test_underscore(self):
         name = get_listener_name("something_weird")
