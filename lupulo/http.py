@@ -1,3 +1,5 @@
+import os.path
+
 from twisted.web import resource
 
 from jinja2 import Environment, FileSystemLoader
@@ -32,7 +34,7 @@ class LupuloResource(resource.Resource):
         else:
             if name in self.next_resources:
                 return self.next_resources[name]
-        return resource.Resource.getChild(self, name, request)
+        return ErrorPage(404)
 
 
 class LupuloTemplate(object):
@@ -47,3 +49,25 @@ class LupuloTemplate(object):
         utext = self.template.render()
         text = utext.encode('ascii', 'ignore')
         return text
+
+
+class ErrorPage(LupuloResource):
+    """
+        Base class for every error page in lupulo.
+    """
+    def __init__(self, code):
+        LupuloResource.__init__(self, {})
+        self.code = code
+        directories = []
+        directories.append(os.path.join(settings['templates_dir'], 'errors'))
+        directories.append(os.path.join(settings['lupulo_templates_dir'], 'errors'))
+        directories.append(settings['lupulo_templates_dir'])
+        loader = FileSystemLoader(directories)
+        options = {"auto_reload": True, "autoescape": True}
+        self.environment = Environment(loader=loader, **options)
+
+    def render(self, request):
+        request.setResponseCode(self.code)
+        request.setHeader("content-type", "text/html")
+        template = self.get_template(str(self.code) + '.html')
+        return template.render()

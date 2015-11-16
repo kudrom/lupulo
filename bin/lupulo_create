@@ -11,6 +11,7 @@ def create_if_not_exists(directory):
 
 def main():
     create_if_not_exists("templates")
+    create_if_not_exists("templates/errors")
     create_if_not_exists("static")
 
     src = os.path.join(settings['lupulo_cwd'], 'defaults')
