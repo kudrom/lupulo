@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# Copyright (C) 2015  Alejandro López Espinosa (kudrom)
+
 from twisted.internet import reactor
 from twisted.internet.defer import Deferred
 from twisted.web.client import Agent

@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# Copyright (C) 2015  Alejandro López Espinosa (kudrom)
+
 class NotFoundDescriptor(Exception):
     def __init__(self, name):
         self.name = name

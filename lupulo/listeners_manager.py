@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# Copyright (C) 2015  Alejandro López Espinosa (kudrom)
+
 from importlib import import_module
 
 from twisted.application import service

@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# Copyright (C) 2015  Alejandro López Espinosa (kudrom)
+
 from twisted.internet.inotify import INotify, humanReadableMask
 from twisted.python.filepath import FilePath
 from twisted.python import log
