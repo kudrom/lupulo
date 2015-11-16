@@ -3,7 +3,7 @@ from twisted.web import server
 from twisted.web.static import File
 
 from lupulo.resource import LupuloResource
-from lupulo.exceptions import UrlInvalid
+from lupulo.exceptions import UrlInvalid, InvalidResource
 
 from settings import settings
 import urls
@@ -39,6 +39,9 @@ def connect_user_urls(root):
         raise UrlInvalid(msg)
 
     for path, Resource in sorted_urls:
+        if not issubclass(Resource, LupuloResource):
+            raise InvalidResource(path, Resource.__name__)
+
         node = root
 
         splitted = path.split("/")

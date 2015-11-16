@@ -5,7 +5,7 @@ from twisted.trial import unittest
 from mock import MagicMock, call
 
 from lupulo.settings import settings
-from lupulo.exceptions import UrlInvalid
+from lupulo.exceptions import UrlInvalid, InvalidResource
 from lupulo.root import connect_user_urls
 
 
@@ -125,3 +125,7 @@ class TestsUrls(unittest.TestCase):
     def test_invalid_tuple(self):
         self.create_urls_file('dictionary_url.py')
         self.assertRaises(UrlInvalid, connect_user_urls, self.root_mock)
+
+    def test_invalid_resource(self):
+        self.create_urls_file('invalid_resource.py')
+        self.assertRaises(InvalidResource, connect_user_urls, self.root_mock)

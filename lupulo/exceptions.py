@@ -44,3 +44,13 @@ class UrlInvalid(Exception):
 
     def __str__(self):
         return self.msg
+
+
+class InvalidResource(Exception):
+    def __init__(self, url, name):
+        self.url = url
+        self.name = name
+
+    def __str__(self):
+        return "%s class is not a subclass of LupuloResource " \
+               "so %s is discarded as a valid url" % (self.name, self.url)
