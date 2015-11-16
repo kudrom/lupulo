@@ -7,7 +7,7 @@ from twisted.python import log
 from settings import settings
 
 
-class SerialListener(LineReceiver):
+class SerialProtocol(LineReceiver):
     """
         The protocol used to receive the data over the serial
         port.
@@ -24,19 +24,19 @@ class SerialListener(LineReceiver):
 
     def lineReceived(self, line):
         """
-            Once the data has arrived SerialListener publishes it through SSE
+            Once the data has arrived SerialProtocol publishes it through SSE
         """
         self.sse_resource.publish(line)
 
 
-class SerialService(service.Service):
+class SerialListener(service.Service):
     """
         The service used in the app tac to start the serial listener
     """
     def __init__(self, sse_resource):
         """
             @prop sse_resource is the sse_resource served by the web server
-                  it's forwarded to the SerialListener
+                  it's forwarded to the SerialProtocol
         """
         self.device = settings["serial_device"]
         self.sse_resource = sse_resource
@@ -45,7 +45,7 @@ class SerialService(service.Service):
         """
             Setup the SerialPort to listen in the proper device.
         """
-        self.serial_listener = SerialListener(self.sse_resource)
+        self.serial_listener = SerialProtocol(self.sse_resource)
         self.serial = SerialPort(self.serial_listener,
                                  self.device,
                                  reactor,

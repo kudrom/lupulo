@@ -149,6 +149,8 @@ Then you must launch the lupulo server with the command **lupulo_start**.
 
    See the settings before running the server.
 
+.. _debugging:
+
 Debugging
 ---------
 
@@ -163,12 +165,14 @@ information that it receives. You can use this sse client typing::
 
 The second one is a listener mock that will create a fake data link connection
 in the backend and will send random data that respects the data schema of your
-device. That way you can test how the web page looks without the need of a real
-robot sending information. You can use this mock by configuring the mock
-listener in the *settings.py* file::
+device. You can read more of this listener in :ref:`listeners`.
 
-    settings['listener'] = 'mock'
-    settings['mock_timeout'] = 1
-    settings['mock_ids'] = 2
+Deployment
+----------
+
+lupulo can be deployed in any GNU/Linux environment that has a proper
+installation of python2. The project has been tested on Arch Linux in a
+Raspberry Pi B+, but you can use any platform that you want as long as it's
+GNU/Linux installed as its OS in it.
 
 Enjoy!

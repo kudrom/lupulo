@@ -65,3 +65,22 @@ One of this templates is base.html, which defines the following jinja2 blocks:
 #. **css**: at the end of the head tag.
 #. **body**: at the beginning of the body tag.
 #. **scripts**: at the end of the body tag.
+
+Error templates
+---------------
+
+Finally, if you want you can add your own custom templates for http related
+errors in the templates directory. They must have the name of the status http
+code associated with the error and they will be rendered whenever there is some
+problem in the server related to that status code.
+
+For example, if you want to add your own template when the user wants to access
+a url that is not in the sitemap, you can add a *404.html* template in the
+*templates/errors* directory of the project.
+
+Only base templates of lupulo and templates in the errors directory will be used
+to resolve inheritance when an error template is needed.
+
+.. warning::
+
+    Currently only 404 errors are rendered throguh this mechanism.
