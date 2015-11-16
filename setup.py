@@ -16,12 +16,6 @@ description = """
     Enjoy!
     """
 
-with open('README.rst') as f:
-    readme = f.read()
-
-with open('changelog.rst') as f:
-    changelog = f.read()
-
 with open('requirements.txt') as f:
     requirements = f.readlines()
 
