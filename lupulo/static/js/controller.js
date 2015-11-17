@@ -22,14 +22,6 @@ function get_complete_event_name(source_event){
         var obj = JSON.parse(event.data),
             events_removed = obj.removed,
             events_added = obj.added;
-
-        for(var i = 0; i < events_added.length; i++){
-            console.log(events_added[i] + " event source was added.");
-        }
-
-        for(var i = 0; i < events_removed.length; i++){
-            console.log(events_removed[i] + " event source was removed.");
-        }
     }
 
     // Callback for the new_widgets data event source

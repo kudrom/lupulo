@@ -24,6 +24,18 @@ class Root(LupuloResource):
         return self.template.render()
 
 
+class Debug(LupuloResource):
+    """
+        Root resource for the index.html template of the project.
+    """
+    def __init__(self, *args):
+        LupuloResource.__init__(self, *args)
+        self.template = self.get_template('debug.html')
+
+    def render_GET(self, request):
+        return self.template.render()
+
+
 def connect_user_urls(root):
     """
         Reads the urls defined by the user and creates all necessary resources.
@@ -73,7 +85,7 @@ def get_website(sse_resource):
     # If the user has overwritten some urls of the lupulo namespace, they will
     # be overwritten here again
     root.putChild('subscribe', sse_resource)
-    #root.putChild('debug', Debug())
+    root.putChild('debug', Debug({}))
 
     # Serve the static directory for css/js/image files of lupulo
     lupulo_static = File(os.path.join(settings["lupulo_cwd"], 'static'))

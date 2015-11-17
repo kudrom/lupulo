@@ -1,26 +1,15 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Debug lupulo's page</title>
-        <meta charset="utf-8" />
+{% extends "base.html" %}
 
-        <!-- Allow zooming in mobile phones -->
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% block title %}Debug page{% endblock %}
 
-        <!-- Load dependencies -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" />
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
-    </head>
-    <body>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-xs-12 information">
-                    <h2>Source events</h2>
-                </div>
-            </div>
+{% block anchors %}
+    <div class="col-xs-10 main">
+        <div class="event-sources">
+            <h2>Event sources raw data</h2>
         </div>
-        <script src="/lupulo_static/js/debug.js"></script>
-    </body>
-</html>
+    </div>
+{% endblock %}
+
+{% block controller %}
+    <script src="lupulo_static/js/debug.js"></script>
+{% endblock %}

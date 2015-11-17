@@ -18,13 +18,35 @@
         {% block css %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 warnings">
+                    </div>
+                </div>
+                <div class="row">
+                    {% block anchors %}{% endblock anchors %}
+                    <div class="col-xs-2 command">
+                        <h2>C&amp;C</h2>
+
+                        <form class="form-inline">
+                            <label for="device">Id of the device:</label>
+                            <select id="device" class="form-control">
+                                <option>----</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endblock body %}
 
         <!-- Only controller has resources over the other js files -->
         <script src="lupulo_static/js/alerts.js"></script>
         <script src="lupulo_static/js/accessors.js"></script>
         <script src="lupulo_static/js/widget.js"></script>
-        <script src="lupulo_static/js/controller.js"></script>
-        {% block scripts %}{% endblock %}
+        {% block controller %}
+            <script src="lupulo_static/js/controller.js"></script>
+        {% endblock %}
+        {% block widgets %}{% endblock %}
     </body>
 </html>
