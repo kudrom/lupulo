@@ -149,13 +149,16 @@ function Controller(){
 
         // Client SSE to access the information from the backend 
         this.data_pipe = new EventSource("/subscribe");
-        this.data_pipe.addEventListener("new_widgets", this.new_widgets);
-        this.data_pipe.addEventListener("new_devices", this.new_devices);
-        this.data_pipe.addEventListener("new_event_sources", this.new_event_sources);
 
         // When the #device changes, all widgets should be refreshed with the 
         // new device id.
         this.device_selector = document.getElementById("device");
+    };
+
+    this.connect_callbacks = function(){
+        this.data_pipe.addEventListener("new_widgets", this.new_widgets);
+        this.data_pipe.addEventListener("new_devices", this.new_devices);
+        this.data_pipe.addEventListener("new_event_sources", this.new_event_sources);
         this.device_selector.addEventListener("change", function (){
             var widget;
             for(var name in that.widgets){
@@ -167,6 +170,3 @@ function Controller(){
         });
     };
 };
-
-lupulo_controller = new Controller();
-lupulo_controller.setup();

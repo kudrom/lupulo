@@ -39,14 +39,14 @@
         var event_name = event_source.split('-')[1];
         father.append('<div id="' + event_name + '"></div>');
         var cb = event_sources_callbacks[event_name];
-        pipe.addEventListener(event_source, cb);
+        lupulo_controller.data_pipe.addEventListener(event_source, cb);
     };
 
     function unbind_event_source(event_source){
         var event_name = event_source.split('-')[1];
         $('#' + event_name).remove();
         var cb = event_sources_callbacks[event_name];
-        pipe.removeEventListener(event_source, cb);
+        lupulo_controller.data_pipe.removeEventListener(event_source, cb);
     };
 
     function new_devices(event){
@@ -64,13 +64,8 @@
 
     };
 
-    var pipe = new EventSource("/subscribe"),
-        old_id = '----',
+    var old_id = '----',
         event_sources_callbacks = {};
-
-    pipe.addEventListener("new_widgets", new_widgets);
-    pipe.addEventListener("new_devices", new_devices);
-    pipe.addEventListener("new_event_sources", new_event_sources);
 
     var device_selector = document.getElementById("device");
     device_selector.addEventListener("change", function(event){
@@ -87,4 +82,10 @@
         }
         old_id = id;
     });
+
+    lupulo_controller = new Controller();
+    lupulo_controller.setup();
+    lupulo_controller.data_pipe.addEventListener("new_widgets", new_widgets);
+    lupulo_controller.data_pipe.addEventListener("new_devices", lupulo_controller.new_devices);
+    lupulo_controller.data_pipe.addEventListener("new_event_sources", new_event_sources);
 })();

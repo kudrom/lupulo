@@ -14,7 +14,7 @@
         "event_names": ["battery"],
         "anchor": "#battery-anchor",
         "name_lines": ["Battery"],
-        "y_name": "VIVES",
+        "y_name": "Battery",
         "accessors": [{
             "type": "primitive"
         }],
