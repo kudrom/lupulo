@@ -7,7 +7,7 @@
                               data.data +
                           "</p>";
                 $('#'+event).html(msg);
-            }
+            };
         };
 
         var obj = JSON.parse(event.data),
@@ -20,7 +20,7 @@
             if(id !== "----"){
                 var event_source = 'id' + id + '-' + events_removed[i];
                 unbind_event_source(event_source);
-            }
+            };
             delete event_sources_callbacks[events_removed[i]];
         };
 
@@ -28,9 +28,9 @@
             var cb = print(events_added[i]);
             event_sources_callbacks[events_added[i]] = cb;
             if(id !== "----"){
-                var event_source = 'id' + id + '-' + events_removed[i];
+                var event_source = 'id' + id + '-' + events_added[i];
                 bind_event_source(event_source);
-            }
+            };
         };
     };
 
@@ -47,7 +47,7 @@
         $('#' + event_name).remove();
         var cb = event_sources_callbacks[event_name];
         pipe.removeEventListener(event_source, cb);
-    }
+    };
 
     function new_devices(event){
         var list = JSON.parse(event.data);
@@ -79,11 +79,11 @@
             if(id === '----'){
                 if(old_id !== "----"){
                     unbind_event_source(event_source);
-                }
+                };
             }else{
                 var event_source = 'id' + id + '-' + event_name;
                 bind_event_source(event_source);
-            }
+            };
         };
         old_id = id;
     });
