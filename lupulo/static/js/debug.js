@@ -49,19 +49,28 @@
         lupulo_controller.data_pipe.removeEventListener(event_source, cb);
     };
 
-    function new_devices(event){
-        var list = JSON.parse(event.data);
-        // If a new device is tracked, show it in the select form
-        var device_selector = document.getElementById("device");
-        for(var i = 0; i < list.length; i++){
-            var option = document.createElement("option");
-            option.text = list[i];
-            device_selector.add(option);
-        }
-    };
-
     function new_widgets(event){
+        var obj = JSON.parse(event.data),
+            widgets_removed = [],
+            widgets_added = [];
 
+        if('added' in obj){
+            for(var event_name in obj.added){
+                var anchor = obj.added[event_name].anchor.slice(1)
+                var child = '<div id="' + event_name + '-wrapper">' +
+                                '<div id="' + anchor + '"></div>' +
+                            '</div>';
+                $('.widgets').append(child);
+            }
+        }
+
+        if('removed' in obj){
+            for(var i = 0; i < obj.removed.length; i++){
+                $('#wrapper-' + obj.removed[i]).remove();
+            }
+        }
+
+        lupulo_controller.new_widgets(event);
     };
 
     var old_id = '----',
@@ -79,6 +88,12 @@
                 var event_source = 'id' + id + '-' + event_name;
                 bind_event_source(event_source);
             }
+        }
+        for(var name in lupulo_controller.widgets){
+            widget = lupulo_controller.widgets[name];
+            widget.clear_framebuffers();
+            lupulo_controller.remove_widget(name);
+            lupulo_controller.add_widget(widget);
         }
         old_id = id;
     });

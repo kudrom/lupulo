@@ -156,6 +156,7 @@ function Controller(){
     };
 
     this.connect_callbacks = function(){
+        var that = this;
         this.data_pipe.addEventListener("new_widgets", this.new_widgets);
         this.data_pipe.addEventListener("new_devices", this.new_devices);
         this.data_pipe.addEventListener("new_event_sources", this.new_event_sources);
