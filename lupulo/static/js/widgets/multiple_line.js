@@ -170,4 +170,4 @@ MultipleLine = function(layout){
 };
 
 // Register the Klass as a factory for multiple_line widgets
-register_widget("multiple_line", MultipleLine);
+lupulo_controller.register_widget("multiple_line", MultipleLine);

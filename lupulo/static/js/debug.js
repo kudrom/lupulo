@@ -20,9 +20,9 @@
             if(id !== "----"){
                 var event_source = 'id' + id + '-' + events_removed[i];
                 unbind_event_source(event_source);
-            };
+            }
             delete event_sources_callbacks[events_removed[i]];
-        };
+        }
 
         for(var i = 0; i < events_added.length; i++){
             var cb = print(events_added[i]);
@@ -30,8 +30,8 @@
             if(id !== "----"){
                 var event_source = 'id' + id + '-' + events_added[i];
                 bind_event_source(event_source);
-            };
-        };
+            }
+        }
     };
 
     function bind_event_source(event_source){
@@ -57,7 +57,7 @@
             var option = document.createElement("option");
             option.text = list[i];
             device_selector.add(option);
-        };
+        }
     };
 
     function new_widgets(event){
@@ -79,12 +79,12 @@
             if(id === '----'){
                 if(old_id !== "----"){
                     unbind_event_source(event_source);
-                };
+                }
             }else{
                 var event_source = 'id' + id + '-' + event_name;
                 bind_event_source(event_source);
-            };
-        };
+            }
+        }
         old_id = id;
     });
 })();
