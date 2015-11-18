@@ -107,12 +107,23 @@
         return function(event){
             var event_name = get_event_name(event.type);
             var panel = $('#' + widget_name + '-wrapper .data-panel');
+            var accessors_panel = $('#' + widget_name + '-wrapper .accessors-panel');
 
             var obj = data_panel_objects[widget_name];
             obj[event_name] = JSON.parse(event.data);
 
             panel.html(pretty(obj, 0, true));
-            
+
+            obj = {};
+            var widget_accessors = accessors[widget_name];
+            for(var accessor_index in widget_accessors){
+                var jdata = JSON.parse(event.data);
+                var fdata = {};
+                fdata[event.type] = jdata;
+                var accessor = widget_accessors[accessor_index];
+                obj[accessor_index] = accessor(fdata);
+            }
+            accessors_panel.html(pretty(obj, 0, true));
         };
     };
 
@@ -129,6 +140,7 @@
                                 '<div class="pull-left">' +
                                     '<pre class="layout">' + layout + '</pre>' +
                                     '<pre class="data-panel">{}</pre>' +
+                                    '<pre class="accessors-panel"></pre>' +
                                 '</div>' +
                                 '<div class="pull-right" id="' + anchor + '"></div>' +
                             '</div>';
@@ -137,6 +149,7 @@
                 data_panel_objects[name] = {};
                 data_panel_callbacks[name] = cb;
                 data_panel_events[name] = obj.added[name].event_names;
+                accessors[name] = get_accessors(obj.added[name].accessors);
             }
         }
 
@@ -153,7 +166,8 @@
         event_sources_callbacks = {},
         data_panel_callbacks = {},
         data_panel_events = {},
-        data_panel_objects = {};
+        data_panel_objects = {},
+        accessors = {};
 
     var device_selector = document.getElementById("device");
     device_selector.addEventListener("change", function(event){
