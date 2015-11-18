@@ -4,18 +4,54 @@
 
 {% block css %}
     <style>
+        .event-sources > div{
+            margin-left: 20px;
+        }
+
+        .widgets{
+            margin-top: 20px;
+        }
+
         .layout{
             width: 500px;
             overflow: scroll;
+            position: relative;
         }
 
         .wrapper{
-            margin: 20px 0;
+            margin: 40px auto;
+            position: relative;
+            width: 90%;
+            padding: 10px;
+        }
+
+        .widget{
+            margin: 0 20px;
         }
 
         .data-panel{
             width: 500px;
             overflow: scroll;
+        }
+
+        .data-panel, .accessors-panel{
+            min-height: 60px;
+        }
+
+        .section, .widget{
+            position: relative;
+        }
+
+        .title{
+            position:absolute;
+            z-index: 50;
+            opacity: 0.15;
+            color: grey;
+            font-size: 60px;
+            left: 7px;
+            top: -12px;
+            font-family: sans-serif;
+            font-weight: bold;
         }
     </style>
 {% endblock %}

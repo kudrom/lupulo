@@ -11,6 +11,8 @@
             msg += '[';
             for(var i = 0; i < obj.length; i++){
                 if(print_indexes){
+                    if(i > 0)
+                        msg += ' '
                     msg += '<strong>' + i + '</strong>:';
                 }
                 if(obj[i] instanceof Object){
@@ -138,11 +140,22 @@
                 var layout = pretty(obj.added[name], 0, false);
                 var child = '<div class="clearfix wrapper" id="' + name + '-wrapper">' +
                                 '<div class="pull-left">' +
-                                    '<pre class="layout">' + layout + '</pre>' +
-                                    '<pre class="data-panel">{}</pre>' +
-                                    '<pre class="accessors-panel"></pre>' +
+                                    '<pre class="section layout">' +
+                                        '<div class="title">Layout</div>' +
+                                        layout +
+                                    '</pre>' +
+                                    '<div class="section">' +
+                                        '<div class="title">Raw data</div>' +
+                                        '<pre class="data-panel">{}</pre>' +
+                                    '</div>' +
+                                    '<div class="section">' +
+                                        '<div class="title">Accessors data</div>' +
+                                        '<pre class="accessors-panel"></pre>' +
+                                    '</div>' +
                                 '</div>' +
-                                '<div class="pull-right" id="' + anchor + '"></div>' +
+                                '<div class="pull-left widget" id="' + anchor + '">' +
+                                    '<div class="title">Widget</div>' +
+                                '</div>' +
                             '</div>';
                 $('.widgets').append(child);
                 var cb = update_data_panel(name);
