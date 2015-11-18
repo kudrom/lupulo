@@ -11,12 +11,12 @@
             msg += '[';
             for(var i = 0; i < obj.length; i++){
                 if(print_indexes){
-                    msg += '<strong>' + i + '</strong>: ';
+                    msg += '<strong>' + i + '</strong>:';
                 }
                 if(obj[i] instanceof Object){
                     msg += pretty(obj[i], spaces_n + 4, print_indexes);
                 }else{
-                    if(i > 0){
+                    if(i > 0 || print_indexes){
                         msg += " ";
                     }
                     msg += obj[i];
@@ -50,7 +50,7 @@
             msg += obj;
         }
         return msg;
-    }
+    };
 
     function new_event_sources(event){
         function print(event){
@@ -71,7 +71,7 @@
 
         for(var i = 0; i < events_removed.length; i++){
             if(id !== "----"){
-                var event_source = 'id' + id + '-' + events_removed[i];
+                var event_source = get_complete_event_name(events_removed[i]);
                 unbind_event_source(event_source);
             }
             delete event_sources_callbacks[events_removed[i]];
@@ -81,7 +81,7 @@
             var cb = print(events_added[i]);
             event_sources_callbacks[events_added[i]] = cb;
             if(id !== "----"){
-                var event_source = 'id' + id + '-' + events_added[i];
+                var event_source = get_complete_event_name(events_added[i]);
                 bind_event_source(event_source);
             }
         }
@@ -89,17 +89,31 @@
 
     function bind_event_source(event_source){
         var father = $('.event-sources');
-        var event_name = event_source.split('-')[1];
+        var event_name = get_event_name(event_source);
         father.append('<div id="' + event_name + '"></div>');
         var cb = event_sources_callbacks[event_name];
         lupulo_controller.data_pipe.addEventListener(event_source, cb);
     };
 
     function unbind_event_source(event_source){
-        var event_name = event_source.split('-')[1];
+        var event_name = get_event_name(event_source);
         $('#' + event_name).remove();
         var cb = event_sources_callbacks[event_name];
         lupulo_controller.data_pipe.removeEventListener(event_source, cb);
+    };
+
+    function update_data_panel(widget_name){
+        var widget_name = widget_name;
+        return function(event){
+            var event_name = get_event_name(event.type);
+            var panel = $('#' + widget_name + '-wrapper .data-panel');
+
+            var obj = data_panel_objects[widget_name];
+            obj[event_name] = JSON.parse(event.data);
+
+            panel.html(pretty(obj, 0, true));
+            
+        };
     };
 
     function new_widgets(event){
@@ -108,17 +122,21 @@
             widgets_added = [];
 
         if('added' in obj){
-            for(var event_name in obj.added){
-                var anchor = obj.added[event_name].anchor.slice(1)
-                var layout = pretty(obj.added[event_name], 0, false);
-                var child = '<div class="clearfix wrapper" id="' + event_name + '-wrapper">' +
+            for(var name in obj.added){
+                var anchor = obj.added[name].anchor.slice(1)
+                var layout = pretty(obj.added[name], 0, false);
+                var child = '<div class="clearfix wrapper" id="' + name + '-wrapper">' +
                                 '<div class="pull-left">' +
                                     '<pre class="layout">' + layout + '</pre>' +
-                                    '<pre class="stream"></pre>' +
+                                    '<pre class="data-panel">{}</pre>' +
                                 '</div>' +
                                 '<div class="pull-right" id="' + anchor + '"></div>' +
                             '</div>';
                 $('.widgets').append(child);
+                var cb = update_data_panel(name);
+                data_panel_objects[name] = {};
+                data_panel_callbacks[name] = cb;
+                data_panel_events[name] = obj.added[name].event_names;
             }
         }
 
@@ -132,7 +150,10 @@
     };
 
     var old_id = '----',
-        event_sources_callbacks = {};
+        event_sources_callbacks = {},
+        data_panel_callbacks = {},
+        data_panel_events = {},
+        data_panel_objects = {};
 
     var device_selector = document.getElementById("device");
     device_selector.addEventListener("change", function(event){
@@ -144,10 +165,28 @@
                     unbind_event_source(event_source);
                 }
             }else{
-                var event_source = 'id' + id + '-' + event_name;
+                var event_source = get_complete_event_name(event_name);
                 bind_event_source(event_source);
             }
         }
+
+        for(var widget_name in data_panel_callbacks){
+            var events = data_panel_events[widget_name];
+            if(id === '----'){
+                if(old_id !== "----"){
+                    for(var i = 0; i < events.length; i++){
+                        var event_source = 'id' + old_id + '-' + events[i];
+                    }
+                }
+            }else{
+                for(var i = 0; i < events.length; i++){
+                    var event_source = get_complete_event_name(events[i]);
+                    var cb = data_panel_callbacks[widget_name];
+                    lupulo_controller.data_pipe.addEventListener(event_source ,cb);
+                }
+            }
+        }
+
         for(var name in lupulo_controller.widgets){
             widget = lupulo_controller.widgets[name];
             widget.clear_framebuffers();

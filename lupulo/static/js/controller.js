@@ -5,6 +5,18 @@ function get_complete_event_name(source_event){
     return event_name
 }
 
+function get_event_name(source_event){
+    var splitted = source_event.split("-").splice(1);
+    var ret = ""
+    for(var i = 0; i < splitted.length; i++){
+        if(i > 0){
+            ret += "-";
+        }
+        ret += splitted[i];
+    }
+    return ret;
+}
+
 function Controller(){
     // Callback for the new_devices data event source
     this.new_devices = function(event){
