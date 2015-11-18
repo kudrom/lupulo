@@ -1,4 +1,49 @@
 (function (){
+    function pretty(obj, spaces_n){
+        var spaces = "";
+        for(var i = 0; i < spaces_n ; i++){
+            spaces += " ";
+        }
+
+        var msg = "{\n";
+        var n_keys = 1;
+        for(var key in obj){
+            msg += spaces + "    " + '<strong>' + key + '</strong>: ';
+            if(obj[key] instanceof Array){
+                var list = obj[key];
+                msg += '[';
+                for(var i = 0; i < list.length; i++){
+                    if(list[i] instanceof Object){
+                        msg += pretty(list[i], spaces_n + 4);
+                    }else{
+                        if(i > 0){
+                            msg += " ";
+                        }
+                        msg += list[i];
+                        if(i < list.length - 1){
+                            msg += ","
+                        }
+                    }
+                }
+                msg += ']';
+            }else if(obj[key] instanceof Object){
+                msg += pretty(obj[key], spaces_n + 4);
+            }else{
+                msg += obj[key];
+            }
+
+            if(n_keys === Object.keys(obj).length){
+                msg += '\n';
+            }else{
+                msg += ',\n';
+            }
+            n_keys += 1;
+        }
+
+        msg += spaces + "}";
+        return msg;
+    }
+
     function new_event_sources(event){
         function print(event){
             return function(data){
@@ -57,8 +102,10 @@
         if('added' in obj){
             for(var event_name in obj.added){
                 var anchor = obj.added[event_name].anchor.slice(1)
-                var child = '<div id="' + event_name + '-wrapper">' +
-                                '<div id="' + anchor + '"></div>' +
+                var layout = pretty(obj.added[event_name], 0);
+                var child = '<div class="clearfix" id="' + event_name + '-wrapper">' +
+                                '<pre class="layout pull-left">' + layout + '</pre>' +
+                                '<div class="pull-right" id="' + anchor + '"></div>' +
                             '</div>';
                 $('.widgets').append(child);
             }
@@ -82,6 +129,7 @@
         for(var event_name in event_sources_callbacks){
             if(id === '----'){
                 if(old_id !== "----"){
+                    var event_source = 'id' + old_id + '-' + event_name;
                     unbind_event_source(event_source);
                 }
             }else{

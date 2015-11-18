@@ -26,13 +26,13 @@
         "abstract": true,
         "parent": "global",
         "event_names": ["distances"],
-        "anchor": "#distances-anchor",
         "range": [0, 4]
     },
     "distances-center": {
         "parent": "distances",
         "name_lines": ["Front-left", "Front-center", "Front-right"],
         "y_name": "Distances front",
+        "anchor": "#distances-center-anchor",
         "accessors": [{
             "type": "index",
             "start": 0,
@@ -43,6 +43,7 @@
         "parent": "distances",
         "name_lines": ["Middle-left", "Middle-right"],
         "y_name": "Distances middle",
+        "anchor": "#distances-middle-anchor",
         "accessors": [{
             "type": "index",
             "start": 3,
@@ -53,6 +54,7 @@
         "parent": "distances",
         "name_lines": ["Back-left", "Back-center", "Back-right"],
         "y_name": "Distances back",
+        "anchor": "#distances-back-anchor",
         "accessors": [{
             "type": "index",
             "start": 5,
@@ -62,7 +64,7 @@
 
     "dict-debug-widget": {
         "parent": "global",
-        "anchor": "#distances-anchor",
+        "anchor": "#debug-anchor",
         "event_names": ["dict_debug"],
         "name_lines": ["arg1"],
         "y_name": "Something interesting",
@@ -76,14 +78,14 @@
     "motor": {
         "abstract": true,
         "parent": "global",
-        "event_names": ["motor"],
-        "anchor": "#motors-anchor"
+        "event_names": ["motor"]
     },
 
     "speed": {
         "parent": "motor",
         "name_lines": ["speed-left", "speed-right"],
         "y_name": "Speed",
+        "anchor": "#speed-anchor",
         "accessors": [{
             "type": "index",
             "start": 0,
