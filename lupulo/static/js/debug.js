@@ -192,6 +192,10 @@
                     unbind_event_source(event_source);
                 }
             }else{
+                if(old_id !== "----"){
+                    var old_event_source = 'id' + old_id + '-' + event_name;
+                    unbind_event_source(old_event_source);
+                }
                 var event_source = get_complete_event_name(event_name);
                 bind_event_source(event_source);
             }
@@ -203,12 +207,20 @@
                 if(old_id !== "----"){
                     for(var i = 0; i < events.length; i++){
                         var event_source = 'id' + old_id + '-' + events[i];
+                        var cb = data_panel_callbacks[widget_name];
+                        lupulo_controller.data_pipe.removeEventListener(event_source, cb)
                     }
                 }
             }else{
                 for(var i = 0; i < events.length; i++){
-                    var event_source = get_complete_event_name(events[i]);
                     var cb = data_panel_callbacks[widget_name];
+
+                    if(old_id !== "----"){
+                        var old_event_source = 'id' + old_id + '-' + events[i];
+                        lupulo_controller.data_pipe.removeEventListener(old_event_source , cb);
+                    }
+
+                    var event_source = get_complete_event_name(events[i]);
                     lupulo_controller.data_pipe.addEventListener(event_source ,cb);
                 }
             }
