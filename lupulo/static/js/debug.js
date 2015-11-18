@@ -61,7 +61,7 @@
                               "<strong>" + event + "</strong>: " +
                               pretty(JSON.parse(data.data), 0, true) +
                           "</p>";
-                $('#'+event).html(msg);
+                $('#source-'+event).html(msg);
             };
         };
 
@@ -92,14 +92,14 @@
     function bind_event_source(event_source){
         var father = $('.event-sources');
         var event_name = get_event_name(event_source);
-        father.append('<div id="' + event_name + '"></div>');
+        father.append('<div id="source-' + event_name + '"></div>');
         var cb = event_sources_callbacks[event_name];
         lupulo_controller.data_pipe.addEventListener(event_source, cb);
     };
 
     function unbind_event_source(event_source){
         var event_name = get_event_name(event_source);
-        $('#' + event_name).remove();
+        $('#source-' + event_name).remove();
         var cb = event_sources_callbacks[event_name];
         lupulo_controller.data_pipe.removeEventListener(event_source, cb);
     };
@@ -134,6 +134,14 @@
             widgets_removed = [],
             widgets_added = [];
 
+        if('removed' in obj){
+            for(var i = 0; i < obj.removed.length; i++){
+                var event_source = get_complete_event_name(obj.removed[i]);
+                var cb = data_panel_callbacks[obj.removed[i]];
+                lupulo_controller.data_pipe.removeEventListener(event_source, cb)
+            }
+        }
+
         if('added' in obj){
             for(var name in obj.added){
                 var anchor = obj.added[name].anchor.slice(1)
@@ -166,13 +174,14 @@
             }
         }
 
+        lupulo_controller.new_widgets(event);
+
         if('removed' in obj){
             for(var i = 0; i < obj.removed.length; i++){
-                $('#wrapper-' + obj.removed[i]).remove();
+                $('#' + obj.removed[i] + '-wrapper').remove();
             }
         }
 
-        lupulo_controller.new_widgets(event);
     };
 
     var old_id = '----',
