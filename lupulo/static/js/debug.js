@@ -1,46 +1,54 @@
 (function (){
-    function pretty(obj, spaces_n){
+    function pretty(obj, spaces_n, print_indexes){
         var spaces = "";
         for(var i = 0; i < spaces_n ; i++){
             spaces += " ";
         }
 
-        var msg = "{\n";
+        var msg = "";
         var n_keys = 1;
-        for(var key in obj){
-            msg += spaces + "    " + '<strong>' + key + '</strong>: ';
-            if(obj[key] instanceof Array){
-                var list = obj[key];
-                msg += '[';
-                for(var i = 0; i < list.length; i++){
-                    if(list[i] instanceof Object){
-                        msg += pretty(list[i], spaces_n + 4);
-                    }else{
-                        if(i > 0){
-                            msg += " ";
-                        }
-                        msg += list[i];
-                        if(i < list.length - 1){
-                            msg += ","
-                        }
+        if(obj instanceof Array){
+            msg += '[';
+            for(var i = 0; i < obj.length; i++){
+                if(print_indexes){
+                    msg += '<strong>' + i + '</strong>: ';
+                }
+                if(obj[i] instanceof Object){
+                    msg += pretty(obj[i], spaces_n + 4, print_indexes);
+                }else{
+                    if(i > 0){
+                        msg += " ";
+                    }
+                    msg += obj[i];
+                    if(i < obj.length - 1){
+                        msg += ","
                     }
                 }
-                msg += ']';
-            }else if(obj[key] instanceof Object){
-                msg += pretty(obj[key], spaces_n + 4);
-            }else{
-                msg += obj[key];
             }
+            msg += ']';
+        }else if(obj instanceof Object){
+            msg += "{\n";
+            for(var key in obj){
+                msg += spaces + "    " + '<strong>' + key + '</strong>: ';
+                if(obj[key] instanceof Array){
+                    msg += pretty(obj[key], spaces_n, print_indexes);
+                }else if(obj[key] instanceof Object){
+                    msg += pretty(obj[key], spaces_n + 4, print_indexes);
+                }else{
+                    msg += obj[key];
+                }
 
-            if(n_keys === Object.keys(obj).length){
-                msg += '\n';
-            }else{
-                msg += ',\n';
+                if(n_keys === Object.keys(obj).length){
+                    msg += '\n';
+                }else{
+                    msg += ',\n';
+                }
+                n_keys += 1;
             }
-            n_keys += 1;
+            msg += spaces + "}";
+        }else{
+            msg += obj;
         }
-
-        msg += spaces + "}";
         return msg;
     }
 
@@ -49,7 +57,7 @@
             return function(data){
                 var msg = "<p>" +
                               "<strong>" + event + "</strong>: " +
-                              data.data +
+                              pretty(JSON.parse(data.data), 0, true) +
                           "</p>";
                 $('#'+event).html(msg);
             };
@@ -102,9 +110,12 @@
         if('added' in obj){
             for(var event_name in obj.added){
                 var anchor = obj.added[event_name].anchor.slice(1)
-                var layout = pretty(obj.added[event_name], 0);
-                var child = '<div class="clearfix" id="' + event_name + '-wrapper">' +
-                                '<pre class="layout pull-left">' + layout + '</pre>' +
+                var layout = pretty(obj.added[event_name], 0, false);
+                var child = '<div class="clearfix wrapper" id="' + event_name + '-wrapper">' +
+                                '<div class="pull-left">' +
+                                    '<pre class="layout">' + layout + '</pre>' +
+                                    '<pre class="stream"></pre>' +
+                                '</div>' +
                                 '<div class="pull-right" id="' + anchor + '"></div>' +
                             '</div>';
                 $('.widgets').append(child);
