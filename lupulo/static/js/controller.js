@@ -1,11 +1,17 @@
-// Returns the complete event name of a source event
 function get_complete_event_name(source_event){
+    /*
+     * Returns the complete event name of a source event
+     */
     var device = document.getElementById("device");
     var event_name = "id" + device.value + "-" + source_event;
     return event_name
 }
 
 function get_event_name(source_event){
+    /*
+     * Returns the event_name of the source_event.
+     * This is the inverse of get_complete_event_name.
+     */
     var splitted = source_event.split("-").splice(1);
     var ret = ""
     for(var i = 0; i < splitted.length; i++){
@@ -19,7 +25,7 @@ function get_event_name(source_event){
 
 function Controller(){
     // Callback for the new_devices data event source
-    this.new_devices = function(event){
+    function new_devices(event){
         var list = JSON.parse(event.data);
         // If a new device is tracked, show it in the select form
         var device_selector = document.getElementById("device");
@@ -153,11 +159,21 @@ function Controller(){
     };
 
     this.setup = function(){
+        /*
+         * Dunction called by the client to allow the injection of the this
+         * object to the new_* callbacks
+         */
+
+        // Creates a wrapper around the callbacks to allow the injection of the
+        // this object
         var that = this;
-        new_widgets_wrapper = function(event){
-            new_widgets.call(that, event)
+        function callback_wrapper(cb){
+            return function(event){
+                cb.call(that, event)
+            };
         };
-        this.new_widgets = new_widgets_wrapper;
+        this.new_widgets = callback_wrapper(new_widgets);
+        this.new_devices = callback_wrapper(new_devices);
 
         // Client SSE to access the information from the backend 
         this.data_pipe = new EventSource("/subscribe");

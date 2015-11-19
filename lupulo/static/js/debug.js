@@ -1,13 +1,25 @@
 (function (){
     function pretty(obj, spaces_n, print_indexes){
+        /*
+         * Recursive function that returns a string which is a pretty
+         * representation of the JSON object passed as an argument in obj.
+         *
+         * spaces_n is used to know how much tabs should be printed in each line
+         * print_indexes is a flag that is used to print the indexes of a list
+         * or not respectively
+         */
+
+        // Calculate the number of spaces
         var spaces = "";
         for(var i = 0; i < spaces_n ; i++){
             spaces += " ";
         }
 
+        // Inspect the object
         var msg = "";
-        var n_keys = 1;
         if(obj instanceof Array){
+            // Print a message like [a, b, c] if the object is a list or
+            // [0: a, 1: b, 2: c] if print_indexes is activated
             msg += '[';
             for(var i = 0; i < obj.length; i++){
                 if(print_indexes){
@@ -29,6 +41,9 @@
             }
             msg += ']';
         }else if(obj instanceof Object){
+            // Print a message like { a: 1, b: 2} if the object is a JSON
+            // object.
+            var n_keys = 1;
             msg += "{\n";
             for(var key in obj){
                 msg += spaces + "    " + '<strong>' + key + '</strong>: ';
@@ -51,17 +66,26 @@
         }else{
             msg += obj;
         }
+
         return msg;
     };
 
     function new_event_sources(event){
-        function print(event){
+        /*
+         * Callback when a new_event_sources SSE event is received.
+         * This function must update the sources event section in the web page
+         */
+        function print(event_name){
+            /*
+             * Auxiliary function used as callback in the addEventListener
+             * method of the SSE data pipe.
+             */
             return function(data){
                 var msg = "<p>" +
-                              "<strong>" + event + "</strong>: " +
+                              "<strong>" + event_name + "</strong>: " +
                               pretty(JSON.parse(data.data), 0, true) +
                           "</p>";
-                $('#source-'+event).html(msg);
+                $('#source-' + event_name).html(msg);
             };
         };
 
@@ -71,6 +95,7 @@
             device_selector = document.getElementById("device"),
             id = device_selector.value;
 
+        // Unbind and delete a source event callback if it's in the removed list
         for(var i = 0; i < events_removed.length; i++){
             if(id !== "----"){
                 var event_source = get_complete_event_name(events_removed[i]);
@@ -79,6 +104,7 @@
             delete event_sources_callbacks[events_removed[i]];
         }
 
+        // Construct and bind a source event callback if it's in the added list
         for(var i = 0; i < events_added.length; i++){
             var cb = print(events_added[i]);
             event_sources_callbacks[events_added[i]] = cb;
@@ -90,6 +116,10 @@
     };
 
     function bind_event_source(event_source){
+        /*
+         * Connect the event_source to the callback registered in the
+         * event_sources_callbacks object.
+         */
         var father = $('.event-sources');
         var event_name = get_event_name(event_source);
         father.append('<div id="source-' + event_name + '"></div>');
@@ -98,15 +128,25 @@
     };
 
     function unbind_event_source(event_source){
+        /*
+         * Disconnect the event_source from the callback registered in the
+         * event_sources_callbacks object.
+         */
         var event_name = get_event_name(event_source);
         $('#source-' + event_name).remove();
         var cb = event_sources_callbacks[event_name];
         lupulo_controller.data_pipe.removeEventListener(event_source, cb);
     };
 
-    function update_data_panel(widget_name){
-        var widget_name = widget_name;
+    function update_data_panels(widget_name){
+        /*
+         * Closure to inject the widget_name argument
+         */
         return function(event){
+            /*
+             * Callback that updates the data and accessors panels with
+             * the data received from the backend.
+             */
             var event_name = get_event_name(event.type);
             var panel = $('#' + widget_name + '-wrapper .data-panel');
             var accessors_panel = $('#' + widget_name + '-wrapper .accessors-panel');
@@ -130,18 +170,26 @@
     };
 
     function new_widgets(event){
+        /*
+         * Callback for the new_widget event source from the backend.
+         * It creates all the sections for each layout definition and call the
+         * lupulo controller to bind the widgets to its anchor.
+         */
         var obj = JSON.parse(event.data),
             widgets_removed = [],
             widgets_added = [];
 
+        // Delete the callbacks if the object is in the removed section
         if('removed' in obj){
             for(var i = 0; i < obj.removed.length; i++){
                 var event_source = get_complete_event_name(obj.removed[i]);
                 var cb = data_panel_callbacks[obj.removed[i]];
-                lupulo_controller.data_pipe.removeEventListener(event_source, cb)
+                lupulo_controller.data_pipe.removeEventListener(event_source, cb);
             }
         }
 
+        // Construct all the html code, populate the data_panel_ objects and
+        // connects the callbacks to its event sources if the id is a valid one
         if('added' in obj){
             for(var name in obj.added){
                 var anchor = obj.added[name].anchor.slice(1)
@@ -166,7 +214,7 @@
                                 '</div>' +
                             '</div>';
                 $('.widgets').append(child);
-                var cb = update_data_panel(name);
+                var cb = update_data_panels(name);
                 data_panel_objects[name] = {};
                 data_panel_callbacks[name] = cb;
                 data_panel_events[name] = obj.added[name].event_names;
@@ -183,8 +231,11 @@
             }
         }
 
+        // Call the lupulo_controller callback
         lupulo_controller.new_widgets(event);
 
+        // Remove all the wrapper when the widget has been already deleted by
+        // the lupulo controller
         if('removed' in obj){
             for(var i = 0; i < obj.removed.length; i++){
                 $('#' + obj.removed[i] + '-wrapper').remove();
@@ -194,15 +245,20 @@
     };
 
     var old_id = '----',
+        // Callback for the event sources section
         event_sources_callbacks = {},
+        // Data for the data panels sections
         data_panel_callbacks = {},
         data_panel_events = {},
         data_panel_objects = {},
         accessors = {};
 
+    // Overwrite the default callback for the device selector
     var device_selector = document.getElementById("device");
     device_selector.addEventListener("change", function(event){
         var id = device_selector.value;
+
+        // Update the event sources section accordingly
         for(var event_name in event_sources_callbacks){
             if(id === '----'){
                 if(old_id !== "----"){
@@ -219,6 +275,7 @@
             }
         }
 
+        // Update the data panels accordingly
         for(var widget_name in data_panel_callbacks){
             var events = data_panel_events[widget_name];
             if(id === '----'){
@@ -244,15 +301,19 @@
             }
         }
 
+        // Do the job of the lupulo_controller callback
         for(var name in lupulo_controller.widgets){
             widget = lupulo_controller.widgets[name];
             widget.clear_framebuffers();
             lupulo_controller.remove_widget(name);
             lupulo_controller.add_widget(widget);
         }
+
+        // Update the old_id
         old_id = id;
     });
 
+    // Overwrite some callbacks of the main controller
     lupulo_controller = new Controller();
     lupulo_controller.setup();
     lupulo_controller.data_pipe.addEventListener("new_widgets", new_widgets);
