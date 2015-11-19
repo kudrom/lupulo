@@ -207,6 +207,10 @@
 
         // Update the data panels accordingly
         for(var widget_name in data_panel_callbacks){
+            // Clear the text of both panels
+            $('#' + widget_name +'-wrapper .data-panel').text("{}");
+            $('#' + widget_name +'-wrapper .accessors-panel').text("");
+
             var events = data_panel_events[widget_name];
             if(id === '----'){
                 if(old_id !== "----"){
