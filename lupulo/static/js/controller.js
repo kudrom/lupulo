@@ -1,28 +1,3 @@
-function get_complete_event_name(source_event){
-    /*
-     * Returns the complete event name of a source event
-     */
-    var device = document.getElementById("device");
-    var event_name = "id" + device.value + "-" + source_event;
-    return event_name
-}
-
-function get_event_name(source_event){
-    /*
-     * Returns the event_name of the source_event.
-     * This is the inverse of get_complete_event_name.
-     */
-    var splitted = source_event.split("-").splice(1);
-    var ret = ""
-    for(var i = 0; i < splitted.length; i++){
-        if(i > 0){
-            ret += "-";
-        }
-        ret += splitted[i];
-    }
-    return ret;
-}
-
 function DefaultController(){
     // Callback for the new_devices data event source
     function new_devices(event){
@@ -114,8 +89,13 @@ function DefaultController(){
     // data_pipe EventSource
     this.add_widget = function(widget){
         var layout = widget.layout;
-        var iid = this.device_selector.value === "" ? "----" : this.device_selector.value;
-        if(iid[0] !== "-" ){
+
+        device_selector = document.getElementById("device");
+        var iid = device_selector.stable_value;
+        if(iid === "")
+            iid = "----";
+
+        if(iid !== "----" ){
             for(var i = 0; i < layout.event_names.length; i++){
                 var complete_event_name = get_complete_event_name(layout.event_names[i]);
                 this.data_pipe.addEventListener(complete_event_name, widget.async_callback);
@@ -123,7 +103,7 @@ function DefaultController(){
             }
         }
         this.widgets[layout.name] = widget;
-    }
+    };
 
     // Remove widget from the widgets dictionary and unbind it from the 
     // data_pipe EventSource
@@ -142,7 +122,7 @@ function DefaultController(){
         widget.event_sources = [];
 
         delete this.widgets[name];
-    }
+    };
 
     // Private object that stores the way of constructing widgets
     this.widget_constructors = {};
@@ -178,9 +158,10 @@ function DefaultController(){
         // Client SSE to access the information from the backend 
         this.data_pipe = new EventSource("/subscribe");
 
-        // When the #device changes, all widgets should be refreshed with the 
-        // new device id.
-        this.device_selector = document.getElementById("device");
+        // stable_value is used to avoid differences in behaviour in several
+        // browsers when device_selector changes its value
+        device_selector = document.getElementById("device");
+        device_selector.stable_value = device_selector.value;
     };
 
     this.connect_callbacks = function(){
@@ -188,8 +169,11 @@ function DefaultController(){
         this.data_pipe.addEventListener("new_widgets", this.new_widgets);
         this.data_pipe.addEventListener("new_devices", this.new_devices);
         this.data_pipe.addEventListener("new_event_sources", this.new_event_sources);
-        this.device_selector.addEventListener("change", function (){
+
+        device_selector = document.getElementById("device");
+        device_selector.addEventListener("change", function (event){
             var widget;
+            event.target.stable_value = event.target.value;
             for(var name in that.widgets){
                 widget = that.widgets[name];
                 widget.clear_framebuffers();
