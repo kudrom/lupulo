@@ -64,7 +64,89 @@ One of this templates is base.html, which defines the following jinja2 blocks:
 #. **title**: inside the title tag.
 #. **css**: at the end of the head tag.
 #. **body**: at the beginning of the body tag.
-#. **scripts**: at the end of the body tag.
+#. **anchors**: inside the body block, see below for more information.
+#. **controller**: at the end of the body tag, just before the widgets tag.
+#. **widgets**: at the end of the body tag.
+
+You should define the **title** block to put your own title to the page and also
+the **css** block if you want to define your own styles or include your own
+stylesheets into the web page.
+
+You shouldn't overwrite the **body** block unless you're very sure about it
+because you are going to break some functionality of the framework unless you
+provide it yourself. If you want to include your own content into the web page,
+you should define the **anchors** block.
+
+You can define your own controller of the events received from the backend by
+overwriting the **controller** block, but usually you only want to include some
+widgets and probably some js file of your own, you should do that defining the
+**widgets** block.
+
+Controller
+----------
+
+Each web page must have a controller that does the following:
+
+#. Receives the data that the backend is sending through three sse events
+   called *new_devices*, *new_widgets* and *new_event_sources*.
+#. Provides a way to register widgets through the *register_widget* interface.
+#. Provides a callback for onchange DOM event for the #device select form.
+#. Provides a global object called lupulo_controller which is used thought the
+   entire framework to access some of the above functionalities.
+
+The default backend does this and provides a public API to allow easy
+overwriting or modification of some or all of its responsibilities.
+
+So if you want to modify the behaviour of the default controller, maybe to
+expand its capabilities or to redefine it, you need to:
+
+#. Overwrite the controller block of the base template you are using.
+#. Create a controller and bind it to lupulo_controller.
+
+You can overwrite completely the controller and provide all of the behaviour
+yourself, but most of the time you only want to provide some code of your own
+and then call the default implementation of the default controller.
+
+Therefore, the usual use case is to overwrite the controller block as said
+above, to construct a default controller, to connect some of the backend
+callbacks to your own functions and then to call, in your custom callback, the
+lupulo controller callback.
+
+Or, said with code, imagine you have overwritten the controller block with this
+piece of js code:
+
+.. code-block:: javascript
+
+    function new_widgets(event){
+        // Some interesting custom logic
+
+        lupulo_controller.new_widgets(event);
+    }
+
+    lupulo_controller = new DefaultController();
+    lupulo_controller.setup();
+    lupulo_controller.data_pipe.addEventListener("new_widgets", new_widgets);
+    lupulo_controller.data_pipe.addEventListener("new_devices", lupulo_controller.new_devices);
+
+.. note::
+
+    The data_pipe object is a usual JS EventSource object used to communicate with
+    the backend.
+
+So, in this example you have built the controller and bound it to the
+lupulo_controller name, you also have called its setup method (you always have
+to do this), and finally you have overwritten both the *new_widgets* and the
+*new_devices* sse events to you own callback and to the default implementation
+respectively.
+
+Finally, one piece of advice, to overwrite the controller is an advance
+technique so if you don't understand how everything is working you should read
+the source code of the controller default implementation in
+*lupulo/static/js/controller.js* and a redefinition of it in
+*lupulo/static/js/debug.js* for the debug page in *lupulo/templates/debug.html*,
+hopefully you will understand everything once you have finished that lecture.
+The paths are relative to the main project directory, the one you get when you
+clone the project from github.
 
 Error templates
 ---------------

@@ -314,7 +314,7 @@
     });
 
     // Overwrite some callbacks of the main controller
-    lupulo_controller = new Controller();
+    lupulo_controller = new DefaultController();
     lupulo_controller.setup();
     lupulo_controller.data_pipe.addEventListener("new_widgets", new_widgets);
     lupulo_controller.data_pipe.addEventListener("new_devices", lupulo_controller.new_devices);

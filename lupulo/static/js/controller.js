@@ -23,7 +23,7 @@ function get_event_name(source_event){
     return ret;
 }
 
-function Controller(){
+function DefaultController(){
     // Callback for the new_devices data event source
     function new_devices(event){
         var list = JSON.parse(event.data);
