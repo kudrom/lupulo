@@ -171,6 +171,15 @@
                 data_panel_callbacks[name] = cb;
                 data_panel_events[name] = obj.added[name].event_names;
                 accessors[name] = get_accessors(obj.added[name].accessors);
+
+                var id = device_selector.value;
+                if(id !== '----'){
+                    var events = data_panel_events[name];
+                    for(var i = 0; i < events.length; i++){
+                        var event_source = get_complete_event_name(events[i]);
+                        lupulo_controller.data_pipe.addEventListener(event_source ,cb);
+                    }
+                }
             }
         }
 
