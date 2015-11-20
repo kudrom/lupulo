@@ -20,6 +20,5 @@ class BenchmarkingResource(LupuloResource):
             context['big_list'].append(i)
 
         context['old_time'] = timestamp()
-        self.request = request
 
-        return template.render(request, context)
+        return template.render(context)

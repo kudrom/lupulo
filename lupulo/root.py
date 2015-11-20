@@ -18,10 +18,10 @@ class Root(LupuloResource):
     """
     def __init__(self, *args):
         LupuloResource.__init__(self, *args)
-        self.template = self.get_template('index.html')
 
     def render_GET(self, request):
-        return self.template.render()
+        template = self.get_template('index.html')
+        return template.render()
 
 
 class Debug(LupuloResource):
@@ -30,10 +30,10 @@ class Debug(LupuloResource):
     """
     def __init__(self, *args):
         LupuloResource.__init__(self, *args)
-        self.template = self.get_template('debug.html')
 
     def render_GET(self, request):
-        return self.template.render()
+        template = self.get_template('debug.html')
+        return template.render()
 
 
 def connect_user_urls(root):
