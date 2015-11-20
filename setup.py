@@ -3,7 +3,7 @@
 
 from setuptools import setup, find_packages
 
-version = "0.1"
+version = "0.2"
 description = """
     **lupulo** is a final project of a university degree in software engineering
     that is supposed to be a framework that will allow embedded system
