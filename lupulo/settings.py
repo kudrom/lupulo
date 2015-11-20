@@ -29,6 +29,10 @@ settings = {
     # Settings for the mock listener
     "mock_timeout": 1,
     "mock_ids": 2,
+
+    # Don't modify this
+    "template_async_call_delay": 0.00001,
+    "template_n_steps": 10000,
 }
 
 settings["lupulo_templates_dir"] = os.path.join(settings["lupulo_cwd"],

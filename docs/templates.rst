@@ -26,8 +26,14 @@ some template with the method *get_template*.
     :param string path: valid file path for a given template in the templates
                         folder
 
-Once the resource has the template it will call its *render* method without any
-arguments and **return what this method returns**.
+Once the resource has the template it will call its *render* method and **return
+what this method returns**.
+
+.. py:function:: render(context={})
+
+    Renders a template with the given context and returns a string.
+
+    :param context dict: jinja2 context object used to render the template.
 
 So for example, this are two valid lupulo resources binded in the urls.py to
 some url

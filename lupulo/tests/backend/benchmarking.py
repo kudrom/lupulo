@@ -2,6 +2,8 @@ import datetime
 
 from lupulo.http import LupuloResource
 
+from twisted.web import server
+
 
 def timestamp():
     return float(datetime.datetime.now().strftime("%s"))
@@ -18,4 +20,6 @@ class BenchmarkingResource(LupuloResource):
             context['big_list'].append(i)
 
         context['old_time'] = timestamp()
-        return template.render(context)
+        self.request = request
+
+        return template.render(request, context)

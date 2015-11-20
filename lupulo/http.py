@@ -2,8 +2,11 @@
 # Copyright (C) 2015  Alejandro López Espinosa (kudrom)
 
 import os.path
+from StringIO import StringIO
 
-from twisted.web import resource
+from twisted.web import resource, server
+from twisted.internet import defer, reactor
+from twisted.python import log
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -44,15 +47,62 @@ class LupuloTemplate(object):
     """
         Adapter around a jinja2 template which will render the template in an
         asynchronous way.
+        The code to render asynchronously is from txtemplate.
     """
     def __init__(self, template):
+        self._stream = None
+        self.delayed_call = None
+        self._buffer = StringIO()
         self.template = template
 
-    def render(self, context={}):
+    def blocking_render(self, request, context={}):
         utext = self.template.render(**context)
         text = utext.encode('ascii', 'ignore')
         return text
 
+    def render(self, request, context={}):
+        self.request = request
+        iterator = self.template.generate(**context)
+        self._deferred = defer.Deferred()
+        self._deferred.addCallbacks(self._rendered_cb, self._failed_cb)
+        delay = settings['template_async_call_delay']
+        self.delayed_call = reactor.callLater(delay,
+                                             self._populate_buffer, iterator)
+        return server.NOT_DONE_YET
+
+    def _close_delayed_callback(self):
+        if self.delayed_call and self.delayed_call.active():
+            self.delayed_call.cancel()
+
+    def _populate_buffer(self, stream):
+        try:
+            for x in xrange(settings['template_n_steps']):
+                output = stream.next()
+                self._buffer.write(output)
+        except StopIteration, e:
+            self._deferred.callback(None)
+        except Exception, e:
+            self._deferred.errback(e)
+        else:
+            delay = settings['template_async_call_delay']
+            self.delayed_call = reactor.callLater(delay,
+                                                 self._populate_buffer, stream)
+
+    def _failed_cb(self, reason):
+        log.msg(reason.getErrorMessage())
+        self._close_delayed_callback()
+        # TODO: this should be a 500 error
+        return "Failed to render template"
+
+    def _rendered_cb(self, _):
+        result = self._buffer.getvalue()
+        self._buffer.close()
+        self._buffer = None
+        self._close_delayed_callback()
+
+        content = result.encode('ascii', 'ignore')
+        self.request.write(content)
+        self.request.finish()
 
 class ErrorPage(LupuloResource):
     """
@@ -73,4 +123,4 @@ class ErrorPage(LupuloResource):
         request.setResponseCode(self.code)
         request.setHeader("content-type", "text/html")
         template = self.get_template(str(self.code) + '.html')
-        return template.render()
+        return template.blocking_render()
