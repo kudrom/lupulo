@@ -33,7 +33,8 @@ class LupuloResource(resource.Resource):
         """
             Factory method to construct LupuloTemplates.
         """
-        return LupuloTemplate(self.environment.get_template(path), self.request)
+        template = self.environment.get_template(path)
+        return LupuloTemplate(template, self.request)
 
     def render(self, request):
         """
@@ -87,7 +88,7 @@ class LupuloTemplate(object):
         self._deferred.addCallbacks(self._rendered_cb, self._failed_cb)
         delay = settings['template_async_call_delay']
         self.delayed_call = reactor.callLater(delay,
-                                             self._populate_buffer, iterator)
+                                              self._populate_buffer, iterator)
         return server.NOT_DONE_YET
 
     def _close_delayed_callback(self):
@@ -113,7 +114,8 @@ class LupuloTemplate(object):
         else:
             delay = settings['template_async_call_delay']
             self.delayed_call = reactor.callLater(delay,
-                                                 self._populate_buffer, stream)
+                                                  self._populate_buffer,
+                                                  stream)
 
     def _failed_cb(self, reason):
         """
@@ -126,7 +128,8 @@ class LupuloTemplate(object):
 
     def _rendered_cb(self, _):
         """
-            The page is entirely rendered, so write to the request its contents.
+            The page is entirely rendered, so write to the request its
+            contents.
         """
         result = self._buffer.getvalue()
         self._buffer.close()
@@ -136,6 +139,7 @@ class LupuloTemplate(object):
         content = result.encode('ascii', 'ignore')
         self.request.write(content)
         self.request.finish()
+
 
 class ErrorPage(LupuloResource):
     """

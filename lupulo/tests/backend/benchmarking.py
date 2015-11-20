@@ -2,8 +2,6 @@ import datetime
 
 from lupulo.http import LupuloResource
 
-from twisted.web import server
-
 
 def timestamp():
     return float(datetime.datetime.now().strftime("%s"))
