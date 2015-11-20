@@ -26,6 +26,11 @@ some template with the method *get_template*.
     :param string path: valid file path for a given template in the templates
                         folder
 
+.. warning::
+
+    The get_template function can only be called inside the render_* family
+    methods.
+
 Once the resource has the template it will call its *render* method and **return
 what this method returns**.
 

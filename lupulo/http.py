@@ -76,7 +76,7 @@ class LupuloTemplate(object):
             very short.
         """
         utext = self.template.render(**context)
-        text = utext.encode('ascii', 'ignore')
+        text = utext.encode('utf-8', 'ignore')
         return text
 
     def render(self, context={}):
@@ -136,7 +136,7 @@ class LupuloTemplate(object):
         self._buffer = None
         self._close_delayed_callback()
 
-        content = result.encode('ascii', 'ignore')
+        content = result.encode('utf-8', 'ignore')
         self.request.write(content)
         self.request.finish()
 

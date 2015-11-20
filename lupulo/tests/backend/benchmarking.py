@@ -1,3 +1,6 @@
+# -*- encoding: utf-8 -*-
+# Copyright (C) 2015  Alejandro López Espinosa (kudrom)
+
 import datetime
 
 from lupulo.http import LupuloResource
