@@ -24,7 +24,7 @@ settings["mongo_db"] = "robots"
 settings["listener"] = "mock"
 
 # Settings for the mock listener
-settings["mock_timeout"] = 0.2
+settings["mock_timeout"] = 1
 settings["mock_ids"] = 2
 
 # Settings for the serial listener
