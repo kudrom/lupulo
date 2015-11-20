@@ -121,40 +121,42 @@
         // connects the callbacks to its event sources if the id is a valid one
         if('added' in obj){
             for(var name in obj.added){
-                var anchor = obj.added[name].anchor.slice(1)
-                var layout = pretty(obj.added[name], 0, false);
-                var child = '<div class="clearfix wrapper" id="' + name + '-wrapper">' +
-                                '<div class="pull-left">' +
-                                    '<pre class="section layout">' +
-                                        '<div class="title">Layout</div>' +
-                                        layout +
-                                    '</pre>' +
-                                    '<div class="section">' +
-                                        '<div class="title">Raw data</div>' +
-                                        '<pre class="data-panel">{}</pre>' +
+                if(!(name in lupulo_controller.widgets)){
+                    var anchor = obj.added[name].anchor.slice(1)
+                    var layout = pretty(obj.added[name], 0, false);
+                    var child = '<div class="clearfix wrapper" id="' + name + '-wrapper">' +
+                                    '<div class="pull-left">' +
+                                        '<pre class="section layout">' +
+                                            '<div class="title">Layout</div>' +
+                                            layout +
+                                        '</pre>' +
+                                        '<div class="section">' +
+                                            '<div class="title">Raw data</div>' +
+                                            '<pre class="data-panel">{}</pre>' +
+                                        '</div>' +
+                                        '<div class="section">' +
+                                            '<div class="title">Accessors data</div>' +
+                                            '<pre class="accessors-panel"></pre>' +
+                                        '</div>' +
                                     '</div>' +
-                                    '<div class="section">' +
-                                        '<div class="title">Accessors data</div>' +
-                                        '<pre class="accessors-panel"></pre>' +
+                                    '<div class="pull-left widget" id="' + anchor + '">' +
+                                        '<div class="title">Widget</div>' +
                                     '</div>' +
-                                '</div>' +
-                                '<div class="pull-left widget" id="' + anchor + '">' +
-                                    '<div class="title">Widget</div>' +
-                                '</div>' +
-                            '</div>';
-                $('.widgets').append(child);
-                var cb = update_data_panels(name);
-                data_panel_objects[name] = {};
-                data_panel_callbacks[name] = cb;
-                data_panel_events[name] = obj.added[name].event_names;
-                accessors[name] = get_accessors(obj.added[name].accessors);
+                                '</div>';
+                    $('.widgets').append(child);
+                    var cb = update_data_panels(name);
+                    data_panel_objects[name] = {};
+                    data_panel_callbacks[name] = cb;
+                    data_panel_events[name] = obj.added[name].event_names;
+                    accessors[name] = get_accessors(obj.added[name].accessors);
 
-                var id = device_selector.value;
-                if(id !== '----'){
-                    var events = data_panel_events[name];
-                    for(var i = 0; i < events.length; i++){
-                        var event_source = get_complete_event_name(events[i]);
-                        lupulo_controller.data_pipe.addEventListener(event_source ,cb);
+                    var id = device_selector.value;
+                    if(id !== '----'){
+                        var events = data_panel_events[name];
+                        for(var i = 0; i < events.length; i++){
+                            var event_source = get_complete_event_name(events[i]);
+                            lupulo_controller.data_pipe.addEventListener(event_source ,cb);
+                        }
                     }
                 }
             }

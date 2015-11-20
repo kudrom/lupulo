@@ -4,10 +4,18 @@ function DefaultController(){
         var list = JSON.parse(event.data);
         // If a new device is tracked, show it in the select form
         var device_selector = document.getElementById("device");
+        var options = [];
+
+        for(var i = 0; i < device_selector.options.length; i++){
+            options.push(device_selector.options[i]);
+        }
+
         for(var i = 0; i < list.length; i++){
-            var option = document.createElement("option");
-            option.text = list[i];
-            device_selector.add(option);
+            if(!(list[i] in options)){
+                var option = document.createElement("option");
+                option.text = list[i];
+                device_selector.add(option);
+            }
         }
     };
 
@@ -19,7 +27,8 @@ function DefaultController(){
 
         if('added' in obj){
             for(var name in obj.added){
-                widgets_added.push(obj.added[name]);
+                if(!(name in this.widgets))
+                    widgets_added.push(obj.added[name]);
             }
         }
         if ('removed' in obj && obj.removed.length > 0){
