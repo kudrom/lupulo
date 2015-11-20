@@ -48,8 +48,8 @@ class LupuloTemplate(object):
     def __init__(self, template):
         self.template = template
 
-    def render(self):
-        utext = self.template.render()
+    def render(self, context={}):
+        utext = self.template.render(**context)
         text = utext.encode('ascii', 'ignore')
         return text
 

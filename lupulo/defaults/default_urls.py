@@ -3,6 +3,7 @@
 #     ('url/to/my/resource', MyResource),
 # ]
 from lupulo.http import LupuloResource
+from lupulo.tests.backend.benchmarking import BenchmarkingResource
 
 class HelloResource(LupuloResource):
     def render_GET(self, request):
@@ -11,4 +12,5 @@ class HelloResource(LupuloResource):
 
 urlpatterns = [
     ('hello', HelloResource),
+    ('benchmarking', BenchmarkingResource)
 ]

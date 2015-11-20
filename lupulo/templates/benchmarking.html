@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Benchmarking templates{% endblock %}
+{% block anchors %}
+    {% for i in big_list %}
+        {{ i }}
+    {% endfor %}
+    <div>
+        Time to render is <strong>{{ timestamp() - old_time }}</strong> seconds
+    </div>
+{% endblock %}
+{% block controller %}{% endblock %}
