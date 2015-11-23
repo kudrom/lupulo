@@ -19,11 +19,9 @@ function fill_widget_prototype(constructor){
         var widget = this;
         return function(event){
             var jdata = JSON.parse(event.data);
-            if(!(jdata instanceof Array || jdata instanceof Object)){
-                jdata = [jdata];
+            if(widget.jdata === null){
+                widget.jdata = {};
             }
-
-            widget.jdata = {};
             widget.jdata[event.type] = jdata;
         }
     }

@@ -9,7 +9,7 @@
         "seconds": 100
     },
 
-    "battery": {
+    "battery-line": {
         "parent": "global",
         "event_names": ["battery"],
         "anchor": "#battery-anchor",
@@ -62,17 +62,31 @@
         }]
     },
 
-    "dict-debug-widget": {
+    "acceleration": {
         "parent": "global",
         "anchor": "#debug-anchor",
-        "event_names": ["dict_debug"],
-        "name_lines": ["arg1"],
-        "y_name": "Something interesting",
+        "event_names": ["acceleration"],
+        "name_lines": ["x", "y", "z"],
+        "y_name": "Acceleration",
         "range": [0, 40],
-        "accessors": [{
-            "type": "dict",
-            "key": "arg1"
-        }]
+        "accessors": [
+                      {"type": "dict", "key": "x"},
+                      {"type": "dict", "key": "y"},
+                      {"type": "dict", "key": "z"}
+                     ]
+    },
+
+    "axis-x": {
+        "parent": "global",
+        "anchor": "#axis-x-anchor",
+        "event_names": ["acceleration", "rotation"],
+        "name_lines": ["x-acceleration", "x-rotation"],
+        "y_name": "Acceleration and rotation for x axis",
+        "range": [0, 360],
+        "accessors": [
+                        {"type": "dict", "key": "x", "event": "acceleration"},
+                        {"type": "index", "start": 0, "end": 1, "event": "rotation"}
+                     ]
     },
 
     "motor": {
@@ -80,7 +94,6 @@
         "parent": "global",
         "event_names": ["motor"]
     },
-
     "speed": {
         "parent": "motor",
         "name_lines": ["speed-left", "speed-right"],

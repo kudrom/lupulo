@@ -111,7 +111,6 @@ register_accessor("index", function(description){
                     var event_name = get_complete_event_name(event_source);
                     var event_s = "<strong>" + event_source + "</strong>"
                     if(!(event_name in jdata)){
-                        add_alert("danger", event_s + " is not an event source of data.");
                         return 0;
                     }else if(jdata[event_name].length <= index){
                         add_alert("danger", "The data of " + event_s +
@@ -141,7 +140,7 @@ register_accessor("dict", function(description){
             var event_name = get_complete_event_name(event_source);
             var event_s = "<strong>" + event_source + "</strong>"
             if(!(event_name in jdata)){
-                add_alert("danger", event_s + " is not an event source of data.");
+                //add_alert("danger", event_s + " is not an event source of data.");
                 return 0;
             }
             if(!(key in jdata[event_name])){
@@ -165,7 +164,6 @@ register_accessor("primitive", function(description){
         var event_name = get_complete_event_name(event_source);
         var event_s = "<strong>" + event_source + "</strong>"
         if(!(event_name in jdata)){
-            add_alert("danger", event_s + " is not an event source of data.");
             return 0;
         }
 

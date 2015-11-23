@@ -17,23 +17,7 @@
     },
     "date": {
         "type": "date",
-        "variance": 60
-    },
-    "rotation": {
-        "type": "list",
-        "length": 3,
-        "item_type": "number",
-        "item_range": [0, 360]
-    },
-    "direction": {
-        "type": "number",
-        "range": [0, 100]
-    },
-    "acceleration": {
-        "type": "list",
-        "length": 3,
-        "item_type": "number",
-        "item_range": [0, 10]
+        "variance": 5
     },
     "motor": {
         "type": "list",
@@ -45,18 +29,20 @@
         "item_turn_radius_type": "number",
         "item_turn_radius_range": [0, 3]
     },
-    "floor": {
-        "type": "list",
-        "length": 4,
-        "item_type": "number",
-        "item_range": [0, 5]
-    },
-    "dict_debug": {
+    "acceleration": {
         "type": "dict",
-        "keys": ["arg1", "arg2"],
-        "arg1_type": "number",
-        "arg1_range": [0, 40],
-        "arg2_type": "number",
-        "arg2_range": [0, 30]
+        "keys": ["x", "y", "z"],
+        "x_type": "number",
+        "x_range": [0, 40],
+        "y_type": "number",
+        "y_range": [0, 30],
+        "z_type": "number",
+        "z_range": [0, 30]
+    },
+    "rotation": {
+        "type": "list",
+        "length": 3,
+        "item_type": "number",
+        "item_range": [0, 360]
     }
 }
