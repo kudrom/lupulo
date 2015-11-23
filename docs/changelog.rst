@@ -4,6 +4,23 @@ Changelog
 lupulo follows the semantic versioning without distinction between even and odd
 numbers of major or minor releases.
 
+[0.2.0] 20/11/2015
+------------------
+
+Second release of a stable version of the framework which for the first time has
+all the functionalities required to build a functional realtime web page.
+
+#. Loader mechanism to allow dynamic listeners
+#. Fully functional templates abstraction
+#. Static files can be loaded from the project's directory
+#. Asynchronous template rendering
+#. Custom urls with support for RESTful interfaces
+#. Debug web page
+#. Enhanced sse_client
+#. Dynamic controllers for the frontend
+#. Alerts functions in the frontend
+#. Proper licensing
+
 [0.1.0] 05/11/2015
 ------------------
 
