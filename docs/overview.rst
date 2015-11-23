@@ -134,7 +134,9 @@ The layout json file is discussed in :ref:`layout`.
 
 Finally, the settings file is discussed in :ref:`settings`.
 
-Then you must launch the lupulo server with the command **lupulo_start**.
+Then you must launch the lupulo server with the command **lupulo_start**. You
+can start lupulo in the background if you add the *--daemonize* option to the
+*lupulo_start* program.
 
 .. warning::
 

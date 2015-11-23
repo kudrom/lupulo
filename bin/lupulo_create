@@ -3,25 +3,60 @@
 # Copyright (C) 2015  Alejandro López Espinosa (kudrom)
 
 import os
+import sys
 import shutil
+import stat
 
 from lupulo.settings import settings
+
 
 def create_if_not_exists(directory):
     if not os.path.exists(directory):
         os.mkdir(directory)
+        print directory, 'created.'
+
 
 def main():
-    create_if_not_exists("templates")
-    create_if_not_exists("templates/errors")
-    create_if_not_exists("static")
+    if not os.path.exists('/var/log/lupulo') and '--create-log' not in sys.argv:
+        print "You must create the directory /var/log/lupulo and set its " \
+              "permissions to allow lupulo to log into it. You can do that " \
+              "if you execute this script as root with the option " \
+              "--create-log."
+        sys.exit(-1)
 
-    src = os.path.join(settings['lupulo_cwd'], 'defaults')
-    shutil.copyfile(os.path.join(src, 'data_schema.json'), "./data_schema.json")
-    shutil.copyfile(os.path.join(src, 'layout.json'), "./layout.json")
-    shutil.copyfile(os.path.join(src, 'default_settings.py'), "./settings.py")
-    shutil.copyfile(os.path.join(src, 'default_urls.py'), "./urls.py")
-    shutil.copyfile(os.path.join(src, 'templates/index.html'), "./templates/index.html")
+    if os.getuid() == 0 and \
+       '--create-log' not in sys.argv and \
+       '--force-root' not in sys.argv:
+        print "You must launch this script as a normal user, if you want to " \
+              "execute this script as root, add the --force-root option."
+        sys.exit(-1)
+
+    if '--create-log' in sys.argv:
+        log_dir = '/var/log/lupulo'
+        if os.getuid() == 0 and not os.path.exists(log_dir):
+            os.mkdir(log_dir)
+            os.chmod(log_dir, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+            print log_dir, 'created.'
+        elif os.getuid() != 0:
+            print "You must be superuser to create the log directory."
+        else:
+            print log_dir, 'already exists.'
+    else:
+        create_if_not_exists("templates")
+        create_if_not_exists("templates/errors")
+        create_if_not_exists("static")
+
+        src = os.path.join(settings['lupulo_cwd'], 'defaults')
+        shutil.copyfile(os.path.join(src, 'data_schema.json'), "./data_schema.json")
+        print 'data_schema.json created.'
+        shutil.copyfile(os.path.join(src, 'layout.json'), "./layout.json")
+        print 'layout.json created.'
+        shutil.copyfile(os.path.join(src, 'default_settings.py'), "./settings.py")
+        print 'settings.py created.'
+        shutil.copyfile(os.path.join(src, 'default_urls.py'), "./urls.py")
+        print 'urls.py created.'
+        shutil.copyfile(os.path.join(src, 'templates/index.html'), "./templates/index.html")
+        print 'templates/index.html created.'
 
 if __name__ == "__main__":
     main()
