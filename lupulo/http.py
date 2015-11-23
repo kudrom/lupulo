@@ -121,10 +121,12 @@ class LupuloTemplate(object):
         """
             For some reason the buffer failed when it was being populated.
         """
-        log.msg(reason.getErrorMessage())
         self._close_delayed_callback()
-        # TODO: this should be a 500 error
-        return "Failed to render template"
+
+        error_page = ErrorPage(500, reason.getErrorMessage())
+        content = error_page.render(self.request)
+        self.request.write(content)
+        self.request.finish()
 
     def _rendered_cb(self, _):
         """
@@ -145,9 +147,10 @@ class ErrorPage(LupuloResource):
     """
         Base class for every error page in lupulo.
     """
-    def __init__(self, code):
+    def __init__(self, code, msg=""):
         LupuloResource.__init__(self, {})
         self.code = code
+        self.msg = msg
         directories = []
         directories.append(os.path.join(settings['templates_dir'], 'errors'))
         directories.append(os.path.join(settings['lupulo_templates_dir'], 'errors'))
@@ -160,4 +163,5 @@ class ErrorPage(LupuloResource):
         request.setResponseCode(self.code)
         request.setHeader("content-type", "text/html")
         template = self.get_template(str(self.code) + '.html')
-        return template.blocking_render()
+        context = {"msg": self.msg}
+        return template.blocking_render(context)
