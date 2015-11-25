@@ -23,7 +23,7 @@ MultipleLine = function(layout){
         // The accessor function to return a value associated with a
         // complex jdata object of an event source connection
         this.accessor = accessor;
-    }
+    };
 
     // Width of the time scale
     this.seconds = layout.seconds;
@@ -159,14 +159,14 @@ MultipleLine = function(layout){
               this.lines[i].framebuffer.pop();
             }
         }
-    }
+    };
 
     // Clear all the framebuffers of the lines associated with the graph
     this.clear_framebuffers = function(){
         for(var i = 0; i < this.lines.length; i++){
             this.lines[i].framebuffer.splice(0, this.lines[i].framebuffer.length);
         }
-    }
+    };
 };
 
 // Register the Klass as a factory for multiple_line widgets

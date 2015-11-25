@@ -81,7 +81,6 @@ function DefaultController(){
             }catch(err){
                 var name = "<strong>" + layout.name + "</strong>";
                 add_alert('danger', err + ", stopping creation of widget " + name);
-                throw err;
                 continue;
             }
 
