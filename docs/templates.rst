@@ -70,7 +70,11 @@ Inheritance
 Any template can inherit from a set of lupulo templates that are designed to
 ease the development of your project.
 
-One of this templates is base.html, which defines the following jinja2 blocks:
+Base.html
+*********
+
+One of this templates is **base.html**, which defines the following jinja2
+blocks:
 
 #. **title**: inside the title tag.
 #. **css**: at the end of the head tag.
@@ -92,6 +96,17 @@ You can define your own controller of the events received from the backend by
 overwriting the **controller** block, but usually you only want to include some
 widgets and probably some js file of your own, you should do that defining the
 **widgets** block.
+
+debug_base.html
+***************
+
+Another base template is **debug_base.html**, which inherits at the same time 
+from base.html. This template doesn't define any new block but provides all the
+functionality to serve the debug web page rendered by the default template
+debug.html.
+
+You must extend the widgets block in this last template whenever you want to
+debug a new widget which isn't provided by the framework.
 
 Controller
 ----------

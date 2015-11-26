@@ -84,3 +84,50 @@ relevant to the user with the alerts library. You can use the function
     :param enum type: string describing the level of relevance of the text,
                       it can be success, info, warning and danger.
     :param string text: text to display in the box.
+
+Utils
+-----
+
+There are a bunch of utils which you might need to use when you are programming
+your own widget. All of these functions are in utils.js, so check that out for
+more information.
+
+.. js:function:: get_complete_event_name(event_name)
+
+    This function returns a string with the complete name of an event source
+    defined in the data schema definition. The complete name is made of the id
+    of the device and the event source of the stream.
+
+    This function is the inverse of *get_event_name*
+
+    :param string event_name: name of the event source as it is written in the
+                              data schema definition
+
+.. js:function:: get_event_name(source_event)
+
+    This function returns a string with the event source name of a complete
+    event source name, which is the name of an event source as it appears in the
+    data schema definition.
+
+    This function is the inverse of *get_complete_event_name*
+
+    :param string source_event: complete name of an event source.
+
+.. js:function:: pretty(obj, spaces_n, print_indexes)
+
+    Recursive function that returns a string with a pretty representation of the
+    object given as an argument.
+
+    :param Object obj: object to pretty print.
+    :param int spaces_n: internal parameter, you **must** call it with the 0
+                         value.
+    :param boolean print_indexes: whether to print the indexes of a list or not.
+
+.. js:function:: validate_requirements(requirements, layout)
+
+    Function to validate the requirements that a widget demands of a layout
+    given by the user.
+
+    :param List requirements: List containing all the keys that the layout must
+                              provide.
+    :param Object layout: Layout definition of the widget.
