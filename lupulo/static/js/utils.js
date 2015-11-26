@@ -94,3 +94,21 @@ function pretty(obj, spaces_n, print_indexes){
 
     return msg;
 };
+
+function validate_requirements(requirements, layout){
+    /*
+     * Check the requirements of a widget against a layout
+     */
+    var broken = false;
+    for(var i = 0; i < requirements.length; i++){
+        if(!(requirements[i] in layout)){
+            var req = "<strong>" + requirements[i] + "</strong>";
+            var name = "<strong>" + layout.name + "</strong>";
+            add_alert("danger", req + " not in layout " + name);
+            broken = true;
+        }
+    }
+    if(broken){
+        throw "Broken preconditions for " + layout.name;
+    }
+}
