@@ -57,6 +57,8 @@ def main():
         print 'urls.py created.'
         shutil.copyfile(os.path.join(src, 'templates/index.html'), "./templates/index.html")
         print 'templates/index.html created.'
+        shutil.copyfile(os.path.join(src, 'templates/debug.html'), "./templates/debug.html")
+        print 'templates/debug.html created.'
 
 if __name__ == "__main__":
     main()
