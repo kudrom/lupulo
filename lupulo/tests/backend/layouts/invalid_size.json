@@ -5,14 +5,27 @@
             "width": 760
         },
         "event_names": ["something"],
-        "anchor": "#battery"
+        "anchor": "#battery",
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "right": 0,
+            "left": 0
+        }
     },
+
     "battery2": {
         "type": "multiple_line",
         "size": {
             "height": 760
         },
         "event_names": ["something"],
-        "anchor": "#battery"
+        "anchor": "#battery",
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "right": 0,
+            "left": 0
+        }
     }
 }

@@ -106,14 +106,14 @@ class TestsLayout(unittest.TestCase):
         layout = self.raw["distances"]
         obj = self.layout_manager.inherit(layout)
         attributes = ["anchor", "overwritten", "abstract",
-                      "parent", "range", "seconds", "size"]
+                      "parent", "range", "seconds", "size", "margin"]
         self.assertEqual(set(obj.keys()), set(attributes))
 
     def test_two_levels_inheritance(self):
         layout = self.raw["distances-center"]
         obj = self.layout_manager.inherit(layout)
         attributes = ["anchor", "overwritten", "parent", "range",
-                      "seconds", "event_names", "type", "size"]
+                      "seconds", "event_names", "type", "size", "margin"]
         self.assertEqual(set(obj.keys()), set(attributes))
 
     def test_overwritten(self):
@@ -130,11 +130,12 @@ class TestsLayout(unittest.TestCase):
         self.assertEqual(set(layouts.keys()),
                          set(["simple", "distances-center", "overwritten"]))
         self.assertEqual(set(layouts["simple"].keys()),
-                         set(["name", "type", "event_names", "anchor", "size"]))
+                         set(["name", "type", "event_names", "anchor",
+                              "size", "margin"]))
         self.assertEqual(layouts["simple"]["type"], 1)
         self.assertEqual(layouts["simple"]["event_names"], ["something_else"])
         attributes = ["anchor", "name", "type", "event_names",
-                      "range", "overwritten", "seconds", "size"]
+                      "range", "overwritten", "seconds", "size", "margin"]
         self.assertEqual(set(layouts["distances-center"].keys()),
                          set(attributes))
         self.assertEqual(layouts["distances-center"]["overwritten"], False)
@@ -168,7 +169,8 @@ class TestsLayout(unittest.TestCase):
                 'type': 'multiple_line',
                 'anchor': 0,
                 'event_names': ['distances'],
-                'size': {'width': 800, 'height': 600}
+                'size': {'width': 800, 'height': 600},
+                "margin": {"top": 0, "bottom": 0, "right": 0, "left": 0}
             }
         }
         self.difference('difference_added.json', jdata)
@@ -193,7 +195,8 @@ class TestsLayout(unittest.TestCase):
                 'type': 'awesomeness',
                 'anchor': 0,
                 'event_names': ['distances'],
-                'size': {'width': 800, 'height': 600}
+                'size': {'width': 800, 'height': 600},
+                "margin": {"top": 0, "bottom": 0, "right": 0, "left": 0}
             }
         }
         self.difference('difference_changed.json', jdata)

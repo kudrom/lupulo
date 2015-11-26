@@ -8,8 +8,6 @@ from twisted.python import log
 
 from lupulo.inotify_observer import INotifyObserver
 
-from twisted.internet.inotify import humanReadableMask
-
 
 class LayoutManager(INotifyObserver):
     """
@@ -67,7 +65,8 @@ class LayoutManager(INotifyObserver):
 
         # Delete a layout if it doesn't have the required attributes or if
         # its event is unknown
-        required_attributes = set(["event_names", "type", "anchor", "size"])
+        required_attributes = set(["event_names", "type", "anchor",
+                                   "size", "margin"])
         for name, obj in raw_layouts.items():
             delete = False
             broken_attrs = required_attributes.difference(set(obj.keys()))
@@ -79,6 +78,7 @@ class LayoutManager(INotifyObserver):
                 # Bypass to avoid KeyError when trying to access an attribute
                 # that doesn't exist
                 continue
+
             if 'height' not in obj["size"].keys():
                 delete = True
                 log.msg("%s doesn't have a height in its size attribute." %
@@ -87,6 +87,15 @@ class LayoutManager(INotifyObserver):
                 delete = True
                 log.msg("%s doesn't have a width in its size attribute." %
                         name)
+
+            margins = set(['top', 'bottom', 'right', 'left'])
+            diff = margins.difference(set(obj["margin"].keys()))
+            if len(diff) > 0:
+                delete = True
+                for section in diff:
+                    log.msg("%s doesn't have a %s in its margin attribute." %
+                            name, section)
+
             if not isinstance(obj["event_names"], list):
                 delete = True
                 log.msg("%s couldn't be compiled because its event_names"
@@ -98,6 +107,7 @@ class LayoutManager(INotifyObserver):
                         log.msg("%s couldn't be compiled because its event %s"
                                 " is not in the schema_manager events: %s." %
                                 (name, event_name, ", ".join(self.events)))
+
             if 'accessors' in obj:
                 delete = self.check_acc_desc(obj['accessors'], name, obj)
 

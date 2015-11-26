@@ -35,7 +35,8 @@ Widget = function(layout){
     this.event_sources = [];
 
     // Sizes of the canvas
-    this.margin = {top: 20, right: 20, bottom: 20, left: 40};
+    this.margin = {top: layout.margin.top, right: layout.margin.right,
+                   bottom: layout.margin.bottom, left: layout.margin.left};
     this.width = layout.size.width - this.margin.left - this.margin.right;
     this.height = layout.size.height - this.margin.top - this.margin.bottom;
 

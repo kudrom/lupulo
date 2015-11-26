@@ -5,6 +5,12 @@
             "width": 760,
             "height": 500
         },
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "right": 0,
+            "left": 0
+        },
         "event_names": ["something"],
         "anchor": "#battery",
         "accessors": [{
@@ -18,6 +24,12 @@
             "width": 760,
             "height": 500
         },
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "right": 0,
+            "left": 0
+        },
         "event_names": ["something"],
         "anchor": "#battery",
         "accessors": [{
@@ -29,6 +41,12 @@
         "size": {
             "width": 760,
             "height": 500
+        },
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "right": 0,
+            "left": 0
         },
         "event_names": ["something"],
         "anchor": "#battery",
