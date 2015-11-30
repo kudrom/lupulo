@@ -4,28 +4,18 @@ Data schema language
 ====================
 
 As said in the :ref:`overview`, the data schema language is a JSON file that
-describes the schema that the data sent by the device follows. This file must
-have a global object that will be interpreted as the data schema. This global
-object has several sections which define the data sources of the data schema.
+describes the schema of the data received by the backend. This file must have a
+global JS object that will be interpreted as the data schema. This global
+object has several sections called data sources.
 
-The data schema basically serves two main goals:
+A data source is a stream of data that a widget in the frontend can subscribe to.
+It's **usually** paired with the concept of sensor. The data measured by one
+sensor is usually packaged into one data source that the widgets can listen to,
+but you can design weird or more complex data schemas. So it's up to you how
+the data schema looks like as long as it's valid.
 
-#. Description of the number of data sources that the device provides.
-#. Description of the data sent in every data source.
-
-A data source is a stream of data provided by the device to the frontend. It's
-**usually** paired with the concept of sensor. In this way, the data measured
-by one sensor is usually packaged into one data source that the widgets can
-listen to. The user of the framework must decide how many data sources {s}he
-wants to provide.
-
-The framework will provide events that the widgets can listen to in order to get
-updates for a concrete data source. Each widget in the frontend will listen to
-one or more data sources from the device and will construct the visualizations
-with all of that information.
-
-Once the device sends some data through a data source, every widget that is
-listening to that data source will be notified.
+Each widget in the frontend will listen to one or more data sources from the
+device and will construct the visualizations with that information.
 
 Each data source is described by a JSON object (in the data schema file) filled 
 with some key-value pairs that describe the properties of the data associated
@@ -45,17 +35,17 @@ Currently there are two kind of types:
 The aggregated types are a composition of primitive types.
 
 From now on, all data sources types will be described. To see an example of a
-correct data schema file, go to *tests/data_schemas/complete.json* in the
-project directory.
+correct data schema file, you can create your project and take a look at the
+*data_schema.json* file.
 
 number
 ------
 
 Primitive data source type associated with a decimal number. It defines only the
 range argument, which is a list of two elements that defines the minimum and
-maximum value that the data of the associated data source must stick to. That
-way, if we'd like to provide a data source for a battery, we could write it this
-way:::
+maximum value that the data of the associated data source must stick to. For
+example, if we'd like to provide a data source for a battery, we could write it
+this way::
 
     "battery": {
         "type": "number",

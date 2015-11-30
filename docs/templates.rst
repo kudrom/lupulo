@@ -14,7 +14,7 @@ The urls.py file must contain a list named urlpatterns made of tuples of two
 elements. The first element is a string that defines the url that a `twisted
 resource
 <https://twistedmatrix.com/documents/15.0.0/web/howto/using-twistedweb.html#resource-objects>`_
-(which is the second element) will listen to and render some information.
+(which is the second element) will listen to.
 
 This resource must inherit from *lupulo.http.LupuloResource* and can ask for
 some template with the method *get_template*.
@@ -38,9 +38,10 @@ what this method returns**.
 
     Renders a template with the given context and returns a string.
 
-    :param context dict: jinja2 context object used to render the template.
+    :param context dict: a dictionary filled with properties that can be
+                         accessed in the template file as a jinja2 context.
 
-So for example, this are two valid lupulo resources binded in the urls.py to
+So for example, these are two valid lupulo resources binded in the urls.py to
 some url
 
 .. code-block:: python
@@ -103,13 +104,27 @@ debug_base.html
 Another base template is **debug_base.html**, which inherits at the same time 
 from base.html. This template doesn't define any new block but provides all the
 functionality to serve the debug web page rendered by the default template
-debug.html.
+debug.html in your project templates directory under the /debug url
 
 You must extend the widgets block in this last template whenever you want to
-debug a new widget which isn't provided by the framework.
+debug a new widget which isn't provided by the framework by adding the necessary
+sources files.
 
 Controller
 ----------
+
+.. note::
+
+    This section of the documentation only gives you some overall knowledge of
+    the controller abstraction.
+
+To overwrite the controller is an advance technique that you only need when you
+want to change the general behaviour of the web page. It's the main controller
+of the frontend and handles the communication between the frontend and the 
+backend so there is a lot going on there. If you want to modify it, you should
+read the source code of the controller default implementation in
+*lupulo/static/js/controller.js* and a redefinition of it in
+*lupulo/static/js/debug.js* for the debug page in *lupulo/templates/debug.html*.
 
 Each web page must have a controller that does the following:
 
@@ -117,16 +132,19 @@ Each web page must have a controller that does the following:
    called *new_devices*, *new_widgets* and *new_event_sources*.
 #. Provides a way to register widgets through the *register_widget* interface.
 #. Provides a callback for onchange DOM event for the #device select form.
+#. Provides a way to add widgets to the web page when a valid layout is
+   received for a given widget type.
 #. Provides a global object called lupulo_controller which is used thought the
    entire framework to access some of the above functionalities.
 
-The default backend does this and provides a public API to allow easy
+The default controller does this and provides a public API to allow easy
 overwriting or modification of some or all of its responsibilities.
 
 So if you want to modify the behaviour of the default controller, maybe to
 expand its capabilities or to redefine it, you need to:
 
-#. Overwrite the controller block of the base template you are using.
+#. Overwrite the controller block of the base template you are using to
+   overwrite the binding of the default controller.
 #. Create a controller and bind it to lupulo_controller.
 
 You can overwrite completely the controller and provide all of the behaviour
@@ -156,23 +174,14 @@ piece of js code:
 
 .. note::
 
-    The data_pipe object is a usual JS EventSource object used to communicate with
-    the backend.
+    The data_pipe object is a normal JS EventSource object used to communicate
+    with the backend.
 
 So, in this example you have built the controller and bound it to the
 lupulo_controller name, you also have called its setup method (you always have
 to do this), and finally you have overwritten both the *new_widgets* and the
 *new_devices* sse events to you own callback and to the default implementation
 respectively.
-
-Finally, one piece of advice, to overwrite the controller is an advance
-technique so if you don't understand how everything is working you should read
-the source code of the controller default implementation in
-*lupulo/static/js/controller.js* and a redefinition of it in
-*lupulo/static/js/debug.js* for the debug page in *lupulo/templates/debug.html*,
-hopefully you will understand everything once you have finished that lecture.
-The paths are relative to the main project directory, the one you get when you
-clone the project from github.
 
 Error templates
 ---------------

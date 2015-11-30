@@ -6,9 +6,9 @@ Accessors
 Suppose you are building a widget to visualize the historical data of some of
 the sensors of your robot. As explained in :ref:`how_to_widget`, you receive
 the raw data in the *paint* function. That raw data follows the data schema the
-device is transmitting the information with. So, to access the information in
-the widget, you have to know what schema the device is following, right? Well,
-hell no. That's what you use the accessors for.
+data source is transmitting the information with. So, to access the information
+in the widget, you have to know what schema the data source is following, right?
+Well, hell no. That's what you use the accessors for.
 
 An accessor is a function that returns datums that the widget is expecting to
 work with. The widget doesn't know how is the structure of the raw data it's
@@ -28,13 +28,13 @@ Mechanism
 
 The widget should not be dependent on the data schema. If you change the data
 schema, you shouldn't change the code inside a widget. Otherwise, you couldn't
-use easily a widget for several devices with different data schemas.
+use easily a widget for several data sources with different data schemas.
 
-But a widget has to render the data the device is sending. And that data follows
-the data schema of the device. So apparently, the widget must know the data
-schema in order to access the raw data in the paint function. And that's a
-problem of extensibility because if the data schema changes, the code inside the
-widget must change too.
+But a widget has to render the data the data source is sending. And that data
+follows the data schema of the data source. So apparently, the widget must know
+the data schema in order to access the raw data in the paint function. And
+that's a problem of extensibility because if the data schema changes, the code
+inside the widget must change too.
 
 The solution is to provide a mechanism to allow a widget to extract datums from
 the raw data without knowing directly the data schema definition.

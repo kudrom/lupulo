@@ -27,11 +27,7 @@ attributes are defined by the widget.
 An important note is that if a layout doesn't have all the obligatory attributes
 that the framework needs, you will be notified when you launch the server. But
 if the layout doesn't have all the obligatory attributes that the widget needs,
-you will be notified in the browser's console.
-
-.. note::
-    When you are building the web page, **don't forget to take a look at the
-    browser's console if something is going wrong!**
+you will be notified in the web page alerts.
 
 The raw layout file is compiled before sending it to the frontend. The compile
 process is focused on solving the inheritance tree of the layout file and 
@@ -52,7 +48,7 @@ of widget will be defined by the layout.
 
 Other obligatory attribute is *size* which is a dictionary with two keys:
 *height* and *width*. The size defines, as his name implies, the size of the
-widget in the web page :)
+widget in the web page.
 
 In order to add the widget to the web page, the web page needs to have a html
 element to bind the widget to. This element is called the *anchor* of the widget

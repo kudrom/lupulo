@@ -3,9 +3,9 @@
 Listeners
 =========
 
-In order to connect the backend to your device, you can build your own listener
-that will retransmit to the backend the data it receives. A listener is a
-twisted service that will be run in the tac file when the application runs.
+In order to connect the backend to the data source, you can build your own
+listener that will retransmit to the backend the data it receives. A listener
+is a twisted service that will be run in the tac file when the application runs.
 
 The listener should define some attributes in the main settings.py file of the
 project and read them whenever it wants to allow the user of the listener to
@@ -32,13 +32,13 @@ An sse resource is an object with a method called *publish*.
 
     Send the JSON data to the frontend if it's valid.
 
-    :param str data: JSON string with the data sent by the device.
+    :param str data: JSON string with the data sent by the data source.
 
 
 If the JSON string is not valid, it's automatically discarded by the sse
 resource and therefore is not sent to the frontend.
 
-So, a listener should react asynchronously to the events the device is
+So, a listener should react asynchronously to the events the data source is
 sending, translate them to a JSON string and publish it to the sse resource.
 
 .. note::
@@ -61,7 +61,7 @@ MockListener
 
 As explained in the :ref:`debugging` section of the :ref:`overview`, you can use
 a debugging listener that will send random information to the frontend to debug
-the web page without a real device attached to the machine running the
+the web page without a real data source attached to the machine running the
 framework.  That way you can build up your web page even when you don't have a
 prototype to attach the web page to.
 
@@ -72,8 +72,9 @@ This listener defines two properties in the settings file::
     settings['mock_ids'] = 2
 
 The *mock_timeout* defines how many seconds it has to wait in order to send some
-information to the backend. The *mock_ids* defines how many devices it's going
-to fake. As explained above, the listener keyword defines which listener to use.
+information to the backend. The *mock_ids* defines how many data sources it's
+going to fake. As explained above, the listener keyword defines which listener
+to use.
 
 SerialListener
 --------------
@@ -94,11 +95,11 @@ of this serial device under the key *serial_device*. For example::
     settings['listener'] = 'serial'
     settings['serial_device'] = '/dev/ttyACM0'
 
-Finally, it can be very useful to debug the web page without a real device. Most
-of the time you should use the MockListener described above, but some times it
-can be very useful to debug the serial connection itself with socat, which can
-create two pseudo terminals that behave like two serial ports connected between
-them with the command::
+Finally, it can be very useful to debug the web page without a real device
+attached to the backend. Most of the time you should use the MockListener
+described above, but some times it can be very useful to debug the serial
+connection itself with socat, which can create two pseudo terminals that behave
+like two serial ports connected between them with the command::
 
     socat -d -d pty,raw,echo=0 pty,raw,echo=0
 
