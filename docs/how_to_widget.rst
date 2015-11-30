@@ -3,7 +3,7 @@
 How to program a widget
 =======================
 
-You can extend the way the information is displayed int the web page by writing
+You can extend the way the information is displayed in the web page by writing
 custom widgets. A widget is a javascript object that is constructed by the
 frontend with a layout description written by the user and sent by the
 backend. Every widget is connected to some data source in order to create a
