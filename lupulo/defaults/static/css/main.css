@@ -1,0 +1,23 @@
+#battery-line-anchor{
+    display: inline;
+}
+
+section{
+    margin-top: 20px;
+}
+
+section *{
+    margin-left: 25px;
+}
+
+#general > div{
+    float: left;
+}
+
+#battery-widget-anchor, #battery-widget > *, #distances-wrapper > *{
+    margin-left: 0;
+}
+
+#distances-wrapper > div{
+    float:left;
+}

@@ -4,17 +4,45 @@
     default main page
 {% endblock %}
 
+{% block css %}
+    <link rel="stylesheet" href="/static/css/main.css" />
+{% endblock %}
+
 {% block anchors %}
-    <h2>Information</h2>
-    <div id="battery-anchor"></div>
-    <div id="distances-center-anchor"></div>
-    <div id="distances-middle-anchor"></div>
-    <div id="distances-back-anchor"></div>
-    <div id="debug-anchor"></div>
-    <div id="speed-anchor"></div>
-    <div id="axis-x-anchor"></div>
+    <section id="general" class="clearfix">
+        <h2>General information</h2>
+        <div>
+            <h3>Real time</h3>
+            <div id="real-time-anchor"></div>
+        </div>
+        <div>
+            <h3>Device date and time</h3>
+            <div id="date-anchor"></div>
+            <div id="device-time-anchor"></div>
+        </div>
+        <div>
+            <h3>Battery</h3>
+            <div id="battery-widget-anchor"></div>
+        </div>
+    </section>
+    <section class="clearfix">
+        <h2>Historical information</h2>
+        <div id="battery-line-anchor"></div>
+        <div id="distances-wrapper" class="clearfix">
+            <div id="distances-center-anchor"></div>
+            <div id="distances-middle-anchor"></div>
+            <div id="distances-back-anchor"></div>
+        </div>
+        <div id="debug-anchor"></div>
+        <div id="speed-anchor"></div>
+        <div id="axis-x-anchor"></div>
+    </section>
 {% endblock %}
 
 {% block widgets %}
     <script src="lupulo_static/js/widgets/multiple_line.js"></script>
+    <script src="lupulo_static/js/widgets/digital_display.js"></script>
+    <script src="lupulo_static/js/widgets/digital_clock.js"></script>
+    <script src="lupulo_static/js/widgets/digital_date.js"></script>
+    <script src="lupulo_static/js/widgets/battery.js"></script>
 {% endblock %}

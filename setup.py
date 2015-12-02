@@ -28,6 +28,7 @@ setup(
     package_data = {'lupulo': ['defaults/*.json', 'startup.tac',
                                'defaults/*.py',
                                'defaults/templates/*.html',
+                               'defaults/static/css/*.css',
                                'static/js/*.js',
                                'static/js/widgets/*.js',
                                'static/css/*.css',

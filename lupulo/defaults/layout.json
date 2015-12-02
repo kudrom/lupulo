@@ -1,10 +1,52 @@
 {
-    "global": {
+    "global-general":{
+        "abstract": "true",
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+        },
+        "size": {
+            "height": 60
+        },
+        "event_names": ["date"],
+        "accessors": [{"type": "primitive"}]
+    },
+
+    "battery-widget": {
+        "parent": "global-general",
+        "type": "battery",
+        "event_names": ["battery"],
+        "anchor": "#battery-widget-anchor"
+    },
+
+    "device-time": {
+        "parent": "global-general",
+        "type": "digital_clock",
+        "device_time": true,
+        "anchor": "#device-time-anchor"
+    },
+
+    "date": {
+        "parent": "global-general",
+        "type": "digital_date",
+        "anchor": "#date-anchor"
+    },
+
+    "real-time": {
+        "parent": "global-general",
+        "type": "digital_clock",
+        "device_time": false,
+        "anchor": "#real-time-anchor"
+    },
+
+    "global-lines": {
         "abstract": true,
         "type": "multiple_line",
         "size": {
-            "width": 760,
-            "height": 500
+            "width": 600,
+            "height": 400
         },
         "margin": {
             "top": 20,
@@ -16,9 +58,9 @@
     },
 
     "battery-line": {
-        "parent": "global",
+        "parent": "global-lines",
         "event_names": ["battery"],
-        "anchor": "#battery-anchor",
+        "anchor": "#battery-line-anchor",
         "name_lines": ["Battery"],
         "y_name": "Battery",
         "accessors": [{
@@ -27,10 +69,9 @@
 
         "range": [0, 100]
     },
-
     "distances": {
         "abstract": true,
-        "parent": "global",
+        "parent": "global-lines",
         "event_names": ["distances"],
         "range": [0, 4]
     },
@@ -69,7 +110,7 @@
     },
 
     "acceleration": {
-        "parent": "global",
+        "parent": "global-lines",
         "anchor": "#debug-anchor",
         "event_names": ["acceleration"],
         "name_lines": ["x", "y", "z"],
@@ -83,7 +124,7 @@
     },
 
     "axis-x": {
-        "parent": "global",
+        "parent": "global-lines",
         "anchor": "#axis-x-anchor",
         "event_names": ["acceleration", "rotation"],
         "name_lines": ["x-acceleration", "x-rotation"],
@@ -97,7 +138,7 @@
 
     "motor": {
         "abstract": true,
-        "parent": "global",
+        "parent": "global-lines",
         "event_names": ["motor"]
     },
     "speed": {

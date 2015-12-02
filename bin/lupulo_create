@@ -45,6 +45,7 @@ def main():
         create_if_not_exists("templates")
         create_if_not_exists("templates/errors")
         create_if_not_exists("static")
+        create_if_not_exists("static/css")
 
         src = os.path.join(settings['lupulo_cwd'], 'defaults')
         shutil.copyfile(os.path.join(src, 'data_schema.json'), "./data_schema.json")
@@ -59,6 +60,7 @@ def main():
         print 'templates/index.html created.'
         shutil.copyfile(os.path.join(src, 'templates/debug.html'), "./templates/debug.html")
         print 'templates/debug.html created.'
+        shutil.copyfile(os.path.join(src, 'static/css/main.css'), "./static/css/main.css")
 
 if __name__ == "__main__":
     main()

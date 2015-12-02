@@ -1,3 +1,4 @@
+/* GLOBAL STUFF */
 .warnings{
     margin-top: 10px;
 }
@@ -35,7 +36,8 @@ svg {
     font-size: 12px;
 }
 
-/* For the clock_digital widget */
+
+/* WIDGETS */
 .lit{
     fill: #29F;
     fill-opacity: 1;
@@ -44,4 +46,25 @@ svg {
 path, circle{
     fill: #222;
     fill-opacity: 0.05;
+}
+
+
+/* BATTERY WIDGETS */
+.bar path{
+    fill: white;
+    fill-opacity: 1;
+}
+
+.danger{
+    fill: red;
+    fill-opacity: 1;
+}
+
+#battery-widget-pile{
+    float: left;
+}
+
+#battery-display{
+    margin-right: 10px;
+    float: left;
 }
