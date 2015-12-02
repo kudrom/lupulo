@@ -159,7 +159,7 @@ class LayoutManager(INotifyObserver):
         for prop in parent:
             if prop == "abstract" or prop == "parent" or prop in obj:
                 continue
-            obj[prop] = parent[prop]
+            obj[prop] = deepcopy(parent[prop])
         return obj
 
     def get_widgets(self):

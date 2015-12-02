@@ -124,6 +124,17 @@ class TestsLayout(unittest.TestCase):
     def test_invalid_parent(self):
         self.invalid("invalid_parent.json")
 
+    def test_bug_events_accessors(self):
+        layout_path = "tests/backend/layouts/" + "bug_events_accessor.json"
+        ifp = open(os.path.join(self.cwd, layout_path), "r")
+        schema_manager = MagicMock()
+        schema_manager.get_events = MagicMock(return_value=["battery", "date"])
+        self.layout_manager = LayoutManager(ifp, schema_manager)
+        self.layout_manager.compile()
+        self.assertEqual(set(self.layout_manager.layouts.keys()),
+                         set(['battery-widget', 'device_time']))
+        self.assertEqual(self.layout_manager.layouts['battery-widget']['accessors'][0]['event'], 'battery')
+
     def test_compile_correct(self):
         self.layout_manager.compile()
         layouts = self.layout_manager.layouts

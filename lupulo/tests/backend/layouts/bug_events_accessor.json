@@ -1,0 +1,36 @@
+{
+    "global": {
+        "abstract": "true",
+        "margin": {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+        },
+        "event_names": ["date"],
+        "accessors": [{"type": "primitive"}],
+        "scale": 1
+    },
+
+    "device_time": {
+        "parent": "global",
+        "type": "digital_clock",
+        "size": {
+            "width": 380,
+            "height": 100
+        },
+        "device_time": true,
+        "anchor": "#device-time-anchor"
+    },
+
+    "battery-widget": {
+        "parent": "global",
+        "type": "battery",
+        "size":{
+            "width": 130,
+            "height": 130
+        },
+        "event_names": ["battery"],
+        "anchor": "#battery-widget-anchor" 
+    }
+}
