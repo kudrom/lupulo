@@ -43,8 +43,13 @@ Widget = function(layout){
     // Setup the svg root element
     this.svg = d3.select(layout.anchor).append("svg")
         .attr("width", this.width + this.margin.left + this.margin.right)
-        .attr("height", this.height + this.margin.top + this.margin.bottom)
+        .attr("height", this.height + this.margin.top + this.margin.bottom);
     this.svg.attr('id', layout.name);
+
+    if('viewBox' in layout){
+        this.svg.attr('viewBox', layout.viewBox);
+    }
+
     this.svg = this.svg.append("g")
         .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
