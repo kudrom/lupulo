@@ -79,13 +79,10 @@ class LayoutManager(INotifyObserver):
                 # that doesn't exist
                 continue
 
-            if 'height' not in obj["size"].keys():
+            if 'width' not in obj['size'] and 'height' not in obj['size']:
                 delete = True
-                log.msg("%s doesn't have a height in its size attribute." %
-                        name)
-            if 'width' not in obj["size"].keys():
-                delete = True
-                log.msg("%s doesn't have a width in its size attribute." %
+                log.msg("%s doesn't have a height or width in its size "
+                        "attribute." %
                         name)
 
             margins = set(['top', 'bottom', 'right', 'left'])
