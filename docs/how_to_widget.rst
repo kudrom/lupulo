@@ -12,6 +12,9 @@ visualization of some information.
 Currently, in order to paint something to the screen, the widget can only use
 the *d3.js* library.
 
+Lifetime
+--------
+
 The lifetime of a widget starts with its registration towards the frontend by
 calling the function *register_widget*.
 
@@ -27,14 +30,14 @@ backend. The frontend will pass the layout of the widget as a parameter to the
 constructor.
 
 The constructor of the widget must call (in the first lines) a SuperType
-constructor with the line::
+constructor with the line to inherit some common behaviour::
 
     Widget.call(this, layout);
 
-Once the constructor function returns a widget, the frontend populates some
-members of the widget and registers it in the web page. Among this members,
-the frontend will create the svg d3js root element that the widget **must** use
-in order to render something into the web page.
+The frontend will then populate the widget object with some common members
+and will register it in the web page. Among this members, the frontend will 
+create the svg d3js root element that the widget **must** use in order to render
+something into the web page.
 
 From now on, when an event from the backend is fired, the frontend will
 notify every widget subscribed to that data source by calling the *paint*
@@ -43,7 +46,7 @@ function of the widget.
 .. js:function:: paint(jdata)
 
    :param object jdata: JSON object with the raw data that the device is
-                             sending to the frontend through the backend.
+                        sending to the frontend through the backend.
 
 The data passed to the widget's paint function is in a raw form, usually it's
 complicated to manipulate this kind of information. To ease this manipulation
@@ -55,7 +58,89 @@ widget is responsible for.
 
 .. js:function:: clear_framebuffers()
 
-   This widget's method should clear all the drawings it's responsible for.
+   This widget's method should clear all the drawings it's responsible for, but
+   it shouldn't delete anything.
+
+Once the widget is not necessary, all the DOM information under the root svg is
+going to be erased by the frontend and the JS object is going to get removed.
+
+Aggregation
+-----------
+
+You can define a widget that uses another widgets to render some information.
+This is called widget aggregation and is used heavily throughout the entire
+framework. For example, :ref:`digital_clock` uses :ref:`digital_display` to
+display the numbers of the time.
+
+A widget aggregates another one when it *cooks* the layout for the new
+aggregated widget and constructs it directly by typing something like::
+
+    var new_widget = new CustomWidget(cooked_layout);
+
+Afterwards, in the paint callback, it's going to call
+*new_widget.paint(cooked_jdata)* in order to render some of the information that
+the widget receives from the backend in its own paint callback.
+
+I call to cook in this context to overwrite some of the properties of the layout
+or of the jdata to fit the description and requirements of the aggregated
+widget.
+
+Some care must be taken when you decide where to put the aggregated widgets in
+the DOM because, as explained earlier, the frontend expects them to be placed
+under a DOM element with the id of the name of the layout that defines this
+widget (layout.name). This DOM element is usually the root svg for the widget
+when it doesn't aggregate more widgets, but when it does it's the responsibility
+of the widget to create a new DOM element (usually a div), give it the id of the
+name of the layout (layout.name), change the name of every layout used to
+construct a widget (to avoid more than one DOM element to have the same id) and
+finally place every widget inside that new DOM element.
+
+When you are modifying a layout of a widget, you should always make a deepcopy
+of the original layout to avoid pollution of the layout by typing::
+
+    var layout = jQuery.extend(true, {}, layout);
+
+as the first line of code in your source code.
+
+You should read the source code of :ref:`digital_clock` and
+:ref:`digital_display` to understand more easily how everything should work.
+
+Css theming
+-----------
+
+All widgets should use a common css theme that can be easily customized by the
+programmer of the web page through a global stylesheet that overrides the
+definitions of these global css classes. In lupulo the definition of this css
+classes that should define the appearance of every widget are defined in 
+`main.css
+<https://github.com/kudrom/lupulo/blob/master/lupulo/static/css/main.css>`_.
+
+Dynamic sizing
+--------------
+
+As explained in the :ref:`layout`, a widget should be sized accordingly to its
+size section of the layout. This size section is enforced by the frontend by
+setting the width and height of the root svg element to that values.
+
+However, when a widget has an aspect ratio, it's often a good idea to allow
+partial definitions of the size in the layout file. For example, if the
+programmer of the web page writes in the layout that the height of the widget
+should be of 100px, the widget should complete the size by giving a width that
+respects the aspect ratio and call Widget.call(layout) with that new layout.
+
+Dynamic sizing is tricky because sometimes an svg element will not resize by
+giving the svg root element a specific width or height, you will need then to
+use the scale transformation. And that is quite annoying when you also have
+partial definitions of the size.
+
+You should read the source code of :ref:`digital_display` to understand more 
+easily how everything should work. This widget provides partial definitions of
+the size plus scale transformations to adjust its size. To see how a widget
+scales without the need of a scale transformation you can see
+:ref:`multiple_line`.
+
+Responsibilities
+----------------
 
 So, to sum up, the widget must:
 
@@ -64,6 +149,8 @@ So, to sum up, the widget must:
 #. Call the SyperType with **Widget.call(this, layout);** inside the
    constructor in the first lines of the constructor.
 #. Provide a function to clear the drawings called *clear_framebuffers*.
+#. Dynamic sizing through the layout.size property.
+#. Use the css theming classes.
 
 The frontend will provide:
 
@@ -72,19 +159,7 @@ The frontend will provide:
 #. A notification whenever some data arrives that the widget is subscribed to
    through the *paint* callback.
 #. The accessors mechanism.
-
-Finally, a widget should display in the web pages all kinds of information
-relevant to the user with the alerts library. You can use the function
-*add_alert* defined here:
-
-.. js:function:: add_alert(type, text)
-
-    This function will render at the top of the web page a box displaying the
-    text you pass to it as an argument.
-
-    :param enum type: string describing the level of relevance of the text,
-                      it can be success, info, warning and danger.
-    :param string text: text to display in the box.
+#. Widget aggregation.
 
 Utils
 -----
@@ -132,3 +207,12 @@ more information.
     :param List requirements: List containing all the keys that the layout must
                               provide.
     :param Object layout: Layout definition of the widget.
+
+.. js:function:: add_alert(type, text)
+
+    This function will render at the top of the web page a box displaying the
+    text you pass to it as an argument.
+
+    :param enum type: string describing the level of relevance of the text,
+                      it can be success, info, warning and danger.
+    :param string text: text to display in the box.

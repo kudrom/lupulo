@@ -71,6 +71,12 @@ Inheritance
 Any template can inherit from a set of lupulo templates that are designed to
 ease the development of your project.
 
+.. note::
+
+    In order to inherit the content written in a parent's block, you can
+    overwrite the parent's block and call the super() function to retrieve the
+    content of the parent's block. See jinja2 for more information.
+
 Base.html
 *********
 

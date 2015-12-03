@@ -1,3 +1,5 @@
+.. _multiple_line:
+
 MultipleLine
 ------------
 
@@ -46,17 +48,23 @@ The following is a correct layout for the MultipleLine widget::
                 "width": 760,
                 "height": 500
             },
+            "margin": {
+                "top": 0,
+                "bottom": 0,
+                "left": 0,
+                "right": 0
+            },
             "seconds": 100
         },
 
         "battery": {
             "parent": "global",
-            "event_name": "battery",
-            "anchor": "#battery",
+            "event_names": ["battery"],
+            "anchor": "#battery-anchor",
             "name_lines": ["Battery"],
             "y_name": "Battery",
             "accessors": [{
-                "name": "index",
+                "type": "index",
                 "start": 0,
                 "end": 1
             }],

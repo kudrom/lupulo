@@ -147,3 +147,7 @@ The widgets distributed currently in lupulo are:
     :maxdepth: 1
 
     multiline.rst
+    digital_display.rst
+    digital_clock.rst
+    digital_date.rst
+    battery.rst
