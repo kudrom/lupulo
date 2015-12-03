@@ -1,12 +1,6 @@
 {
     "global-general":{
         "abstract": "true",
-        "margin": {
-            "top": 0,
-            "bottom": 0,
-            "left": 0,
-            "right": 0
-        },
         "size": {
             "height": 60
         },
@@ -47,12 +41,6 @@
         "size": {
             "width": 600,
             "height": 400
-        },
-        "margin": {
-            "top": 20,
-            "bottom": 20,
-            "right": 20,
-            "left": 40
         },
         "seconds": 100
     },

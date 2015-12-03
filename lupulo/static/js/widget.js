@@ -34,16 +34,21 @@ Widget = function(layout){
     // Event sources the widget is subscribed to
     this.event_sources = [];
 
+    // The margin is optional
+    if('margin' in layout){
+        margin = layout.margin;
+    }else{
+        margin = {top: 0, right: 0, bottom: 0, left: 0};
+    }
+
     // Sizes of the canvas
-    this.margin = {top: layout.margin.top, right: layout.margin.right,
-                   bottom: layout.margin.bottom, left: layout.margin.left};
-    this.width = layout.size.width - this.margin.left - this.margin.right;
-    this.height = layout.size.height - this.margin.top - this.margin.bottom;
+    this.width = layout.size.width - margin.left - margin.right;
+    this.height = layout.size.height - margin.top - margin.bottom;
 
     // Setup the svg root element
     this.svg = d3.select(layout.anchor).append("svg")
-        .attr("width", this.width + this.margin.left + this.margin.right)
-        .attr("height", this.height + this.margin.top + this.margin.bottom);
+        .attr("width", this.width + margin.left + margin.right)
+        .attr("height", this.height + margin.top + margin.bottom);
     this.svg.attr('id', layout.name);
 
     if('viewBox' in layout){
@@ -51,7 +56,7 @@ Widget = function(layout){
     }
 
     this.svg = this.svg.append("g")
-        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 
     // Anchor for the transition in the tick function

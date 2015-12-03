@@ -13,6 +13,9 @@ MultipleLine = function(layout){
             throw "Broken preconditions for " + layout.name;
         }
     })(['y_name', 'seconds', 'name_lines', 'accessors']);
+
+    layout.margin = {"top": 10, "bottom": 20, "right": 10, "left": 30};
+
     Widget.call(this, layout);
 
     var Line = function(accessor){
