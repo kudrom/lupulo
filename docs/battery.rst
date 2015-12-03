@@ -4,9 +4,11 @@ Battery
 =======
 
 The battery widget will render a digital display of the level of battery of a
-device plus a dynamic drawing of a battery as in the following image:
+device plus a dynamic drawing of a battery as in the following two images:
 
 .. image:: images/battery.png
+
+.. image:: images/battery_empty.png
 
 The battery provides dynamic sizing and doesn't define any requirement, it's
 normal size is 570x350 pixels.

@@ -146,8 +146,8 @@ The widgets distributed currently in lupulo are:
 .. toctree::
     :maxdepth: 1
 
-    multiline.rst
-    digital_display.rst
+    battery.rst
     digital_clock.rst
     digital_date.rst
-    battery.rst
+    digital_display.rst
+    multiline.rst
