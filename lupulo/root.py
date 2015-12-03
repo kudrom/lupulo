@@ -5,7 +5,7 @@ import os.path
 from twisted.web import server
 from twisted.web.static import File
 
-from lupulo.http import LupuloResource
+from lupulo.http import LupuloResource, ErrorPage
 from lupulo.exceptions import UrlInvalid, InvalidResource
 
 from settings import settings
@@ -28,12 +28,19 @@ class Debug(LupuloResource):
     """
         Root resource for the index.html template of the project.
     """
-    def __init__(self, *args):
+    def __init__(self, widgets, *args):
         LupuloResource.__init__(self, *args)
+        self.widgets = widgets
 
     def render_GET(self, request):
         template = self.get_template('debug.html')
         return template.render()
+
+    def getChild(self, name, request):
+        if name == '' or name in self.widgets:
+            return self
+        else:
+            return ErrorPage(404, 'Widget %s is not in the layout.' % name)
 
 
 def connect_user_urls(root):
@@ -85,7 +92,8 @@ def get_website(sse_resource):
     # If the user has overwritten some urls of the lupulo namespace, they will
     # be overwritten here again
     root.putChild('subscribe', sse_resource)
-    root.putChild('debug', Debug({}))
+    widgets = sse_resource.layout_manager.get_layouts().keys()
+    root.putChild('debug', Debug(widgets, {}))
 
     # Serve the static directory for css/js/image files of lupulo
     lupulo_static = File(os.path.join(settings["lupulo_cwd"], 'static'))

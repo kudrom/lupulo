@@ -105,6 +105,8 @@
          * lupulo controller to bind the widgets to its anchor.
          */
         var obj = JSON.parse(event.data),
+            pathname = location.pathname.split('/'),
+            widget_url = pathname[pathname.length-1],
             widgets_removed = [],
             widgets_added = [];
 
@@ -119,9 +121,12 @@
 
         // Construct all the html code, populate the data_panel_ objects and
         // connects the callbacks to its event sources if the id is a valid one
+        var added_widgets = {};
         if('added' in obj){
             for(var name in obj.added){
-                if(!(name in lupulo_controller.widgets)){
+                if(!(name in lupulo_controller.widgets) &&
+                   ((pathname.length === 2) || (widget_url === name))){
+                    added_widgets[name] = obj.added[name];
                     var anchor = obj.added[name].anchor.slice(1)
                     var layout = pretty(obj.added[name], 0, false);
                     var child = '<div class="clearfix wrapper" id="' + name + '-wrapper">' +
@@ -162,8 +167,11 @@
             }
         }
 
+        obj.added = added_widgets;
+        new_event = jQuery.extend(true, {}, event);
+        new_event.data = JSON.stringify(obj);
         // Call the lupulo_controller callback
-        lupulo_controller.new_widgets(event);
+        lupulo_controller.new_widgets(new_event);
 
         // Remove all the wrapper when the widget has been already deleted by
         // the lupulo controller

@@ -14,7 +14,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.min.js"></script>
 
         <!-- Load resources -->
-        <link rel="stylesheet" type="text/css" href="lupulo_static/css/main.css" />
+        <link rel="stylesheet" type="text/css" href="/lupulo_static/css/main.css" />
         {% block css %}{% endblock %}
     </head>
     <body>
@@ -43,11 +43,11 @@
         {% endblock body %}
 
         <!-- Only controller has resources over the other js files -->
-        <script src="lupulo_static/js/utils.js"></script>
-        <script src="lupulo_static/js/accessors.js"></script>
-        <script src="lupulo_static/js/widget.js"></script>
+        <script src="/lupulo_static/js/utils.js"></script>
+        <script src="/lupulo_static/js/accessors.js"></script>
+        <script src="/lupulo_static/js/widget.js"></script>
         {% block controller %}
-            <script src="lupulo_static/js/controller.js"></script>
+            <script src="/lupulo_static/js/controller.js"></script>
             <script>
                 lupulo_controller = new DefaultController();
                 lupulo_controller.setup();

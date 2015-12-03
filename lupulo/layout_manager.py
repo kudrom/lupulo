@@ -166,6 +166,12 @@ class LayoutManager(INotifyObserver):
         obj = {'removed': {}, 'changed': {}, 'added': self.layouts}
         return json.dumps(obj)
 
+    def get_layouts(self):
+        """
+            Getter for the layouts
+        """
+        return self.layouts
+
     def inotify_callback(self, jdata):
         """
             Callback for the INotify. It should call the sse resource with the

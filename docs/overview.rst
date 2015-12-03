@@ -164,9 +164,11 @@ device. You can read more of this listener in :ref:`listeners`.
 
 The third one is a debug web page that you can access in the */debug* url and
 that will build and bind to the web page all the widgets defined in the layout
-plus some more information, like the layout for each widget, the raw data
-received from the server and the data once it has passed the accessors defined
-in the layout.
+plus the layout section for each widget, the raw data received from the server
+and the data once it has passed the accessors defined for the widget. You can
+also retrieve the debug page for a single widget if you append to the url the
+name of the layout for the respective widget, like */debug/battery* to render
+the widget defined by the battery section in the layout file.
 
 Deployment
 ----------
