@@ -24,8 +24,6 @@ class TestFunctional(unittest.TestCase):
 
         settings['cwd'] = os.path.join(settings['lupulo_cwd'], 'defaults')
 
-        os.mkdir(os.path.join(settings['cwd'], 'static'))
-
         src = os.path.join(settings['cwd'], 'default_urls.py')
         self.dst = os.path.join(settings['cwd'], 'urls.py')
         shutil.copyfile(src, self.dst)
@@ -42,7 +40,6 @@ class TestFunctional(unittest.TestCase):
         self.urls = False
 
     def tearDown(self):
-        os.rmdir(os.path.join(settings['cwd'], 'static'))
         os.remove(self.dst)
         del settings['cwd']
         del settings['templates_dir']
