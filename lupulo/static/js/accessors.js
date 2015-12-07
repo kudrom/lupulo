@@ -126,7 +126,8 @@ register_accessor("index", function(description){
                         return old[old_index];
                     }else if(jdata[event_name].length <= index){
                         add_alert("danger", "The data of " + event_s +
-                                  " is not long enough for a layout.");
+                                  " is not long enough for the index accessor" +
+                                  " with start=" + start + " and end=" + end);
                         return old[old_index];
                     }
                     old[old_index] = jdata[event_name][index];

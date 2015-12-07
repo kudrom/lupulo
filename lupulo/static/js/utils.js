@@ -132,5 +132,9 @@ function add_alert(type, text){
                      '</div>';
 
     $('.warnings').append(alert_html);
+
+    if(type === 'danger'){
+        console.error(new Error().stack);
+    }
 }
 
