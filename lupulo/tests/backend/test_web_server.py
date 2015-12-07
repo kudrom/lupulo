@@ -37,21 +37,12 @@ class TestFunctional(unittest.TestCase):
         self.url = 'http://localhost:' + "8081" + '/subscribe'
         self.client = SSEClient(self.url)
 
-        self.urls = False
-
     def tearDown(self):
         os.remove(self.dst)
         del settings['cwd']
         del settings['templates_dir']
         self.server.stopListening()
         settings['activate_inotify'] = self.old_value_inotify
-        if self.urls:
-            URLS = '../urls.py'
-            with open(URLS, "w+") as fp:
-                fp.seek(0)
-                fp.write("")
-            os.remove(URLS + 'c')
-            self.urls = False
 
     def cleanup_connections(self):
         for sub in list(self.sse_resource.subscribers):
@@ -95,7 +86,7 @@ class TestFunctional(unittest.TestCase):
 
         self.client.protocol.dispatchEvent = MagicMock()
         d = self.client.connect()
-        data = '{"id" : 1, "battery": 87.156412351}'
+        data = '{"id" : "1", "battery": 87.156412351}'
         reactor.callLater(1, self.sse_resource.publish, data)
         reactor.callLater(2, after_publishing)
         return d
@@ -108,7 +99,7 @@ class TestFunctional(unittest.TestCase):
 
         self.client.addEventListener("id1-battery", callback)
         d = self.client.connect()
-        data = '{"id" : 1, "battery": 87.156412351}'
+        data = '{"id" : "1", "battery": 87.156412351}'
         reactor.callLater(1, self.sse_resource.publish, data)
         contradiction = reactor.callLater(3, self.assertEqual, True, False)
         return d
@@ -132,8 +123,6 @@ class TestFunctional(unittest.TestCase):
             with open(src) as fp_mocked:
                 text = "".join(fp_mocked.readlines())
                 fp_urls.write(text)
-
-        self.urls = True
 
         url = 'http://localhost:' + "8081" + '/hello'
         return self.http_request(url)
