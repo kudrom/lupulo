@@ -77,7 +77,7 @@ class SSEResource(resource.Resource):
         msg = []
         if len(self.ids) > 0:
             msg.append('event: new_devices\n')
-            msg.append('data: [%s]\n\n' % ",".join(map(str, self.ids)))
+            msg.append('data: [%s]\n\n' % ",".join(map(wrap, self.ids)))
             request.write("".join(msg))
 
         msg = []
@@ -104,21 +104,22 @@ class SSEResource(resource.Resource):
         if self.data_schema_manager.validate(data):
             jdata = json.loads(data)
             iid = jdata["id"]
+            iid_encoded = iid.encode('ascii', 'ignore')
 
             if settings["activate_mongo"]:
                 self.store(data)
 
             msg = []
             if iid not in self.ids:
-                log.msg("New connection from device %d" % iid)
+                log.msg("New connection from device %s" % iid)
                 self.ids.append(iid)
                 msg.append('event: new_devices\n')
-                msg.append('data: [%d]\n\n' % iid)
+                msg.append('data: ["%s"]\n\n' % iid_encoded)
             for event, data in jdata.items():
                 if event in ["id"]:
                     continue
                 event_name = event.encode('ascii', 'ignore')
-                msg.append("event: id%d-%s\n" % (iid, event_name))
+                msg.append("event: id%s-%s\n" % (iid_encoded, event_name))
                 msg.append("data: %s\n\n" % json.dumps(data))
 
             for subscriber in self.subscribers:

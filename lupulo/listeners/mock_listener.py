@@ -27,6 +27,6 @@ class MockListener(service.Service):
             events_left = list(events.difference(current_events))
             current_events.add(choice(events_left))
 
-        random_id = randint(1, self.ids)
-        message = self.data_schema_manager.generate(random_id, current_events)
+        random_id = str(randint(1, self.ids))
+        message = self.data_schema_manager.generate("first", current_events)
         self.sse_resource.publish(message)
