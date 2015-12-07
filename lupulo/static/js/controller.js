@@ -80,7 +80,7 @@ function DefaultController(){
                 widget.tick(widget);
             }catch(err){
                 var name = "<strong>" + layout.name + "</strong>";
-                add_alert('danger', err + ", stopping creation of widget " + name);
+                add_alert('warning', err + ", stopping creation of widget " + name);
                 console.error(err.stack);
                 continue;
             }
