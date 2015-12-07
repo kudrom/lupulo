@@ -40,7 +40,7 @@ if __name__ == '__main__':
             c_event_source = colored(event_source, 'blue')
             print '%s New event source %s' % (warning, c_event_source)
             for device in devices:
-                complete_event_source = "id%d-%s" % (device, event_source)
+                complete_event_source = "id%s-%s" % (device, event_source)
                 client.addEventListener(complete_event_source,
                                         onmessage(event_source, device))
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
             c_event_source = colored(event_source, 'red')
             print '%s Event source removed %s' % (warning, c_event_source)
             for device in devices:
-                complete_event_source = "id%d-%s" % (device, event_source)
+                complete_event_source = "id%s-%s" % (device, event_source)
                 client.delEventListener(complete_event_source)
 
     def new_devices(jdata):
