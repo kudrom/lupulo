@@ -150,4 +150,5 @@ The widgets distributed currently in lupulo are:
     digital_clock.rst
     digital_date.rst
     digital_display.rst
+    led.rst
     multiline.rst

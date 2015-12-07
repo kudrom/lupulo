@@ -167,6 +167,14 @@
             }
         }
 
+        if('changed' in obj){
+            for(var name in obj.changed){
+                var layout = pretty(obj.changed[name], 0, false);
+                var layout_dom = $('#' + name + '-wrapper .layout');
+                layout_dom.html('<div class="title">Layout</div>' + layout);
+            }
+        }
+
         obj.added = added_widgets;
         new_event = jQuery.extend(true, {}, event);
         new_event.data = JSON.stringify(obj);
