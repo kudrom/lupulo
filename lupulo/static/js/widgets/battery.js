@@ -77,7 +77,7 @@ Battery = function(layout){
             }
 
             // Update the bars of the drawing
-            var bars = this.svg.selectAll('.bar').data(data)
+            var bars = this.svg.selectAll('.bar').data(data);
             bars.exit().remove();
             bars.enter()
                 .append('g')

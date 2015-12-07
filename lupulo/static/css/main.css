@@ -68,3 +68,9 @@ path, circle{
     margin-right: 10px;
     float: left;
 }
+
+/* LED WIDGET */
+.led-circle{
+    fill: url(#gradient-led);
+    fill-opacity: 1;
+}

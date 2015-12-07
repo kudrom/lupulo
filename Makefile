@@ -15,6 +15,9 @@ install:
 uninstall:
 	pip2 uninstall lupulo
 
+docs:
+	make -C docs html
+
 all: clean uninstall install launch
 
-.PHONY: all
+.PHONY: all docs

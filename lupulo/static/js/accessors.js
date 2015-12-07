@@ -94,6 +94,10 @@
     }
 })();
 
+var jdata_null_msg = "The jdata for the accessor was null, you should " +
+                     "check in your widget paint function that you check " +
+                     "for a null value before calling the accessor.";
+
 // Built-in accessors
 register_accessor("index", function(description){
     var ret = [],
@@ -114,6 +118,10 @@ register_accessor("index", function(description){
                     var old_index = index - start;
                     var event_name = get_complete_event_name(event_source);
                     var event_s = "<strong>" + event_source + "</strong>"
+                    if(jdata === null){
+                        add_alert('danger', jdata_null_msg);
+                        return old;
+                    }
                     if(!(event_name in jdata)){
                         return old[old_index];
                     }else if(jdata[event_name].length <= index){
@@ -145,6 +153,10 @@ register_accessor("dict", function(description){
         ret.push(function(jdata){
             var event_name = get_complete_event_name(event_source);
             var event_s = "<strong>" + event_source + "</strong>"
+            if(jdata === null){
+                add_alert('danger', jdata_null_msg);
+                return old;
+            }
             if(!(event_name in jdata)){
                 return old;
             }
@@ -170,6 +182,10 @@ register_accessor("primitive", function(description){
     return [function(jdata){
         var event_name = get_complete_event_name(event_source);
         var event_s = "<strong>" + event_source + "</strong>"
+        if(jdata === null){
+            add_alert('danger', jdata_null_msg);
+            return old;
+        }
         if(event_name in jdata){
             old = jdata[event_name];
         }

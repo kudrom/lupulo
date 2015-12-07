@@ -48,6 +48,10 @@ function of the widget.
    :param object jdata: JSON object with the raw data that the device is
                         sending to the frontend through the backend.
 
+.. note::
+
+    You should check in the paint function if the jdata is null.
+
 The data passed to the widget's paint function is in a raw form, usually it's
 complicated to manipulate this kind of information. To ease this manipulation
 there exists a mechanism in lupulo called :ref:`accessors`.

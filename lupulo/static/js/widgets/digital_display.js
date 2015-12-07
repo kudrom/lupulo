@@ -34,6 +34,11 @@ DigitalDisplay = function(layout){
     // Get the accessors from the layout definition
     this.accessors = get_accessors(layout.accessors);
 
+    if(this.accessors.length !== num_digits){
+        add_alert('danger', 'The number of digits is different from the ' +
+                            'number of accessors in ' + layout.name);
+    }
+
     // Seven segments for the display
     var digit_paths = `
 <path d="M10,8L14,4L42,4L46,8L42,12L14,12L10,8z"/>

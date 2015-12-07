@@ -1,6 +1,6 @@
 function fill_widget_prototype(constructor){
-    // This function is called back every 1s to render the animation of every
-    // line in the graph
+    // This function is called back every second to render the animation of 
+    // every line in the graph
     constructor.prototype.tick = function(widget) {
         // Call the callback to paint the widget
         widget.paint(widget.jdata);
@@ -51,6 +51,7 @@ Widget = function(layout){
         .attr("height", this.height + margin.top + margin.bottom);
     this.svg.attr('id', layout.name);
 
+    // The viewBox is also optional
     if('viewBox' in layout){
         this.svg.attr('viewBox', layout.viewBox);
     }
