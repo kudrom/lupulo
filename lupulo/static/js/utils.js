@@ -104,7 +104,7 @@ function validate_requirements(requirements, layout){
         if(!(requirements[i] in layout)){
             var req = "<strong>" + requirements[i] + "</strong>";
             var name = "<strong>" + layout.name + "</strong>";
-            add_alert("danger", req + " not in layout " + name);
+            add_alert("warning", req + " not in layout " + name);
             broken = true;
         }
     }

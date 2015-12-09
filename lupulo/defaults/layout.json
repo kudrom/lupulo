@@ -25,7 +25,8 @@
     "date": {
         "parent": "global-general",
         "type": "digital_date",
-        "anchor": "#date-anchor"
+        "anchor": "#date-anchor",
+        "format": "DD/MM/YYYY"
     },
 
     "real-time": {
