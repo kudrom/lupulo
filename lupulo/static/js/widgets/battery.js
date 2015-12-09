@@ -5,7 +5,7 @@ Battery = function(layout){
     // The first layout object is used to construct the drawing of the battery.
     // The viewBox is modified to fit the original size of the drawing and
     // avoid some cropping effects.
-    layout.viewBox = "0 90 570 350";
+    layout.viewBox = "0 110 570 350";
 
     var scale = 1;
     // The size is shared between the drawing of the battery and its display.
@@ -61,7 +61,7 @@ Battery = function(layout){
     delete layout.viewBox;
     // Use default aspect ratio for the display
     delete layout.size.width;
-    layout.size.height = 100 * scale;
+    layout.size.height = 90 * scale;
     this.display = new DigitalDisplay(layout);
 
     this.paint = function(jdata){
