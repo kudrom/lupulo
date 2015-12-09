@@ -64,13 +64,13 @@ function DefaultController(){
             if(anchor.length == 0){
                 var text = "<strong>" + layout.anchor + "</strong>" +
                            " anchor doesn't exist in the document."
-                add_alert('danger', text);
+                add_alert('warning', text);
                 continue;
             }
             if(!(layout.type in this.widget_constructors)){
                 var text = "<strong>" + layout.type + "</strong>" +
                            " type doesn't exist as a factory of widgets.";
-                add_alert('danger', text);
+                add_alert('warning', text);
                 continue;
             }
 

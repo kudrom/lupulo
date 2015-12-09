@@ -4,8 +4,8 @@ Led = function(layout){
     // Dynamic sizing
     if('height' in layout.size && 'width' in layout.size &&
        layout.size.height != layout.size.width){
-        add_alert('warning', 'The width and height for ' + layout.name +
-                            ' are not the same, maybe the led will be cropped.');
+        add_alert('info', 'The width and height for ' + layout.name +
+                         ' are not the same, maybe the led will be cropped.');
     }else if('height' in layout.size){
         layout.size.width = layout.size.height;
     }else if('width' in layout.size){

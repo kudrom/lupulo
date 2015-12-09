@@ -217,6 +217,10 @@ more information.
     This function will render at the top of the web page a box displaying the
     text you pass to it as an argument.
 
+    If the type is "danger" it will print the stack trace in the javascript
+    console, so only use the danger when it makes sense to know what the
+    stack trace looks like.
+
     :param enum type: string describing the level of relevance of the text,
                       it can be success, info, warning and danger.
     :param string text: text to display in the box.

@@ -5,7 +5,7 @@
     register_accessor = function(type, accessor){
         if(type in accessors){
             var type_s = "<strong>" + type + "</strong>";
-            add_alert("warning", type_s + " was already registered as an accesor.");
+            add_alert("danger", type_s + " was already registered as an accesor.");
         }else{
             accessors[type] = accessor;
         }
@@ -85,7 +85,7 @@
                 }
             }else{
                 var type_s = "<strong>" + description[i].type + "</strong>";
-                add_alert("danger", "Accessor " + type_s + " is not registered");
+                add_alert("warning", "Accessor " + type_s + " is not registered");
             }
         }
 
@@ -125,7 +125,7 @@ register_accessor("index", function(description){
                     if(!(event_name in jdata)){
                         return old[old_index];
                     }else if(jdata[event_name].length <= index){
-                        add_alert("danger", "The data of " + event_s +
+                        add_alert("warning", "The data of " + event_s +
                                   " is not long enough for the index accessor" +
                                   " with start=" + start + " and end=" + end);
                         return old[old_index];
@@ -136,7 +136,7 @@ register_accessor("index", function(description){
             })(ii));
         }
     }else{
-        add_alert("danger", "<strong>Index</strong> accessor definition was incomplete.");
+        add_alert("warning", "<strong>Index</strong> accessor definition was incomplete.");
     }
 
     return ret;
@@ -163,14 +163,14 @@ register_accessor("dict", function(description){
             }
             if(!(key in jdata[event_name])){
                 var key_s = "<strong>" + key + "</strong>";
-                add_alert("danger", key_s + " is not in the " + event_s + " dict event source.");
+                add_alert("warning", key_s + " is not in the " + event_s + " dict event source.");
                 return old;
             }
             old = jdata[event_name][key];
             return old;
         });
     }else{
-        add_alert("danger", "<strong>Dict</strong> accessor definition was incomplete.");
+        add_alert("warning", "<strong>Dict</strong> accessor definition was incomplete.");
     }
 
     return ret;

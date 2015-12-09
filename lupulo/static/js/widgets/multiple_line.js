@@ -1,19 +1,7 @@
 MultipleLine = function(layout){
-    (function(requirements){
-        var broken = false;
-        for(var i = 0; i < requirements.length; i++){
-            if(!(requirements[i] in layout)){
-                var req = "<strong>" + requirements[i] + "</strong>";
-                var name = "<strong>" + layout.name + "</strong>";
-                add_alert("danger", req + " not in layout " + name);
-                broken = true;
-            }
-        }
-        if(broken){
-            throw "Broken preconditions for " + layout.name;
-        }
-    })(['y_name', 'seconds', 'name_lines', 'accessors']);
+    validate_requirements(['y_name', 'seconds', 'name_lines', 'accessors'], layout);
 
+    // Give space to the axis
     layout.margin = {"top": 10, "bottom": 20, "right": 10, "left": 30};
 
     Widget.call(this, layout);

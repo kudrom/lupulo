@@ -35,8 +35,8 @@ DigitalDisplay = function(layout){
     this.accessors = get_accessors(layout.accessors);
 
     if(this.accessors.length !== num_digits){
-        add_alert('danger', 'The number of digits is different from the ' +
-                            'number of accessors in ' + layout.name);
+        add_alert('warning', 'The number of digits is different from the ' +
+                             'number of accessors in ' + layout.name);
     }
 
     // Seven segments for the display
