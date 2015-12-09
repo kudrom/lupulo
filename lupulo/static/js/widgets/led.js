@@ -29,8 +29,8 @@ Led = function(layout){
 
     this.mapping = function(data){
         /*
-         * This function will return the color in the mapping section in the 
-         * layout for a given data.
+         * This function will return the mapped value in the mapping section in
+         * the layout for a given data.
          */
         var ret = "grey";
         for(key in layout.mapping){
@@ -54,17 +54,27 @@ Led = function(layout){
     this.paint = function(jdata){
         // Change the color if necessary
         var color = "grey";
+        var opacity = 1;
+        var value;
         if(jdata !== null){
             var data = this.accessor(jdata);
 
             if(data !== null){
-                color = this.mapping(data);
+                value = this.mapping(data);
+                if(typeof value === "string"){
+                    color = value;
+                }else if('color' in value && 'opacity' in value){
+                    color = value.color;
+                    opacity = value.opacity;
+                }
             }
 
         }
 
         var gradient_led = this.svg.select('#gradient-led stop');
         gradient_led.attr('stop-color', color);
+        gradient_led.attr('stop-opacity', opacity);
+        this.svg.select('#gradient-led stop:nth-child(2)').attr('stop-opacity', opacity)
     };
 
     this.clear_framebuffers = function(){

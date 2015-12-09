@@ -36,6 +36,20 @@
         "anchor": "#real-time-anchor"
     },
 
+    "led": {
+        "event_names": ["leds"],
+        "accessors": [{"type": "index", "start": 0, "end": 1}],
+        "size": {"height": 100},
+        "type": "led",
+        "anchor": "#led-anchor",
+        "radius": 40,
+        "mapping": {
+            "on": "green",
+            "off": "red",
+            "null": {"color": "grey", "opacity": 0.3}
+        }
+    },
+
     "global-lines": {
         "abstract": true,
         "type": "multiple_line",
