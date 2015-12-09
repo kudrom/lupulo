@@ -8,7 +8,14 @@ display widget as shown in the following image:
 
 .. image:: images/digital_date.png
 
-It provides dynamic sizing and doesn't define any requirement.
+It provides dynamic sizing and defines one argument.
+
+format
+------
+
+A string which establishes the format of the date. It is composed of literals
+separated by a slash. The accepted literals are "YYYY" for year, "DD" for day
+and "MM" for month.
 
 example
 -------
@@ -31,6 +38,7 @@ The following is a correct layout for the DigitalDate widget::
             "anchor": "#date-anchor",
             "accessors": [{
                 "type": "primitive"
-            }]
+            }],
+            "format": "DD/MM/YYYY"
         },
     }
