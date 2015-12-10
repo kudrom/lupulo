@@ -24,12 +24,6 @@ class TestsSchemaDescriptor(unittest.TestCase):
         settings['activate_inotify'] = self.old_inotify
         self.fp.close()
 
-    def test_invalid_file(self):
-        test = "tests/backend/data_schemas/invalid_syntax.json"
-        ifp = open(os.path.join(self.cwd, test), "r")
-        self.assertRaises(ValueError, DataSchemaManager, ifp)
-        ifp.close()
-
     def test_descriptors_complete(self):
         for key, obj in self.valid_schema_desc.descriptors.items():
             name = self.valid_schema_desc.desc[key]["type"]
