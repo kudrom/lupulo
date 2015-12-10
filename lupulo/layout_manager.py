@@ -28,7 +28,10 @@ class LayoutManager(INotifyObserver):
         self.layouts = {}
 
         # Load the layout file and reset the position to allow second reads
-        self.raw = json.load(self.fp)
+        try:
+            self.raw = json.load(self.fp)
+        except ValueError as e:
+            log.msg(e.message + " in the layout file.")
         self.fp.seek(0)
 
     def compile(self):

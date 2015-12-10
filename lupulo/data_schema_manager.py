@@ -4,6 +4,8 @@
 import json
 from importlib import import_module
 
+from twisted.python import log
+
 from lupulo.exceptions import NotFoundDescriptor, RequirementViolated
 from lupulo.inotify_observer import INotifyObserver
 
@@ -40,17 +42,20 @@ class DataSchemaManager(INotifyObserver):
             each event in @events and its value a class loaded with
             find_descriptor
         """
-        self.desc = json.load(self.fp)
+        try:
+            self.desc = json.load(self.fp)
+        except ValueError as e:
+            log.msg(e.message + " in data schema file.")
+        else:
+            self.events = set(self.desc.keys())
 
-        self.events = set(self.desc.keys())
-
-        self.descriptors = {}
-        for key, value in self.desc.items():
-            klass = find_descriptor(value["type"])
-            try:
-                self.descriptors[key] = klass(**value)
-            except TypeError:
-                raise RequirementViolated("%s description is wrong" % key)
+            self.descriptors = {}
+            for key, value in self.desc.items():
+                klass = find_descriptor(value["type"])
+                try:
+                    self.descriptors[key] = klass(**value)
+                except TypeError:
+                    raise RequirementViolated("%s description is wrong" % key)
 
     def validate(self, data):
         """
