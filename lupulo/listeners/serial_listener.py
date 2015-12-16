@@ -52,7 +52,7 @@ class SerialListener(service.Service):
         self.serial = SerialPort(self.serial_listener,
                                  self.device,
                                  reactor,
-                                 baudrate='115200')
+                                 baudrate=settings['baudrate'])
         log.msg("Service started for the serial listener.")
 
     def get_serial_port(self):
