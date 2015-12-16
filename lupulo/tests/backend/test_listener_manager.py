@@ -9,7 +9,7 @@ from twisted.trial import unittest
 from mock import MagicMock
 
 from lupulo.settings import settings
-from lupulo.listeners_manager import connect_listener, get_listener_name
+from lupulo.listeners_manager import listeners_manager
 from lupulo.exceptions import NotListenerFound, InvalidListener
 
 missing_listener = """
@@ -62,31 +62,33 @@ class TestsListenerManager(unittest.TestCase):
 
     def test_missing_module(self):
         settings['listener'] = 'crap'
-        self.assertRaises(NotListenerFound, connect_listener, self.mock_parent,
-                          self. mock_sse_resource)
+        self.assertRaises(NotListenerFound, listeners_manager.connect_listener,
+                          self.mock_parent, self. mock_sse_resource)
 
     def test_missing_listener(self):
         self.create_listener('incredible', missing_listener)
-        self.assertRaises(NotListenerFound, connect_listener, 'parent', 'sse')
+        self.assertRaises(NotListenerFound, listeners_manager.connect_listener,
+                          'parent', 'sse')
 
     def test_listener_constructed(self):
         self.create_listener('awesome', awesome_listener)
-        listener = connect_listener('parent', 'sse')
+        listener = listeners_manager.connect_listener('parent', 'sse')
         self.assertEqual(listener.sse_resource, 'sse')
         self.assertEqual(listener.parent, 'parent')
 
     def test_listener_missing_service(self):
         self.create_listener('missing', missing_service_listener)
-        self.assertRaises(InvalidListener, connect_listener, 'parent', 'sse')
+        self.assertRaises(InvalidListener, listeners_manager.connect_listener,
+                          'parent', 'sse')
 
     def test_underscore(self):
-        name = get_listener_name("something_weird")
+        name = listeners_manager.get_listener_name("something_weird")
         self.assertEqual(name, "SomethingWeirdListener")
 
     def test_double_underscore(self):
-        name = get_listener_name("something__weird")
+        name = listeners_manager.get_listener_name("something__weird")
         self.assertEqual(name, "SomethingWeirdListener")
 
     def test_no_underscore(self):
-        name = get_listener_name("somethingweird")
+        name = listeners_manager.get_listener_name("somethingweird")
         self.assertEqual(name, "SomethingweirdListener")

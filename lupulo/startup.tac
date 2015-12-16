@@ -15,7 +15,7 @@ from twisted.python.logfile import DailyLogFile
 
 from lupulo.sse_resource import SSEResource
 from lupulo.root import get_website
-from lupulo.listeners_manager import connect_listener
+from lupulo.listeners_manager import listeners_manager
 
 
 # Bind the application and create a multi service that will be the
@@ -39,4 +39,4 @@ tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
 # Create the serial listener and attach it to multi
-connect_listener(multi, sse_resource)
+listeners_manager.connect_listener(multi, sse_resource)
