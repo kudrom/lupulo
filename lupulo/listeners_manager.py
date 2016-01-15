@@ -22,16 +22,17 @@ class ListenersManager(object):
         CamelCase = "".join(map(lambda x: x.capitalize(), name_splitted))
         return CamelCase + "Listener"
 
-
     def connect_listener(self, parent, sse_resource):
         """
             Load, instantiate and registers a Listener.
         """
         module_name = settings["listener"] + "_listener"
         try:
+            # Import from global scope listeners
             module = import_module("lupulo.listeners.%s" % module_name)
         except ImportError as e:
             try:
+                # Import from project scope listeners
                 module = import_module("listeners.%s" % module_name)
             except ImportError:
                 raise NotListenerFound(e.message.split(" ")[-1])

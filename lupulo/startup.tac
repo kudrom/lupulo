@@ -38,5 +38,5 @@ site = get_website(sse_resource)
 tcp_server = internet.TCPServer(settings["web_server_port"], site)
 tcp_server.setServiceParent(multi)
 
-# Create the serial listener and attach it to multi
+# Create the listeners in settings.py
 listeners_manager.connect_listener(multi, sse_resource)

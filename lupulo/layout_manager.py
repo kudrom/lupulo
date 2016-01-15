@@ -120,7 +120,7 @@ class LayoutManager(INotifyObserver):
 
         return delete
 
-    def check_accessor(self, accessor, name, obj):
+    def check_accessor(self, accessor, name, layout):
         delete = False
 
         if 'type' not in accessor:
@@ -129,14 +129,14 @@ class LayoutManager(INotifyObserver):
                     name)
 
         if 'event' not in accessor:
-            accessor['event'] = obj['event_names'][0]
-        elif accessor['event'] not in obj['event_names']:
+            accessor['event'] = layout['event_names'][0]
+        elif accessor['event'] not in layout['event_names']:
             delete = True
             log.msg("%s accessor event property is not in the"
                     " event_names attribute of the layout." % name)
 
         if 'after' in accessor:
-            delete = self.check_acc_desc(accessor['after'], name, obj)
+            delete = self.check_acc_desc(accessor['after'], name, layout)
 
         return delete
 
