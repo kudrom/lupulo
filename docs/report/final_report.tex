@@ -7,6 +7,7 @@
 \usepackage{wrapfig}
 \usepackage{hyperref}
 \usepackage{tabularx}
+\usepackage{pdflscape}
 \hypersetup{colorlinks=true, urlcolor=magenta, linkcolor=orange, pdfauthor=Alejandro López Espinosa, pdftitle=título}
 \usepackage{geometry}
 \usepackage{float}
@@ -19,7 +20,10 @@
 \begin{document}
     \maketitle
     \begin{abstract}
-
+        \noindent I developed a framework to build real time web pages as my final
+        project. In this document I explain how the project was born and
+        developed throught the five months of internship at the VIVES
+        university.
     \end{abstract}
 
     \thispagestyle{empty}
@@ -630,6 +634,7 @@
             \end{tabularx}
             \setlength{\parindent}{1cm}
 
+
     \section{Design}
         As already explained, lupulo is supposed to allow programmers to build
         real time web pages in an easy and customizable way.
@@ -915,9 +920,118 @@
             information.
 
     \section{Architecture}
+        Before beginning with the description of the architecture, it's
+        important to know that in order to build a web server that could push
+        information to the frontend, the Server Sent Event API was used. Once
+        I decided to use that technology, I needed to find a framework that
+        would allow me to build an asynchronous web server that used SSE to push
+        information to the web page. Twisted was that framework.
+
+        Once the basic design of the system has been explained, it's moment to
+        describe the major software components of the system and how they
+        interact with each other.
+
+        Before that explanation though, I'll overview the two main technologies
+        that make all of this project possible.
+
         \subsection{Static structure}
+            The project is divided between the backend and frontend. The
+            backend is made of the following components:
+
+            \begin{itemize}
+                \item A twisted web application that launches the web
+                      server and listener.
+                \item The manager of the layout file.
+                \item The manager of the data schema file.
+                \item The manager of the listeners.
+                \item An asynchronous template system.
+            \end{itemize}
+
+            \newgeometry{top=0.5cm, bottom=0.5cm}
+            \thispagestyle{empty}
+            \begin{landscape}
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[height=0.8\textheight]{classes}
+                    \caption{Classes diagram for the backend}
+                \end{figure}
+            \end{landscape}
+            \restoregeometry
+
+            The frontend is made of the following components:
+
+            \begin{itemize}
+                \item Controller for the events sent by the backend.
+                \item Widget that renders information sent from the backend.
+                \item Accessors abstraction.
+            \end{itemize}
+
+            \begin{figure}[h]
+                \centering
+                \includegraphics[width=\textwidth]{frontend}
+                \caption{Main components for the frontend}
+            \end{figure}
+
+            The usual deployment of the project involves several hosts which run
+            the backend, the optional store mechanism and the browser with the
+            frontend loaded on it as can be seen in the following diagram.
+
+            \begin{figure}[H]
+                \centering
+                \includegraphics[width=\textwidth]{deployment}
+                \caption{General deployment diagram}
+            \end{figure}
+
         \subsection{Dynamic structure}
-        \subsection{Technologies}
+            Once the main structure of the project has been described, I'll
+            explain the interactions of the software with several sequence
+            diagrams that cover the main stages of lupulo once it has been
+            started.
+
+            \newgeometry{left=0.5cm, top=0.5cm, bottom=0.5cm}
+            \thispagestyle{empty}
+            \begin{landscape}
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[height=1.1\textheight]{initialization}
+                    \caption{Initialization of the backend}
+                \end{figure}
+            \end{landscape}
+            \restoregeometry
+
+            \newgeometry{left=0.5cm, top=0.5cm, bottom=0.5cm}
+            \thispagestyle{empty}
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[width=1.15\textwidth]{http_request}
+                    \caption{Http request from a browser asking for a web page
+                    derived from base.html}
+                \end{figure}
+            \restoregeometry
+
+            \newgeometry{left=0.5cm, top=0.5cm, bottom=0.5cm}
+            \thispagestyle{empty}
+            \begin{landscape}
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[height=0.75\textheight]{new_widgets}
+                    \caption{Reception of a backend sse event, in particular
+                    new\_widgets}
+                \end{figure}
+            \end{landscape}
+            \restoregeometry
+
+            \newgeometry{left=0.5cm, top=0.5cm, bottom=0.5cm}
+            \thispagestyle{empty}
+            \begin{landscape}
+                \begin{figure}[h]
+                    \centering
+                    \includegraphics[height=\textheight]{push_information}
+                    \caption{The backend pushes some information into the
+                    frontend}
+                \end{figure}
+            \end{landscape}
+            \restoregeometry
 
     \section{Methodology of work}
         I haven't followed strictly a methodology but a mix of them. Instead of
@@ -957,5 +1071,21 @@
         also to have a record of how the project was evolving.
 
     \section{Work to do}
+        There are several improvements to be done in the framework. The first
+        one is to expand the number of listeners and widgets available at
+        install time in the framework.
 
+        The documentation should also include a tutorial to build a real time
+        web page with the basic abstractions described above.
+
+        The listeners abstraction could also be refactored to allow more than
+        one type of listener to push information to the backend.
+
+        The frontend could also be refactored in order to allow the use of html5
+        canvas objects.
+
+        More granularity in the paint loop should be provided to avoid different
+        widget types to be called at different times.
+
+    \section{Conclussions}
 \end{document}
