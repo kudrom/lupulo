@@ -4,6 +4,18 @@ Changelog
 lupulo follows the semantic versioning without distinction between even and odd
 numbers of major or minor releases.
 
+[0.3.0] 20/01/2016
+------------------
+
+Third release of a stable version of the framework which is focused on fixing
+bugs and some minor details.
+
+#. Added leds widget
+#. Added digital display widget
+#. Added digital clock widget
+#. Added digital date widget
+#. Added battery widget
+
 [0.2.0] 20/11/2015
 ------------------
 
