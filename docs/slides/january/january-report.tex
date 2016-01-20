@@ -1,0 +1,285 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\beamertemplatenavigationsymbolsempty
+
+\mode<presentation> {
+    \usetheme{Singapore}
+    \usecolortheme{rose}
+}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{color}
+
+\title[Final report of lupulo]{Final report of the development of \textbf{lupulo}}
+
+\author{Alejandro López Espinosa}
+\institute[VIVES university]
+{
+    VIVES University
+    \medskip
+}
+\date{\today}
+
+\begin{document}
+    \begin{frame}
+    \titlepage
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Table of contents}
+        \tableofcontents
+    \end{frame}
+
+    \section{Overview}
+    \begin{frame}
+        \frametitle{Useful info}
+        lupulo is developed as a free software project under the GPL
+        license.
+
+        lupulo's backend currently \textbf{is built with python2} because
+        twisted is not written to be compatible with python3.
+
+        lupulo is currently at the 0.3.0 stable release.
+        \\~\\
+
+        You can find the source code in 
+        \textcolor{orange}{\href{http://github.com/kudrom/lupulo}{github.com/kudrom/lupulo}}
+
+        You can download lupulo with pip.
+
+        The docs are updated in ReadTheDocs.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Goals}
+
+        \begin{block}{What's lupulo}
+            lupulo is a web framework to build realtime web pages that monitor
+            and/or command a device.
+        \end{block}
+
+        Only two goals:
+        \begin{itemize}
+            \item Easiness of development
+            \item Extensibility of complex behaviour
+        \end{itemize}
+
+        In order to be able to provide those two goals, the framework provides
+        two sets of abstractions, the ones targeted at \textbf{beginner} users
+        and the ones targeted at \textbf{experienced} users.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Main abstractions}
+        \begin{itemize}
+            \item \color{blue} Data schema language
+            \item Layout language
+            \item Templates
+            \item \color{purple} Widgets
+            \item Accessors
+            \item Listeners
+        \end{itemize}
+
+        All of this abstractions provide a smooth \textbf{workflow} that both
+        type of users should follow to develop a web page.
+    \end{frame}
+
+    \section{Workflow}
+    \begin{frame}
+        \frametitle{Create a valid project}
+        You can install the software with:
+            
+        \texttt{pip install lupulo}
+
+        Once you have installed lupulo, you type \texttt{lupulo\_create} in a
+        directory to create a valid lupulo project.
+
+        It's going to create a bunch of directories and files that you're going
+        to change later on.
+
+        One of those files is the \textbf{settings.py} file which you'll modify
+        to configure the backend mostly.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Write the data schema}
+
+        The data schema is made of \textbf{source events} that relate to every
+        sensory information the device is sending.
+
+        Each source event is described by a set of obligatory parameters
+        depending of its \textbf{type}.
+
+        There are two kind of types, the \textbf{primitive} and the
+        \textbf{aggregated}.
+
+        The primitive type describes some raw data like \textbf{number}, 
+        \textbf{enum} or \textbf{date}.
+
+        The aggregated type is an aggregation of other types. There are two
+        aggregated types: \textbf{dict} and \textbf{list}.
+
+        \textbf{There is no limit to aggregation}.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Write the layout}
+        A widget is some \textbf{JS object} that renders information in the web
+        page.
+
+        A layout is a \textbf{description} of a widget, it describes how the
+        widget is going to behave in the web page.
+
+        In  the layout the user \textbf{binds} a particular widget with a
+        particular data source event.
+
+        A layout can \textbf{inherit} from another layout some or all of its
+        parameters.
+
+        \textbf{There is no limit to the levels of inheritance.}
+
+        Multiple inheritance is not allowed.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Templates}
+        You can modify the html pages with \textbf{jinja2} templates.
+
+        At the moment lupulo provides some base templates that you can extend.
+
+        You can design your own url sitemap and use RESTful principles for the
+        command interface. You only need to write your own \textbf{urls.py} file
+        in the same fashion that django does.
+
+        Each url must be handled by a \textbf{twisted Resource}.
+
+        The templates are rendered \textbf{asynchronously}.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Launch}
+        Once you have written everything, you launch the server with
+        \texttt{lupulo\_start} in the 8080 port (by default).
+
+        You can edit the layout and data schema \textbf{without the need to
+        restart the web server}.
+
+        You can use the \textbf{debug web page} to see how things are working in
+        the frontend.
+
+        You can use a \textbf{standalone sse client} to see what the backend is
+        sending through the sse data connection.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Write widget}
+        If you want to visualize some information in a new way, you can write
+        your own widget and use them later in your layout file.
+
+        You have to call the \textbf{Widget supertype} with the this object and
+        the layout as parameters.
+
+        The supertype will add some attributes to the object that will allow you
+        later on to modify the web page.
+
+        You can \textbf{aggregate} other types of widgets by constructing them
+        in your constructor and calling them later to modify the web page.
+
+        The framework is going to call \textbf{paint} each second and
+        \textbf{clear\_framebuffers} when it needs to clear the visualization
+        that the widget has created in the web page.
+
+        You might need to use the \textbf{accessors} abstraction.
+
+        You should provide \textbf{dynamic sizing}.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Accessors}
+        The accessors abstraction allow a widget to access the data
+        \textbf{without knowing its schema}.
+
+        The widget \textbf{delegates} the real access of the data to another
+        object that is constructed with the data schema and that retrieves the
+        data the widget needs.
+
+        The idea is to allow the programmer of the web page to describe in the
+        layout the data it wants a widget to render \textbf{paying attention to
+        the widget needs and the structure of the data}.
+
+        Once the accessors are described in a layout, the widget will construct
+        them with the \textbf{get\_accessors} function and will call them in the
+        paint function to get the data it has to render.
+    \end{frame}
+
+    \begin{frame}
+        \frametitle{Write listener}
+        In order to connect the backend to the data source, the user can
+        build its own listener that will retransmit to the backend the data
+        it receives.
+        
+        A listener is a \textbf{twisted service} that will be run when the
+        server is started.
+
+        Once the listener is created by the backend, it will \textbf{publish}
+        data it receives from the device to a twisted resource that will
+        validate and push the information to the frontend.
+    \end{frame}
+
+    \section{Architecture}
+    \begin{frame}
+        \frametitle{Main components}
+        There are two main components of the project, the \textbf{backend},
+        which is built with python2 and twisted and the \textbf{frontend}
+        which is built in javascript.
+
+        These two main components communicate through an asynchronous data link
+        provided by a HTML5 API called \textbf{Server Sent Events}, which
+        provides a unidirectional stream to push information from the server to
+        the browser.
+
+        The user doesn't see this asynchronous data link, it only configures
+        what widgets listen to what data sources.
+    \end{frame}
+
+    \begin{frame}
+    \Huge{\centerline{Diagrams}}
+    \end{frame}
+
+    \section{Work to do}
+    \begin{frame}
+        \frametitle{The future}
+        For future releases it could be nice to:
+        \begin{itemize}
+            \item Expand the number of listeners
+            \item Expand the number of widgets
+            \item Review both high level languages
+            \item More granularity in the paint loop
+        \end{itemize}
+    \end{frame}
+
+    \section{Demo}
+    \begin{frame}
+    \Huge{\centerline{Demo}}
+    \end{frame}
+
+    \begin{frame}
+    \Huge{\centerline{Thanks for your attention.}}
+    \end{frame}
+
+\end{document} 

@@ -77,6 +77,11 @@
             \textbf{Widget}: Javascript object that renders some
                 information coming from the backend.
 
+            \textbf{WSGI}: The Web Server Gateway Interface (WSGI) is a
+                specification for simple and universal interface between web
+                servers and web applications or frameworks for the Python
+                programming language.
+
             \setlength{\parindent}{1cm}
 
         \newpage
@@ -88,7 +93,7 @@
             Once I started building that web page I realised that a lot of the
             code I was writing was very generic and that the main mechanism to
             push information to the web page was the same not only for that
-            robot in particular but to any device that needs to be monitored in
+            robot in particular but for any device that needs to be monitored in
             real time.
 
             So, I started thinking about a framework to build real time web
@@ -98,9 +103,10 @@
             final project achieves.
 
         \subsection{General idea}
-            There are several principal use cases described below, but the main
-            one was to allow a programmer to set up a real time web page in the
-            easiest and most personalized way possible.
+            There are several principal use cases that the framework should
+            provide support for, but the main one was to allow a programmer to
+            set up a real time web page in the easiest and most personalized
+            way possible.
 
             I achieved the easiness with a couple of high level languages that
             define the dynamic data that the device is sending and the dynamic
@@ -119,7 +125,7 @@
             different levels of experience to build real time web pages. The
             unexperienced users can use all the default mechanisms that lupulo
             provides to describe in a high level a web page. In the same manner,
-            experienced users can use their extra skills to personalized the way
+            experienced users can use their extra skills to personalize the way
             lupulo works and build more complex real time web pages while at the
             same time using the high level descriptions to abstract away the
             general mechanisms that make their web page different to others.
@@ -496,145 +502,49 @@
             framework because it also has an impact on the development of the
             framework.
 
-        \subsection{Use cases}
-            \setlength{\parindent}{0cm}
-            \begin{tabularx}{\textwidth}{|l|X|}
-                \hline
-                \textbf{Title} & View data from a device in real time.\\
-                \hline
-                \textbf{Description} & This is the base use case where the user
-                wants to monitor a device and visualize the data it sends.\\
-                \hline
-                \textbf{Preconditions} & - \\
-                \hline
-                \textbf{Main course} &
-                    \begin{enumerate}
-                        \item The user enters the URL in a web browser.
-                        \item The backend handles the http request and sends the
-                              web page.
-                        \item The user selects a device to monitor in the web
-                              page.
-                        \item Any time in the future the device sends something
-                              interesting data to the framework
-                        \item The backend pushes the data to the frontend.
-                        \item The frontend start drawing the data it receives
-                              from the backend.
-                    \end{enumerate}\\
-                \hline
-            \end{tabularx}
+        \subsection{Technologies}
+            In order to build a web server that could push information to the
+            frontend in an asynchronous way, several technologies were studied,
+            mainly web sockets and the Server Sent Event API.
 
-            \begin{tabularx}{\textwidth}{|l|X|}
-                \hline
-                \textbf{Title} & Change monitored device.\\
-                \hline
-                \textbf{Description} & This is a follow up use case of the basic
-                on where the frontend must clear all the widgets of the web
-                page. \\
-                \hline
-                \textbf{Preconditions} & The user is viewing a real time web
-                page.\\
-                \hline
-                \textbf{Main course} &
-                    \begin{enumerate}
-                        \item The user changes the device to monitor.
-                        \item The frontend clears all widgets and renders
-                              information from the new device.
-                    \end{enumerate}\\
-                \hline
-            \end{tabularx}
+            Both of them are html5 APIs. The main difference between the two is
+            that web sockets provides a bidirectional channel between the web
+            page and the server whereas SSE only provides a unidirectional
+            channel to push information from the server to the web page.
 
-            \begin{tabularx}{\textwidth}{|l|X|}
-                \hline
-                \textbf{Title} & Command a device.\\
-                \hline
-                \textbf{Description} & This is a follow up use case of the basic
-                one where the user wants to command the device.\\
-                \hline
-                \textbf{Preconditions} & The user is viewing a real time web
-                page.\\
-                \hline
-                \textbf{Main course} &
-                    \begin{enumerate}
-                        \item The user interacts with the web page in order to
-                              send a command to the device.
-                        \item The frontend makes a http request to the backend.
-                        \item The backend receives the http request in one of
-                              the restful handlers, translates the request and
-                              sends it to the device.
-                        \item The device receives the request and does the
-                              requested action.
-                    \end{enumerate}\\
-                \hline
-            \end{tabularx}
+            After a little thought, SSE was chosen because it's more easy to
+            work with it in javascript and because it provides by default a
+            built-in way of demultiplexing several channels of information that
+            share the same SSE connection, a feature I needed.
+            
+            Once I decided to use SSE, I needed to find a framework that would
+            allow me to build an asynchronous web server that used SSE to push
+            information to the web page.
 
-            \begin{tabularx}{\textwidth}{|l|X|}
-                \hline
-                \textbf{Title} & Analyze data.\\
-                \hline
-                \textbf{Description} & Sometimes the user doesn't want to see
-                the data in real time but to store it to analyze it later.\\
-                \hline
-                \textbf{Preconditions} & - \\
-                \hline
-                \textbf{Main course} &
-                    \begin{enumerate}
-                        \item The device sends some information to the backend.
-                        \item The backend stores that information in some
-                              permanent data store.
-                        \item The user later on queries the data in the
-                              database.
-                    \end{enumerate}\\
-                \hline
-            \end{tabularx}
+            I also pay some attention to the fact that maybe in the future I
+            needed to switch from SSE to web sockets because the first
+            technology was not good enough, so I decided to choose a framework
+            that provided support for both technologies.
+            
+            I was very familiarized with Twisted and it provided built-in
+            support for both technologies so it was a natural decision for me.
 
-            \begin{tabularx}{\textwidth}{|l|X|}
-                \hline
-                \textbf{Title} & Change data schema.\\
-                \hline
-                \textbf{Description} & During the development of the web page,
-                the programmer is going to change the data schema several times.\\
-                \hline
-                \textbf{Preconditions} & - \\
-                \hline
-                \textbf{Main course} &
-                    \begin{enumerate}
-                        \item The user saves to disk the changes it has done to
-                              the data schema.
-                        \item Linux alerts the backend that the file has
-                              changed.
-                        \item The backend compiles the data schema and sends it
-                              to the frontend.
-                        \item The frontend receives the event and calls the
-                              registered method of the controller.
-                    \end{enumerate}\\
-                \hline
-            \end{tabularx}
+            Once I decided to use twisted as the framework, I have to decide
+            between using a WSGI application as the main engine for the web
+            server or build my own asynchronous engine. After digging a little
+            more into how WSGI applications are integrated in twisted, I
+            discovered that the http requests wouldn't be served asynchronously
+            if I added a WSGI application to the twisted application, so I
+            decided to use my own web server instead of using one of the
+            existing WSGI frameworks in the community to provide more
+            efficiency.
 
-            \begin{tabularx}{\textwidth}{|l|X|}
-                \hline
-                \textbf{Title} & Change layout.\\
-                \hline
-                \textbf{Description} & During the development of the web page,
-                the programmer is going to change the layout several times.\\
-                \hline
-                \textbf{Preconditions} & - \\
-                \hline
-                \textbf{Main course} &
-                    \begin{enumerate}
-                        \item The user saves to disk the changes it has done to
-                              the layout.
-                        \item Linux alerts the backend that the file has
-                              changed.
-                        \item The backend compiles the layout and sends it to
-                              the frontend.
-                        \item The frontend receives the event, deletes every
-                              widget in the page and constructs them again.
-                    \end{enumerate}\\
-                \hline
-            \end{tabularx}
-            \setlength{\parindent}{1cm}
-
-
+            Another important decision concerning technologies is the use of
+            jinja2 as a templates system for the web server due to the fact that
+            I wasn't using a WSGI application. In order to allow multiple http
+            requests and devices, it was necessary to render the web pages in an
+            asynchronous way to avoid the blocking of requests, so I built
+            around jinja2 a system to asynchronously render a web page.
     \section{Design}
         As already explained, lupulo is supposed to allow programmers to build
         real time web pages in an easy and customizable way.
@@ -642,7 +552,7 @@
         The design of lupulo is focused around several abstractions that allow
         the user to build a real time web page. These abstractions are split
         between beginner and expert abstractions so that the beginner ones
-        provide the easiness of use and the expert one the required
+        provide the easiness of use and the expert ones the required
         customization.
         
         The beginner abstractions are the layout language, the data schema
@@ -665,7 +575,8 @@
         \subsection{Data schema language}
             The data schema provides a dynamic way of describing the data the
             device is sending that allows the backend to process the data and
-            automatically verify and generate (for debugging purposes) it.
+            automatically verify and generate (for debugging purposes) it. This
+            abstraction also supports the accessor mechanism described below.
 
             The data schema language is a JSON file that describes the schema of
             the data received by the backend.  This file must have a global JS
@@ -743,6 +654,11 @@
             the anchor of the widget in the web page and is another obligatory
             attribute of every layout in the layout file. This anchor can be any
             selector of jquery that resolves to an html element.
+
+            As described above, apart from this attributes that every layout
+            must define, each type of widget defines its own set of attributes,
+            so a layout must also provide this set of attributes in order for
+            the layout to be valid.
 
             \subsubsection{Inheritance}
                 Due to the verbosity and duplicity of the attributes of a
@@ -869,7 +785,7 @@
             when it's constructed itself. Then, when its paint method is called,
             it will call the accessor object with the raw data expecting the
             structured data to be returned as a result. Finally, the widget will
-            draw something in the web page with that data.
+            draw something in the web page with that structured data.
 
         \subsection{Listeners}
             In order to connect the backend to the data source, the user can
@@ -909,23 +825,29 @@
             that will push information from the device to the backend in a
             custom way.
 
+            In order to ease the debugging of the layout file, the user can use
+            a debug web page that will render in real time the layout file and
+            the data the frontend receives from the backend in raw form and all
+            of the widgets the frontend construct from the layout definition.
+
+            Also, to ease the debugging of listeners or of the layout in more
+            low level, the user of the framework can use a standalone sse client
+            that will print to the standard output the raw information it
+            receives from the backend.
+
             So the basic workflow is to define a layout and a data schema files,
             run the server and see how everything looks both in the real and
             debug web pages, then modify the layout or data schema and iterate
             in this process as much as wanted.
 
-            Then, if some behaviour is missing, the programmer can always write
-            a new widget and use it in the layout file, extend the listeners
-            provided by lupulo or write a template that renders some non real time
-            information.
+            If the programmer needs more customization of the web page, he
+            can write a new widget and use it in the layout file or write
+            a template that renders some static information, or if he wants to
+            communicate to the device in some specific way, he can extend the
+            listeners provided by lupulo. The point is that he can use more
+            advanced abstractions to customize his project.
 
     \section{Architecture}
-        Before beginning with the description of the architecture, it's
-        important to know that in order to build a web server that could push
-        information to the frontend, the Server Sent Event API was used. Once
-        I decided to use that technology, I needed to find a framework that
-        would allow me to build an asynchronous web server that used SSE to push
-        information to the web page. Twisted was that framework.
 
         Once the basic design of the system has been explained, it's moment to
         describe the major software components of the system and how they
@@ -1051,6 +973,8 @@
 
         Currently there are almost 100 tests in both the backend and the
         frontend that test every use case as a whole and in its smaller parts.
+        In order to launch them, you only need to use trial, the default test
+        case utility provided by twisted.
 
         Similarly, currently there are about 30 pages of documentation that
         cover every aspect of the framework in a detailed way to allow
@@ -1087,5 +1011,20 @@
         More granularity in the paint loop should be provided to avoid different
         widget types to be called at different times.
 
-    \section{Conclussions}
+        The high level languages should also be revised in order to allow more
+        expressive and easy descriptions.
+
+    \section{Conclusions}
+        I think lupulo is a useful framework to build real time web pages that
+        are focused on visualizing information, so I'll continue its development
+        if there are enough active users.
+
+        I have had a lot of freedom in the development of my final project so I
+        have decided from bottom up how to build the framework, what I should
+        focus on, what the priorities of the development were, which
+        methodology to use and even what my final project was altogether.
+
+        For me it has been a good experience to be able to build a project of
+        this complexity in five months, where I had so much freedom and I could
+        focus on development, instead that on other areas.
 \end{document}
